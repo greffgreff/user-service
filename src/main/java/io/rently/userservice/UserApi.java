@@ -1,13 +1,13 @@
-package com.greffgreff.userservice.Main;
+package io.rently.userservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UserserviceApplication {
+public class UserApi {
 
 	public static void main(String[] args) {
-		SpringApplication.run(UserserviceApplication.class, args);
+		SpringApplication.run(UserApi.class, args);
 	}
 
 }
