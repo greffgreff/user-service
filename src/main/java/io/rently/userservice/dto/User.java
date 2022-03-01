@@ -5,24 +5,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class User {
     @JsonProperty("id")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String id;          // required
+    private final String id; // required
 
     @JsonProperty("username")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String username;    // optional
+    private final String username;
 
     @JsonProperty("fullname")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String fullname;    // optional
+    private final String fullname;
 
     @JsonProperty("email")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String email;       // optional
+    private final String email;
 
     @JsonProperty("phone")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String phone;       // optional
+    private final String phone;
 
     private User(Builder builder) {
         this.id = builder.id;

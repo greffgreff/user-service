@@ -1,10 +1,19 @@
 package io.rently.userservice.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.sql.Timestamp;
 
 public class ResponseBody {
+    @JsonProperty("timestamp")
     private final Timestamp timestamp;
+
+    @JsonProperty("status")
     private final int status;
+
+    @JsonProperty("content")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Object data;
 
     private ResponseBody(Builder builder) {
@@ -25,15 +34,10 @@ public class ResponseBody {
         return data;
     }
 
-    @Override
-    public String toString() {
-        return "";
-    }
-
     public static class Builder {
-        private final Timestamp timestamp; // required
-        private final int status; // required
-        private Object data; // optional
+        private final Timestamp timestamp;
+        private final int status;
+        private Object data;
 
         public Builder(Timestamp timestamp, int status) {
             this.timestamp = timestamp;
