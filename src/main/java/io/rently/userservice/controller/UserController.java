@@ -1,7 +1,6 @@
 package io.rently.userservice.controller;
 
 import io.rently.userservice.dto.ResponseBody;
-import io.rently.userservice.dto.User;
 import io.rently.userservice.service.UserService;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +37,7 @@ public class UserController implements ErrorController {
     }
 
     @RequestMapping("/error")
-    public static ResponseBody error() {
+    public static ResponseBody handleErrorResponse() {
         return new ResponseBody
                 .Builder(new Timestamp(System.currentTimeMillis()), 500)
                 .setData("Invalid or incomplete URL path")
