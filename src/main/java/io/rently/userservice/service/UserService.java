@@ -36,8 +36,12 @@ public class UserService {
                 .build();
     }
 
-    public static ResponseBody addUser() {
-        return null;
+    public static ResponseBody addUser(User user) {
+        users.add(user);
+        return new ResponseBody
+                .Builder(new Timestamp(System.currentTimeMillis()), 200)
+                .setData("Successfully added user with id " + user.getId())
+                .build();
     }
 
     public static ResponseBody deleteUserById(String id) {
