@@ -1,4 +1,4 @@
-package com.greffgreff.userservice.Main;
+package io.rently.userservice.Main;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
