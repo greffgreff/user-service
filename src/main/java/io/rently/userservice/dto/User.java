@@ -1,26 +1,28 @@
 package io.rently.userservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import java.io.Serializable;
+
+@JsonDeserialize(builder = User.Builder.class)
 public class User {
-    @JsonProperty("id")
+    @JsonProperty
     private final String id; // required
 
-    @JsonProperty("username")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty
     private final String username;
 
-    @JsonProperty("fullname")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty
     private final String fullname;
 
-    @JsonProperty("email")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty
     private final String email;
 
-    @JsonProperty("phone")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty
     private final String phone;
 
     private User(Builder builder) {
@@ -58,25 +60,30 @@ public class User {
         private String email;
         private String phone;
 
-        public Builder(String id) {
+        @JsonCreator
+        public Builder(@JsonProperty String id) {
             this.id = id;
         }
 
+        @JsonProperty
         public Builder setUsername(String username) {
             this.username = username;
             return this;
         }
 
+        @JsonProperty
         public Builder setFullname(String fullname) {
             this.fullname = fullname;
             return this;
         }
 
+        @JsonProperty
         public Builder setEmail(String email) {
             this.email = email;
             return this;
         }
 
+        @JsonProperty
         public Builder setPhone(String phone) {
             this.phone = phone;
             return this;
