@@ -1,4 +1,4 @@
-package io.rently.userservice.model;
+package io.rently.userservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
