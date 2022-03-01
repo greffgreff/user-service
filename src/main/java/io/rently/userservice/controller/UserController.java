@@ -2,6 +2,7 @@ package io.rently.userservice.controller;
 
 import io.rently.userservice.dto.User;
 import io.rently.userservice.dto.ResponseBody;
+import io.rently.userservice.service.UserService;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,21 +22,13 @@ public class UserController implements ErrorController {
     }
 
     @GetMapping(value = PREFIX + "/users")
-    public static ResponseBody getUser() {
-        Object data = new User
-                .Builder(UUID.randomUUID().toString())
-                .setUsername("branlix2000")
-                .setFullname("Noah Greff")
-                .setEmail("something@gmail.com")
-                .setPhone("+31 06 41 53 14")
-                .build();
+    public static ResponseBody getUsers() {
+        return UserService.getUsers();
+    }
 
-        ResponseBody response = new ResponseBody
-                .Builder(new Timestamp(System.currentTimeMillis()), 200)
-                .setData(data)
-                .build();
-
-        return response;
+    @GetMapping(value = PREFIX + "/users/{id}")
+    public static ResponseBody getUser(@PathVariable(required = false) String id) {
+        return UserService.getUserById(id);
     }
 
     @PostMapping(value = PREFIX + "/users")
