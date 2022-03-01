@@ -54,36 +54,37 @@ public class User {
     }
 
     public static class Builder {
+        @JsonProperty
         private final String id;
+        @JsonProperty
         private String username;
+        @JsonProperty
         private String fullname;
+        @JsonProperty
         private String email;
+        @JsonProperty
         private String phone;
 
         @JsonCreator
-        public Builder(@JsonProperty String id) {
+        public Builder(String id) {
             this.id = id;
         }
 
-        @JsonProperty
         public Builder setUsername(String username) {
             this.username = username;
             return this;
         }
 
-        @JsonProperty
         public Builder setFullname(String fullname) {
             this.fullname = fullname;
             return this;
         }
 
-        @JsonProperty
         public Builder setEmail(String email) {
             this.email = email;
             return this;
         }
 
-        @JsonProperty
         public Builder setPhone(String phone) {
             this.phone = phone;
             return this;
