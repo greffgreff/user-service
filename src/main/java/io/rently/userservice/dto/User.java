@@ -31,6 +31,26 @@ public class User {
         this.phone = builder.phone;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
     public static class Builder {
         private final String id;
         private String username;
