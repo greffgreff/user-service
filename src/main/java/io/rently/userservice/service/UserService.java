@@ -1,7 +1,9 @@
 package io.rently.userservice.service;
 
-import io.rently.userservice.dto.ResponseBody;
+import io.rently.userservice.dto.ResponseContent;
 import io.rently.userservice.dto.User;
+import io.rently.userservice.error.NotFoundException;
+import org.springframework.http.HttpStatus;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -16,56 +18,50 @@ public class UserService {
             new User.Builder("3").setUsername("chew kok").setFullname("Chew Kok").setEmail("chew.kok@hotmail.com").build()
     ));
 
-    public static ResponseBody getUsers() { // add query param
-        return new ResponseBody
-                .Builder(new Timestamp(System.currentTimeMillis()), 200)
+    public static ResponseContent getUsers() { // add query param
+        return new ResponseContent
+                .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
                 .setData(users)
                 .build();
     }
 
-    public static ResponseBody getUserById(String id) { // add uuid check
+    public static ResponseContent getUserById(String id) { // add uuid check
         for (User user: users) {
             if (Objects.equals(user.getId(), id)) {
-                return new ResponseBody
-                        .Builder(new Timestamp(System.currentTimeMillis()), 200)
+                return new ResponseContent
+                        .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
                         .setData(user)
                         .build();
             }
         }
 
-        return new ResponseBody
-                .Builder(new Timestamp(System.currentTimeMillis()), 404)
-                .setData("User with id " + id + " not found")
-                .build();
+        throw new NotFoundException.UserByIdNotFound(id);
     }
 
-    public static ResponseBody addUser(User user) { // check user id existence
+    public static ResponseContent addUser(User user) { // check user id existence
         users.add(user);
-        return new ResponseBody
-                .Builder(new Timestamp(System.currentTimeMillis()), 200)
-                .setData("Successfully added user with id " + user.getId())
+        return new ResponseContent
+                .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
+                .setMessage("Successfully added user with id " + user.getId())
                 .build();
     }
 
-    public static ResponseBody deleteUserById(String id) { // add uuid check
+    public static ResponseContent deleteUserById(String id) { // add uuid check
         for (User user: users.stream().toList()) {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
 
-                return new ResponseBody
-                        .Builder(new Timestamp(System.currentTimeMillis()), 200)
-                        .setData("Successfully removed user with id " + id)
+                return new ResponseContent
+                        .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
+                        .setMessage("Successfully removed user with id " + id)
                         .build();
             }
         }
 
-        return new ResponseBody
-                .Builder(new Timestamp(System.currentTimeMillis()), 404)
-                .setData("User with id " + id + " not found")
-                .build();
+        throw new NotFoundException.UserByIdNotFound(id);
     }
 
-    public static ResponseBody updateUserById(String id) { // add uuid check, check info
+    public static ResponseContent updateUserById(String id) { // add uuid check, check info
         for (User user: users.stream().toList()) {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
@@ -74,16 +70,13 @@ public class UserService {
                         .build()
                 );
 
-                return new ResponseBody
-                        .Builder(new Timestamp(System.currentTimeMillis()), 200)
-                        .setData("Successfully updated user with id " + id)
+                return new ResponseContent
+                        .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
+                        .setMessage("Successfully updated user with id " + id)
                         .build();
             }
         }
 
-        return new ResponseBody
-                .Builder(new Timestamp(System.currentTimeMillis()), 404)
-                .setData("User with id " + id + " not found")
-                .build();
+        throw new NotFoundException.UserByIdNotFound(id);
     }
 }
