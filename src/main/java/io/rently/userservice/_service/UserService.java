@@ -28,7 +28,9 @@ public class UserService {
 
     public static ResponseContent addUser(User user) {
         handleUserExistence(user.getId());
-        handleUniqueProperties(user);
+        for (User existingUser: users) {
+            handleUniqueProperties(user, existingUser);
+        }
         users.add(user);
         return new ResponseContent.Builder().setMessage("Successfully added user with ID { id: " + user.getId() + " }").build();
     }
@@ -39,21 +41,30 @@ public class UserService {
         return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id: " + id + " }").build();
     }
 
-    public static ResponseContent replaceUserById(User user) {
-        User oldUser = getUserById(user.getId());
-        handleUniqueProperties(user);
+    public static ResponseContent replaceUserById(String id, User userData) {
+        User oldUser = getUserById(id);
+        for (User existingUser: users) {
+            if (!Objects.equals(existingUser.getId(), id)) {
+                handleUniqueProperties(userData, existingUser);
+            }
+        }
         users.remove(oldUser);
-        users.add(user);
-        return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + user.getId() + " }").build();
+        users.add(new User
+                .Builder(id)
+                .setUsername(userData.getUsername())
+                .setFullName(userData.getFullName())
+                .setEmail(userData.getEmail())
+                .setPhone(userData.getPhone())
+                .build()
+        );
+        return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
     }
 
-    private static void handleUniqueProperties(User user) {
-        for (User existingUser: users) {
-            if (Objects.equals(existingUser.getUsername(), user.getUsername())) {
-                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[1], user.getUsername());
-            } else if (Objects.equals(existingUser.getEmail(), user.getEmail())) {
-                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[3], user.getEmail());
-            }
+    private static void handleUniqueProperties(User user, User existingUser) {
+        if (Objects.equals(existingUser.getUsername(), user.getUsername())) {
+            throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[1], user.getUsername());
+        } else if (Objects.equals(existingUser.getEmail(), user.getEmail())) {
+            throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[3], user.getEmail());
         }
     }
 
