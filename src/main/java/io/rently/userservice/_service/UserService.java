@@ -17,49 +17,58 @@ public class UserService {
             new User.Builder("3").setUsername("chew kok").setFullName("Chew Kok").setEmail("chew.kok@hotmail.com").build()
     ));
 
-    public static ResponseContent getUsers() {
+    public static ResponseContent returnUsers() {
         return new ResponseContent.Builder().setData(users).build();
     }
 
-    public static ResponseContent getUserById(String id) {
-        for (User user: users) {
-            if (Objects.equals(user.getId(), id)) {
-                return new ResponseContent.Builder().setData(user).build();
-            }
-        }
-        throw new NotFoundException.UserNotFoundException(User.class.getDeclaredFields()[0], id);
+    public static ResponseContent returnUserById(String id) {
+        User user = getUserById(id);
+        return new ResponseContent.Builder().setData(user).build();
     }
 
     public static ResponseContent addUser(User user) {
-        for (User existingUsers: users) {
-            if (Objects.equals(existingUsers.getId(), user.getId())) {
-                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[0], user.getId());
-            } else if (Objects.equals(existingUsers.getUsername(), user.getUsername())) {
-                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[1], user.getUsername());
-            } else if (Objects.equals(existingUsers.getEmail(), user.getEmail())) {
-                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[3], user.getEmail());
-            }
-        }
+        checkUserExistence(user.getId());
+        handleUniqueProperties(user);
         users.add(user);
         return new ResponseContent.Builder().setMessage("Successfully added user with ID { id: " + user.getId() + " }").build();
     }
 
     public static ResponseContent deleteUserById(String id) {
-        for (User user: users.stream().toList()) {
-            if (Objects.equals(user.getId(), id)) {
-                users.remove(user);
-                return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id: " + id + " }").build();
-            }
-        }
-        throw new NotFoundException.UserNotFoundException(User.class.getDeclaredFields()[0], id);
+        User user = getUserById(id);
+        users.remove(user);
+        return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id: " + id + " }").build();
     }
 
-    public static ResponseContent replaceUserById(String id) {
-        for (User user: users.stream().toList()) {
-            if (Objects.equals(user.getId(), id)) {
-                users.remove(user);
-                users.add(new User.Builder(user.getId()).build());
-                return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
+    public static ResponseContent replaceUserById(User user) {
+        User oldUser = getUserById(user.getId());
+        handleUniqueProperties(user);
+        users.remove(oldUser);
+        users.add(user);
+        return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + user.getId() + " }").build();
+    }
+
+    private static void handleUniqueProperties(User user) {
+        for (User existingUser: users) {
+            if (Objects.equals(existingUser.getUsername(), user.getUsername())) {
+                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[1], user.getUsername());
+            } else if (Objects.equals(existingUser.getEmail(), user.getEmail())) {
+                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[3], user.getEmail());
+            }
+        }
+    }
+
+    private static void checkUserExistence(String id) {
+        for (User existingUser : users) {
+            if (Objects.equals(existingUser.getId(), id)) {
+                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[0], id);
+            }
+        }
+    }
+
+    private static User getUserById(String id) {
+        for (User existingUser : users) {
+            if (Objects.equals(existingUser.getId(), id)) {
+                return existingUser;
             }
         }
         throw new NotFoundException.UserNotFoundException(User.class.getDeclaredFields()[0], id);

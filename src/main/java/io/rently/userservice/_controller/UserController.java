@@ -14,12 +14,12 @@ public class UserController implements ErrorController {
 
     @GetMapping(value = "/users")
     public static ResponseContent getUsers() {
-        return UserService.getUsers();
+        return UserService.returnUsers();
     }
 
     @GetMapping(value = "/users/{id}")
     public static ResponseContent getUser(@PathVariable String id) {
-        return UserService.getUserById(id);
+        return UserService.returnUserById(id);
     }
 
     @PostMapping(value = "/users")
@@ -28,8 +28,8 @@ public class UserController implements ErrorController {
     }
 
     @PutMapping(value = "/users/{id}")
-    public static ResponseContent replaceUser(@PathVariable String id, @RequestBody User user) {
-        return UserService.replaceUserById(id);
+    public static ResponseContent replaceUser(@RequestBody User user) {
+        return UserService.replaceUserById(user);
     }
 
     @PatchMapping(value = "/users/{id}")
