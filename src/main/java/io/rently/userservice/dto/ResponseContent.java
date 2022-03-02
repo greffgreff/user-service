@@ -2,23 +2,29 @@ package io.rently.userservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.http.HttpStatus;
 
 import java.sql.Timestamp;
 
-public class ResponseBody {
+public class ResponseContent {
     @JsonProperty("timestamp")
     private final Timestamp timestamp;
 
     @JsonProperty("status")
-    private final int status;
+    private final HttpStatus status;
+
+    @JsonProperty("message")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private final String message;
 
     @JsonProperty("content")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Object data;
 
-    private ResponseBody(Builder builder) {
+    private ResponseContent(Builder builder) {
         this.timestamp = builder.timestamp;
         this.status = builder.status;
+        this.message = builder.message;
         this.data = builder.data;
     }
 
@@ -26,9 +32,11 @@ public class ResponseBody {
         return timestamp;
     }
 
-    public int getStatus() {
+    public HttpStatus getStatus() {
         return status;
     }
+
+    public String getMessage() { return message; }
 
     public Object getData() {
         return data;
@@ -36,10 +44,11 @@ public class ResponseBody {
 
     public static class Builder {
         private final Timestamp timestamp;
-        private final int status;
+        private final HttpStatus status;
+        private String message;
         private Object data;
 
-        public Builder(Timestamp timestamp, int status) {
+        public Builder(Timestamp timestamp, HttpStatus status) {
             this.timestamp = timestamp;
             this.status = status;
         }
@@ -49,8 +58,13 @@ public class ResponseBody {
             return this;
         }
 
-        public ResponseBody build() {
-            ResponseBody responseBody = new ResponseBody(this);
+        public Builder setMessage(String msg) {
+            this.message = msg;
+            return this;
+        }
+
+        public ResponseContent build() {
+            ResponseContent responseBody = new ResponseContent(this);
             validate();
             return responseBody;
         }
