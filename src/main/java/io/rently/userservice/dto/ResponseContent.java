@@ -8,15 +8,15 @@ import org.springframework.lang.NonNull;
 import java.sql.Timestamp;
 
 public class ResponseContent {
-    @JsonProperty("timestamp")
+    @JsonProperty
     @NonNull
     private final Timestamp timestamp;
 
-    @JsonProperty("status")
+    @JsonProperty
     @NonNull
     private final int status;
 
-    @JsonProperty("message")
+    @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String message;
 

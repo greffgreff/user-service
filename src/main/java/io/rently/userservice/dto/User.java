@@ -15,7 +15,7 @@ public class User {
     private final String username;
 
     @JsonProperty
-    private final String fullname;
+    private final String fullName;
 
     @JsonProperty
     private final String email;
@@ -26,7 +26,7 @@ public class User {
     private User(Builder builder) {
         this.id = builder.id;
         this.username = builder.username;
-        this.fullname = builder.fullname;
+        this.fullName = builder.fullName;
         this.email = builder.email;
         this.phone = builder.phone;
     }
@@ -39,8 +39,8 @@ public class User {
         return username;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
     public String getEmail() {
@@ -57,7 +57,7 @@ public class User {
         @JsonProperty
         private String username;
         @JsonProperty
-        private String fullname;
+        private String fullName;
         @JsonProperty
         private String email;
         @JsonProperty
@@ -73,8 +73,8 @@ public class User {
             return this;
         }
 
-        public Builder setFullname(String fullname) {
-            this.fullname = fullname;
+        public Builder setFullName(String fullName) {
+            this.fullName = fullName;
             return this;
         }
 

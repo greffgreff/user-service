@@ -13,14 +13,14 @@ public class NotFoundException extends RuntimeException {
     public static class UserByIdNotFound extends NotFoundException {
 
         public UserByIdNotFound(String id) {
-            super("Could not find user with specified ID { " + id + " }");
+            super("Could not find user with specified ID { id:" + id + " }");
         }
     }
 
     public static class UserByEmailNotFound extends NotFoundException {
 
         public UserByEmailNotFound(String email) {
-            super("Could not find user with specified email { " + email + " }");
+            super("Could not find user with specified email { email:" + email + " }");
         }
     }
 }

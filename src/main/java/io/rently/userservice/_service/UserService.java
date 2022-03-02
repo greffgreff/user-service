@@ -13,51 +13,36 @@ import java.util.Objects;
 
 public class UserService {
     private static final List<User> users = new ArrayList<>(Arrays.asList(
-            new User.Builder("1").setUsername("branlix2000").setFullname("Noah Greff").setEmail("something@gmail.com").setPhone("+31 06 41 53 14").build(),
-            new User.Builder("2").setUsername("than00ber").setFullname("Chandler Greff").setEmail("something.other@yahoo.com").build(),
-            new User.Builder("3").setUsername("chew kok").setFullname("Chew Kok").setEmail("chew.kok@hotmail.com").build()
+            new User.Builder("1").setUsername("branlix2000").setFullName("Noah Greff").setEmail("something@gmail.com").setPhone("+31 06 41 53 14").build(),
+            new User.Builder("2").setUsername("than00ber").setFullName("Chandler Greff").setEmail("something.other@yahoo.com").build(),
+            new User.Builder("3").setUsername("chew kok").setFullName("Chew Kok").setEmail("chew.kok@hotmail.com").build()
     ));
 
     public static ResponseContent getUsers() { // add query param
-        return new ResponseContent
-                .Builder()
-                .setData(users)
-                .build();
+        return new ResponseContent.Builder().setData(users).build();
     }
 
     public static ResponseContent getUserById(String id) { // add uuid check
         for (User user: users) {
             if (Objects.equals(user.getId(), id)) {
-                return new ResponseContent
-                        .Builder()
-                        .setData(user)
-                        .build();
+                return new ResponseContent.Builder().setData(user).build();
             }
         }
-
         throw new NotFoundException.UserByIdNotFound(id);
     }
 
     public static ResponseContent addUser(User user) { // check user id existence
         users.add(user);
-        return new ResponseContent
-                .Builder()
-                .setMessage("Successfully added user with ID " + user.getId())
-                .build();
+        return new ResponseContent.Builder().setMessage("Successfully added user with ID " + user.getId()).build();
     }
 
     public static ResponseContent deleteUserById(String id) { // add uuid check
         for (User user: users.stream().toList()) {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
-
-                return new ResponseContent
-                        .Builder()
-                        .setMessage("Successfully removed user with ID " + id)
-                        .build();
+                return new ResponseContent.Builder().setMessage("Successfully removed user with ID " + id).build();
             }
         }
-
         throw new NotFoundException.UserByIdNotFound(id);
     }
 
@@ -66,14 +51,9 @@ public class UserService {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
                 users.add(new User.Builder(user.getId()).build());
-
-                return new ResponseContent
-                        .Builder()
-                        .setMessage("Successfully updated user with ID " + id)
-                        .build();
+                return new ResponseContent.Builder().setMessage("Successfully updated user with ID " + id).build();
             }
         }
-
         throw new NotFoundException.UserByIdNotFound(id);
     }
 }
