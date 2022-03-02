@@ -27,7 +27,7 @@ public class UserService {
                 return new ResponseContent.Builder().setData(user).build();
             }
         }
-        throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);
+        throw new NotFoundException.UserNotFoundException(User.class.getDeclaredFields()[0], id);
     }
 
     public static ResponseContent addUser(User user) {
@@ -49,7 +49,7 @@ public class UserService {
                 return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id: " + id + " }").build();
             }
         }
-        throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);
+        throw new NotFoundException.UserNotFoundException(User.class.getDeclaredFields()[0], id);
     }
 
     public static ResponseContent updateUserById(String id) {
@@ -60,6 +60,6 @@ public class UserService {
                 return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
             }
         }
-        throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);
+        throw new NotFoundException.UserNotFoundException(User.class.getDeclaredFields()[0], id);
     }
 }

@@ -14,9 +14,9 @@ public class NotFoundException extends HttpException {
         super(HttpStatus.NOT_FOUND, message);
     }
 
-    public static class UserNotFound extends NotFoundException {
+    public static class UserNotFoundException extends NotFoundException {
 
-        public UserNotFound(Field field, Object value) {
+        public UserNotFoundException(Field field, Object value) {
             super(String.format("Could not find user with specified argument { %s = %s }", field.getName(), value));
         }
     }
