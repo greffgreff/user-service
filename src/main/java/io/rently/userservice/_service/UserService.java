@@ -32,7 +32,9 @@ public class UserService {
 
     public static ResponseContent addUser(User user) {
         for (User existingUsers: users) {
-            if (Objects.equals(existingUsers.getUsername(), user.getUsername())) {
+            if (Objects.equals(existingUsers.getId(), user.getId())) {
+                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[0], user.getId());
+            } else if (Objects.equals(existingUsers.getUsername(), user.getUsername())) {
                 throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[1], user.getUsername());
             } else if (Objects.equals(existingUsers.getEmail(), user.getEmail())) {
                 throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[3], user.getEmail());
