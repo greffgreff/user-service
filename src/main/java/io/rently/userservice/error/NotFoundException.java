@@ -1,13 +1,15 @@
 package io.rently.userservice.error;
 
-public class NotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class NotFoundException extends HttpException {
 
     public NotFoundException() {
         this("Resource could not be found");
     }
 
     public NotFoundException(String message) {
-        super(message);
+        super(HttpStatus.NOT_FOUND, message);
     }
 
     public static class UserByIdNotFound extends NotFoundException {
