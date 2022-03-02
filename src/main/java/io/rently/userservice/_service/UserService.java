@@ -1,4 +1,4 @@
-package io.rently.userservice.service;
+package io.rently.userservice._service;
 
 import io.rently.userservice.dto.ResponseContent;
 import io.rently.userservice.dto.User;
@@ -42,7 +42,7 @@ public class UserService {
         users.add(user);
         return new ResponseContent
                 .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
-                .setMessage("Successfully added user with id " + user.getId())
+                .setMessage("Successfully added user with ID " + user.getId())
                 .build();
     }
 
@@ -53,7 +53,7 @@ public class UserService {
 
                 return new ResponseContent
                         .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
-                        .setMessage("Successfully removed user with id " + id)
+                        .setMessage("Successfully removed user with ID " + id)
                         .build();
             }
         }
@@ -65,14 +65,11 @@ public class UserService {
         for (User user: users.stream().toList()) {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
-                users.add(new User
-                        .Builder(user.getId())
-                        .build()
-                );
+                users.add(new User.Builder(user.getId()).build());
 
                 return new ResponseContent
                         .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
-                        .setMessage("Successfully updated user with id " + id)
+                        .setMessage("Successfully updated user with ID " + id)
                         .build();
             }
         }

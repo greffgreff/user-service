@@ -3,10 +3,12 @@ package io.rently.userservice.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.springframework.lang.NonNull;
 
 @JsonDeserialize(builder = User.Builder.class)
 public class User {
     @JsonProperty
+    @NonNull
     private final String id; // required
 
     @JsonProperty
@@ -88,12 +90,7 @@ public class User {
 
         public User build() {
             User user = new User(this);
-            validate();
             return user;
-        }
-
-        private void validate() {
-            // validate
         }
     }
 }

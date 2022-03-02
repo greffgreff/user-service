@@ -3,14 +3,17 @@ package io.rently.userservice.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 
 import java.sql.Timestamp;
 
 public class ResponseContent {
     @JsonProperty("timestamp")
+    @NonNull
     private final Timestamp timestamp;
 
     @JsonProperty("status")
+    @NonNull
     private final HttpStatus status;
 
     @JsonProperty("message")
@@ -65,12 +68,7 @@ public class ResponseContent {
 
         public ResponseContent build() {
             ResponseContent responseBody = new ResponseContent(this);
-            validate();
             return responseBody;
-        }
-
-        private void validate() {
-            // validation
         }
     }
 }
