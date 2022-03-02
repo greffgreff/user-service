@@ -1,14 +1,13 @@
 package io.rently.userservice.error;
 
 public class NotFoundException extends RuntimeException {
-    public static String MESSAGE = "Resource could not be found";
 
     public NotFoundException() {
-        this(MESSAGE);
+        this("Resource could not be found");
     }
 
-    public NotFoundException(String description) {
-        super(String.format("%s. %s", MESSAGE, description));
+    public NotFoundException(String message) {
+        super(message);
     }
 
     public static class UserByIdNotFound extends NotFoundException {
