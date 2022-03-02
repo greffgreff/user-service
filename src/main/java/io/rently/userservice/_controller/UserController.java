@@ -28,8 +28,8 @@ public class UserController implements ErrorController {
     }
 
     @PutMapping(value = "/users/{id}")
-    public static ResponseContent replaceUser(@RequestBody User user) {
-        return UserService.replaceUserById(user);
+    public static ResponseContent replaceUser(@PathVariable String id, @RequestBody User user) {
+        return UserService.replaceUserById(id, user);
     }
 
     @PatchMapping(value = "/users/{id}")
