@@ -20,7 +20,7 @@ public class UserService {
 
     public static ResponseContent getUsers() { // add query param
         return new ResponseContent
-                .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
+                .Builder()
                 .setData(users)
                 .build();
     }
@@ -29,7 +29,7 @@ public class UserService {
         for (User user: users) {
             if (Objects.equals(user.getId(), id)) {
                 return new ResponseContent
-                        .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
+                        .Builder()
                         .setData(user)
                         .build();
             }
@@ -41,7 +41,7 @@ public class UserService {
     public static ResponseContent addUser(User user) { // check user id existence
         users.add(user);
         return new ResponseContent
-                .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
+                .Builder()
                 .setMessage("Successfully added user with ID " + user.getId())
                 .build();
     }
@@ -52,7 +52,7 @@ public class UserService {
                 users.remove(user);
 
                 return new ResponseContent
-                        .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
+                        .Builder()
                         .setMessage("Successfully removed user with ID " + id)
                         .build();
             }
@@ -68,7 +68,7 @@ public class UserService {
                 users.add(new User.Builder(user.getId()).build());
 
                 return new ResponseContent
-                        .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.OK)
+                        .Builder()
                         .setMessage("Successfully updated user with ID " + id)
                         .build();
             }

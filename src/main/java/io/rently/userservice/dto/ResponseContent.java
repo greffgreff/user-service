@@ -14,7 +14,7 @@ public class ResponseContent {
 
     @JsonProperty("status")
     @NonNull
-    private final HttpStatus status;
+    private final int status;
 
     @JsonProperty("message")
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -35,7 +35,7 @@ public class ResponseContent {
         return timestamp;
     }
 
-    public HttpStatus getStatus() {
+    public int getStatus() {
         return status;
     }
 
@@ -47,13 +47,17 @@ public class ResponseContent {
 
     public static class Builder {
         private final Timestamp timestamp;
-        private final HttpStatus status;
+        private final int status;
         private String message;
         private Object data;
 
-        public Builder(Timestamp timestamp, HttpStatus status) {
+        public Builder(Timestamp timestamp, int status) {
             this.timestamp = timestamp;
             this.status = status;
+        }
+
+        public Builder() {
+            this(new Timestamp(System.currentTimeMillis()), HttpStatus.OK.value());
         }
 
         public Builder setData(Object data) {
