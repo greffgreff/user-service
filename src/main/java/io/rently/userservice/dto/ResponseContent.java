@@ -75,8 +75,7 @@ public class ResponseContent {
         }
 
         public ResponseContent build() {
-            ResponseContent responseBody = new ResponseContent(this);
-            return responseBody;
+            return new ResponseContent(this);
         }
     }
 }
