@@ -3,9 +3,7 @@ package io.rently.userservice._service;
 import io.rently.userservice.dto.ResponseContent;
 import io.rently.userservice.dto.User;
 import io.rently.userservice.error.NotFoundException;
-import org.springframework.http.HttpStatus;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,22 +26,29 @@ public class UserService {
                 return new ResponseContent.Builder().setData(user).build();
             }
         }
-        throw new NotFoundException.UserByIdNotFound(id);
+        throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);
     }
 
     public static ResponseContent addUser(User user) { // check user id existence
+        for (User existingUsers: users) {
+            if (Objects.equals(existingUsers.getUsername(), user.getUsername())) {
+
+            } else if (Objects.equals(existingUsers.getEmail(), user.getEmail())) {
+
+            }
+        }
         users.add(user);
-        return new ResponseContent.Builder().setMessage("Successfully added user with ID " + user.getId()).build();
+        return new ResponseContent.Builder().setMessage("Successfully added user with ID { id:" + user.getId() + " }").build();
     }
 
     public static ResponseContent deleteUserById(String id) { // add uuid check
         for (User user: users.stream().toList()) {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
-                return new ResponseContent.Builder().setMessage("Successfully removed user with ID " + id).build();
+                return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id:" + id + " }").build();
             }
         }
-        throw new NotFoundException.UserByIdNotFound(id);
+        throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);
     }
 
     public static ResponseContent updateUserById(String id) { // add uuid check, check info
@@ -51,9 +56,9 @@ public class UserService {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
                 users.add(new User.Builder(user.getId()).build());
-                return new ResponseContent.Builder().setMessage("Successfully updated user with ID " + id).build();
+                return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id:" + id + " }").build();
             }
         }
-        throw new NotFoundException.UserByIdNotFound(id);
+        throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);
     }
 }

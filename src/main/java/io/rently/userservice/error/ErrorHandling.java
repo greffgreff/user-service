@@ -29,9 +29,9 @@ public class ErrorHandling extends RuntimeException {
                 .build();
     }
 
-    @ExceptionHandler(NotFoundException.UserByIdNotFound.class)
+    @ExceptionHandler(NotFoundException.UserNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public static @ResponseBody ResponseContent handleUserNotFound(NotFoundException.UserByIdNotFound ex) {
+    public static @ResponseBody ResponseContent handleUserNotFound(NotFoundException.UserNotFound ex) {
         return new ResponseContent
                 .Builder(ex.getStatus())
                 .setMessage(ex.getMessage())

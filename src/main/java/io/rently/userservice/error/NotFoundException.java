@@ -2,6 +2,8 @@ package io.rently.userservice.error;
 
 import org.springframework.http.HttpStatus;
 
+import java.lang.reflect.Field;
+
 public class NotFoundException extends HttpException {
 
     public NotFoundException() {
@@ -12,17 +14,10 @@ public class NotFoundException extends HttpException {
         super(HttpStatus.NOT_FOUND, message);
     }
 
-    public static class UserByIdNotFound extends NotFoundException {
+    public static class UserNotFound extends NotFoundException {
 
-        public UserByIdNotFound(String id) {
-            super("Could not find user with specified ID { id:" + id + " }");
-        }
-    }
-
-    public static class UserByEmailNotFound extends NotFoundException {
-
-        public UserByEmailNotFound(String email) {
-            super("Could not find user with specified email { email:" + email + " }");
+        public UserNotFound(Field field, Object value) {
+            super(String.format("Could not find user with specified argument { %s = %s }", field.getName(), value));
         }
     }
 }
