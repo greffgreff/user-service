@@ -54,7 +54,7 @@ public class UserService {
         throw new NotFoundException.UserNotFoundException(User.class.getDeclaredFields()[0], id);
     }
 
-    public static ResponseContent updateUserById(String id) {
+    public static ResponseContent replaceUserById(String id) {
         for (User user: users.stream().toList()) {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
