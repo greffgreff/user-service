@@ -4,6 +4,7 @@ import io.rently.userservice.dto.ResponseContent;
 import io.rently.userservice.dto.User;
 import io.rently.userservice.error.ConflictException;
 import io.rently.userservice.error.NotFoundException;
+import io.rently.userservice.util.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,10 +52,10 @@ public class UserService {
         users.remove(oldUser);
         users.add(new User
                 .Builder(id)
-                .setUsername(userData.getUsername())
-                .setFullName(userData.getFullName())
-                .setEmail(userData.getEmail())
-                .setPhone(userData.getPhone())
+                .setUsername(Util.getNonNull(userData.getUsername(), oldUser.getUsername()))
+                .setFullName(Util.getNonNull(userData.getFullName(), oldUser.getFullName()))
+                .setEmail(Util.getNonNull(userData.getEmail(), oldUser.getEmail()))
+                .setPhone(Util.getNonNull(userData.getPhone(), oldUser.getPhone()))
                 .build()
         );
         return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
