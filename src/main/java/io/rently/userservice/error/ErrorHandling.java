@@ -17,7 +17,7 @@ public class ErrorHandling extends RuntimeException {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public static @ResponseBody ResponseContent handleRouteNotFound() {
         return new ResponseContent
-                .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.NOT_FOUND)
+                .Builder(HttpStatus.NOT_FOUND)
                 .setMessage("Invalid or incomplete URL path")
                 .build();
     }
@@ -26,7 +26,7 @@ public class ErrorHandling extends RuntimeException {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public static @ResponseBody ResponseContent handleNotFound(NotFoundException ex) {
         return new ResponseContent
-                .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.NOT_FOUND)
+                .Builder(HttpStatus.NOT_FOUND)
                 .setMessage(ex.getMessage())
                 .build();
     }
@@ -35,7 +35,7 @@ public class ErrorHandling extends RuntimeException {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public static @ResponseBody ResponseContent handleUserNotFound(NotFoundException.UserByIdNotFound ex) {
         return new ResponseContent
-                .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.NOT_FOUND)
+                .Builder(HttpStatus.NOT_FOUND)
                 .setMessage(ex.getMessage())
                 .build();
     }

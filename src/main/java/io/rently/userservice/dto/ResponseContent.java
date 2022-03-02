@@ -56,6 +56,10 @@ public class ResponseContent {
             this.status = status;
         }
 
+        public Builder(HttpStatus status) {
+            this(new Timestamp(System.currentTimeMillis()), status.value());
+        }
+
         public Builder() {
             this(new Timestamp(System.currentTimeMillis()), HttpStatus.OK.value());
         }
