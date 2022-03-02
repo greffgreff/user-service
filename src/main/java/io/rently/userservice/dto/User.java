@@ -1,6 +1,7 @@
 package io.rently.userservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.lang.NonNull;
@@ -12,15 +13,19 @@ public class User {
     private final String id; // required
 
     @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String username;
 
     @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String fullName;
 
     @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String email;
 
     @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String phone;
 
     private User(Builder builder) {
