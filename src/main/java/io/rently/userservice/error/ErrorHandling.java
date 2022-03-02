@@ -17,6 +17,12 @@ public class ErrorHandling extends RuntimeException {
         return new ResponseContent.Builder(HttpStatus.BAD_REQUEST).setMessage("Invalid or incomplete URL path").build();
     }
 
+    @ExceptionHandler(HttpException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static @ResponseBody ResponseContent handleGenericException(HttpException ex) {
+        return new ResponseContent.Builder(ex.getStatus()).setMessage(ex.getMessage()).build();
+    }
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public static @ResponseBody ResponseContent handleNotFound(NotFoundException ex) {
