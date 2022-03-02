@@ -39,14 +39,14 @@ public class UserService {
             }
         }
         users.add(user);
-        return new ResponseContent.Builder().setMessage("Successfully added user with ID { id:" + user.getId() + " }").build();
+        return new ResponseContent.Builder().setMessage("Successfully added user with ID { id: " + user.getId() + " }").build();
     }
 
     public static ResponseContent deleteUserById(String id) {
         for (User user: users.stream().toList()) {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
-                return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id:" + id + " }").build();
+                return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id: " + id + " }").build();
             }
         }
         throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);
@@ -57,7 +57,7 @@ public class UserService {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
                 users.add(new User.Builder(user.getId()).build());
-                return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id:" + id + " }").build();
+                return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
             }
         }
         throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);

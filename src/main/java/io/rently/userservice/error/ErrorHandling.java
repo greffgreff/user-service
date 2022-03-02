@@ -14,45 +14,30 @@ public class ErrorHandling extends RuntimeException {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public static @ResponseBody ResponseContent handleRouteNotFound() {
-        return new ResponseContent
-                .Builder(HttpStatus.BAD_REQUEST)
-                .setMessage("Invalid or incomplete URL path")
-                .build();
+        return new ResponseContent.Builder(HttpStatus.BAD_REQUEST).setMessage("Invalid or incomplete URL path").build();
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public static @ResponseBody ResponseContent handleNotFound(NotFoundException ex) {
-        return new ResponseContent
-                .Builder(ex.getStatus())
-                .setMessage(ex.getMessage())
-                .build();
+        return new ResponseContent.Builder(ex.getStatus()).setMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(NotFoundException.UserNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public static @ResponseBody ResponseContent handleUserNotFound(NotFoundException.UserNotFound ex) {
-        return new ResponseContent
-                .Builder(ex.getStatus())
-                .setMessage(ex.getMessage())
-                .build();
+        return new ResponseContent.Builder(ex.getStatus()).setMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public static @ResponseBody ResponseContent handleConflict(ConflictException ex) {
-        return new ResponseContent
-                .Builder(ex.getStatus())
-                .setMessage(ex.getMessage())
-                .build();
+        return new ResponseContent.Builder(ex.getStatus()).setMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(ConflictException.UserConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public static @ResponseBody ResponseContent handleUserConflict(ConflictException.UserConflictException ex) {
-        return new ResponseContent
-                .Builder(ex.getStatus())
-                .setMessage(ex.getMessage())
-                .build();
+        return new ResponseContent.Builder(ex.getStatus()).setMessage(ex.getMessage()).build();
     }
 }
