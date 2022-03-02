@@ -1,39 +1,89 @@
 package io.rently.userservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.rently.userservice.util.Util;
 import org.springframework.lang.NonNull;
 
-@JsonDeserialize(builder = User.Builder.class)
+import java.sql.Timestamp;
+
+@JsonDeserialize
 public class User {
-    @JsonProperty
-    @NonNull
-    private final String id; // required
+    private String id;
 
-    @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String username;
+    private String username;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String fullName;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String email;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String phone;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Timestamp createdOn;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Timestamp updatedOn;
+
+    public User(String id) {
+        this.id = id;
+    }
+
+    public User(String id, String username, String fullName, String email, String phone, Timestamp createdOn, Timestamp updatedOn) {
+        this.id = id;
+        this.username = username;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.createdOn = createdOn;
+        this.updatedOn = updatedOn;
+    }
 
     @JsonProperty
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String fullName;
+    public User setId(@NonNull String id) {
+        this.id = id;
+        return this;
+    }
 
     @JsonProperty
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String email;
+    public User setUsername(String username) {
+        this.username = username;
+        return this;
+    }
 
     @JsonProperty
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String phone;
+    public User setFullName(String fullName) {
+        this.fullName = fullName;
+        return this;
+    }
 
-    private User(Builder builder) {
-        this.id = builder.id;
-        this.username = builder.username;
-        this.fullName = builder.fullName;
-        this.email = builder.email;
-        this.phone = builder.phone;
+    @JsonProperty
+    public User setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    @JsonProperty
+    public User setPhone(String phone) {
+        this.phone = phone;
+        return this;
+    }
+
+    @JsonProperty
+    public User setCreatedOn(Timestamp createdOn) {
+        this.createdOn = createdOn;
+        return this;
+    }
+
+    @JsonProperty
+    public User setUpdatedOn(Timestamp updatedOn) {
+        this.updatedOn = updatedOn;
+        return this;
     }
 
     public String getId() {
@@ -56,45 +106,21 @@ public class User {
         return phone;
     }
 
-    public static class Builder {
-        @JsonProperty
-        private final String id;
-        @JsonProperty
-        private String username;
-        @JsonProperty
-        private String fullName;
-        @JsonProperty
-        private String email;
-        @JsonProperty
-        private String phone;
+    public Timestamp getCreatedOn() {
+        return createdOn;
+    }
 
-        @JsonCreator
-        public Builder(String id) {
-            this.id = id;
-        }
+    public Timestamp getUpdatedOn() {
+        return updatedOn;
+    }
 
-        public Builder setUsername(String username) {
-            this.username = username;
-            return this;
-        }
+    public User refreshCreationDate() {
+        this.createdOn = Util.getCurrentTs();
+        return this;
+    }
 
-        public Builder setFullName(String fullName) {
-            this.fullName = fullName;
-            return this;
-        }
-
-        public Builder setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder setPhone(String phone) {
-            this.phone = phone;
-            return this;
-        }
-
-        public User build() {
-            return new User(this);
-        }
+    public User refreshUpdateDate() {
+        this.updatedOn = Util.getCurrentTs();
+        return this;
     }
 }
