@@ -2,6 +2,7 @@ package io.rently.userservice.error;
 
 import io.rently.userservice.dto.ResponseContent;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +12,15 @@ import java.sql.Timestamp;
 
 @ControllerAdvice
 public class ErrorHandling extends RuntimeException {
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static @ResponseBody ResponseContent handleRouteNotFound() {
+        return new ResponseContent
+                .Builder(new Timestamp(System.currentTimeMillis()), HttpStatus.NOT_FOUND)
+                .setMessage("Invalid or incomplete URL path")
+                .build();
+    }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
