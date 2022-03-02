@@ -33,6 +33,7 @@ public class UserController implements ErrorController {
     }
 
     @PatchMapping(value = "/users/{id}")
+    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     public static ResponseContent updatedUser(@PathVariable String id, @RequestBody User user) {
         throw new HttpException(HttpStatus.NOT_IMPLEMENTED, "PATCH request not implemented");
     }

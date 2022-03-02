@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public static ResponseContent addUser(User user) {
-        checkUserExistence(user.getId());
+        handleUserExistence(user.getId());
         handleUniqueProperties(user);
         users.add(user);
         return new ResponseContent.Builder().setMessage("Successfully added user with ID { id: " + user.getId() + " }").build();
@@ -57,7 +57,7 @@ public class UserService {
         }
     }
 
-    private static void checkUserExistence(String id) {
+    private static void handleUserExistence(String id) {
         for (User existingUser : users) {
             if (Objects.equals(existingUser.getId(), id)) {
                 throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[0], id);
