@@ -38,18 +38,18 @@ public class ErrorHandling extends RuntimeException {
                 .build();
     }
 
-    @ExceptionHandler(ConflitException.class)
+    @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public static @ResponseBody ResponseContent handleConflict(ConflitException ex) {
+    public static @ResponseBody ResponseContent handleConflict(ConflictException ex) {
         return new ResponseContent
                 .Builder(ex.getStatus())
                 .setMessage(ex.getMessage())
                 .build();
     }
 
-    @ExceptionHandler(ConflitException.UserConflictException.class)
+    @ExceptionHandler(ConflictException.UserConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public static @ResponseBody ResponseContent handleUserConflict(ConflitException.UserConflictException ex) {
+    public static @ResponseBody ResponseContent handleUserConflict(ConflictException.UserConflictException ex) {
         return new ResponseContent
                 .Builder(ex.getStatus())
                 .setMessage(ex.getMessage())
