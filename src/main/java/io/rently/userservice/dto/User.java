@@ -1,12 +1,8 @@
 package io.rently.userservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
-import java.io.Serializable;
 
 @JsonDeserialize(builder = User.Builder.class)
 public class User {
