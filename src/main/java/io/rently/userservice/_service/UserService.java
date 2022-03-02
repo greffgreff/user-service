@@ -2,6 +2,7 @@ package io.rently.userservice._service;
 
 import io.rently.userservice.dto.ResponseContent;
 import io.rently.userservice.dto.User;
+import io.rently.userservice.error.ConflitException;
 import io.rently.userservice.error.NotFoundException;
 
 import java.util.ArrayList;
@@ -16,11 +17,11 @@ public class UserService {
             new User.Builder("3").setUsername("chew kok").setFullName("Chew Kok").setEmail("chew.kok@hotmail.com").build()
     ));
 
-    public static ResponseContent getUsers() { // add query param
+    public static ResponseContent getUsers() {
         return new ResponseContent.Builder().setData(users).build();
     }
 
-    public static ResponseContent getUserById(String id) { // add uuid check
+    public static ResponseContent getUserById(String id) {
         for (User user: users) {
             if (Objects.equals(user.getId(), id)) {
                 return new ResponseContent.Builder().setData(user).build();
@@ -29,19 +30,19 @@ public class UserService {
         throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);
     }
 
-    public static ResponseContent addUser(User user) { // check user id existence
+    public static ResponseContent addUser(User user) {
         for (User existingUsers: users) {
             if (Objects.equals(existingUsers.getUsername(), user.getUsername())) {
-
+                throw new ConflitException.UserConflictException(User.class.getDeclaredFields()[1], user.getUsername());
             } else if (Objects.equals(existingUsers.getEmail(), user.getEmail())) {
-
+                throw new ConflitException.UserConflictException(User.class.getDeclaredFields()[3], user.getEmail());
             }
         }
         users.add(user);
         return new ResponseContent.Builder().setMessage("Successfully added user with ID { id:" + user.getId() + " }").build();
     }
 
-    public static ResponseContent deleteUserById(String id) { // add uuid check
+    public static ResponseContent deleteUserById(String id) {
         for (User user: users.stream().toList()) {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
@@ -51,7 +52,7 @@ public class UserService {
         throw new NotFoundException.UserNotFound(User.class.getDeclaredFields()[0], id);
     }
 
-    public static ResponseContent updateUserById(String id) { // add uuid check, check info
+    public static ResponseContent updateUserById(String id) {
         for (User user: users.stream().toList()) {
             if (Objects.equals(user.getId(), id)) {
                 users.remove(user);
