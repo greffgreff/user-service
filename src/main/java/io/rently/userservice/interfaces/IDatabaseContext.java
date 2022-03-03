@@ -8,8 +8,6 @@ public interface IDatabaseContext<T> {
 
     void add(T obj);
 
-    void remove(T obj);
-
     void update(T obj);
 
     void delete(T obj);
