@@ -1,33 +1,43 @@
-package io.rently.userservice.dto;
+package io.rently.userservice.dtos;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.rently.userservice.annotations.Jsonable;
+import io.rently.userservice.annotations.SqlEntity;
+import io.rently.userservice.annotations.SqlField;
 import io.rently.userservice.util.Util;
 import org.springframework.lang.NonNull;
 
 import java.sql.Timestamp;
 
+@SqlEntity(tableName = "users")
 @JsonDeserialize
 public class User {
+    @SqlField(columnName = "id")
     private String id;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @SqlField(columnName = "username")
+    @Jsonable
     private String username;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @SqlField(columnName = "fullname")
+    @Jsonable
     private String fullName;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @SqlField(columnName = "email")
+    @Jsonable
     private String email;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @SqlField(columnName = "phone_number")
+    @Jsonable
     private String phone;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @SqlField(columnName = "create_date")
+    @Jsonable
     private Timestamp createdOn;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @SqlField(columnName = "update_date")
+    @Jsonable
     private Timestamp updatedOn;
 
     public User(String id) {
