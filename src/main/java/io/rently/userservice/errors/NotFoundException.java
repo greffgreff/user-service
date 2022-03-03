@@ -1,4 +1,4 @@
-package io.rently.userservice.error;
+package io.rently.userservice.errors;
 
 import org.springframework.http.HttpStatus;
 

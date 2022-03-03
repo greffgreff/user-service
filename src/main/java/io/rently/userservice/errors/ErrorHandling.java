@@ -1,6 +1,6 @@
-package io.rently.userservice.error;
+package io.rently.userservice.errors;
 
-import io.rently.userservice.dto.ResponseContent;
+import io.rently.userservice.dtos.ResponseContent;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,7 +18,7 @@ public class ErrorHandling extends RuntimeException {
     }
 
     @ExceptionHandler(HttpException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public static @ResponseBody ResponseContent handleGenericException(HttpException ex) {
         return new ResponseContent.Builder(ex.getStatus()).setMessage(ex.getMessage()).build();
     }
