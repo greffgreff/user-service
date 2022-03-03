@@ -1,23 +1,30 @@
-package io.rently.userservice._service;
+package io.rently.userservice._services;
 
-import io.rently.userservice.dto.ResponseContent;
-import io.rently.userservice.dto.User;
-import io.rently.userservice.error.ConflictException;
-import io.rently.userservice.error.NotFoundException;
+import io.rently.userservice.dtos.ResponseContent;
+import io.rently.userservice.dtos.User;
+import io.rently.userservice.errors.ConflictException;
+import io.rently.userservice.errors.NotFoundException;
+import io.rently.userservice.interfaces.IDatabaseContext;
+import io.rently.userservice.persistency.SqlPersistence;
 import io.rently.userservice.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class UserService {
-    private static final List<User> users = new ArrayList(Arrays.asList(
+    private static final List<User> users = new ArrayList<User>(Arrays.asList(
             new User("1", "branlix2000", "Noah Greff", "noahgreff@gmail.com", "+31 06 41 53 14", Util.getCurrentTs(), Util.getCurrentTs()),
             new User("2", "then00ber", "Chandler Greff", "chandlegreff@gmail.com", "+31 56 41 84 27", Util.getCurrentTs(), Util.getCurrentTs()),
             new User("3", "chew_kok", "Chew kok", "noahgreff@gmail.com", null, Util.getCurrentTs(), Util.getCurrentTs())
     ));
+
+//    private final IDatabaseContext<User> repository;
+//    public UserService(IDatabaseContext<User> repository) {
+//        this.repository = repository;
+//    }
 
     public static ResponseContent returnUsers() {
         return new ResponseContent.Builder().setData(users).build();
