@@ -1,14 +1,12 @@
 package io.rently.userservice.errors;
 
 import io.rently.userservice.dtos.ResponseContent;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class ErrorController {
 
     @ExceptionHandler(ResponseStatusException.class)
