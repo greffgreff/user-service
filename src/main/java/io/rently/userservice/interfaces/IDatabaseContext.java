@@ -1,16 +1,17 @@
 package io.rently.userservice.interfaces;
 
+import org.springframework.web.server.ResponseStatusException;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface IDatabaseContext<T> {
+public interface IDatabaseContext {
 
-    ArrayList<T> get();
+    ArrayList<Object> get();
 
-    void add(T obj);
+    void add(Object obj);
 
-    void update(T obj);
+    void update(Object obj);
 
-    void delete(T obj);
-
-    void initConnection();
+    void delete(Object obj);
 }
