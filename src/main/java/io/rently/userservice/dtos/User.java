@@ -40,11 +40,6 @@ public class User {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp updatedOn;
 
-    public User setNewId() {
-        this.id = UUID.randomUUID().toString();
-        return this;
-    }
-
     @JsonProperty
     public User setId(String id) {
         this.id = id;
@@ -115,12 +110,17 @@ public class User {
         return updatedOn;
     }
 
-    public User refreshCreationDate() {
+    public User createAsNew() {
+        this.id = UUID.randomUUID().toString();
         this.createdOn = Util.getCurrentTs();
         return this;
     }
 
-    public User refreshUpdateDate() {
+    public User updateInfo(User userData) {
+        this.setUsername(Util.getNonNull(username, userData.getUsername()));
+        this.setFullName(Util.getNonNull(fullName, userData.getFullName()));
+        this.setEmail(Util.getNonNull(email, userData.getEmail()));
+        this.setPhone(Util.getNonNull(phone, userData.getPhone()));
         this.updatedOn = Util.getCurrentTs();
         return this;
     }

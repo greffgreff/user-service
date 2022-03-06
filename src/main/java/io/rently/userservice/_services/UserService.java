@@ -8,6 +8,7 @@ import io.rently.userservice.persistency.SqlPersistence;
 import io.rently.userservice.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,18 +18,12 @@ import java.util.Objects;
 @Service
 public class UserService {
     private static final List<User> users = new ArrayList<User>(Arrays.asList(
-            new User().setUsername("branlix2000").setFullName("Noah Greff").setEmail("noahgreff@gmail.com").setPhone("+31 56 41 84 27").refreshCreationDate().refreshUpdateDate(),
-            new User().setUsername("then00ber").setFullName("Chandler Greff").setEmail("chandlegreff@gmail.com").setPhone("+31 06 41 53 14").refreshCreationDate().refreshUpdateDate(),
-            new User().setUsername("chew_kok").setFullName("Chew kok").setPhone("+31 56 41 84 27").refreshCreationDate().refreshUpdateDate()
+            new User().setUsername("branlix2000").setFullName("Noah Greff").setEmail("noahgreff@gmail.com").setPhone("+31 56 41 84 27").createAsNew(),
+            new User().setUsername("then00ber").setFullName("Chandler Greff").setEmail("chandlegreff@gmail.com").setPhone("+31 06 41 53 14").createAsNew(),
+            new User().setUsername("chew_kok").setFullName("Chew kok").setPhone("+31 56 41 84 27").createAsNew()
     ));
 
-    private final IDatabaseContext<User> userRepository;
-
-    @Autowired
-    public UserService(IDatabaseContext<User> userRepository) {
-        this.userRepository = userRepository;
-        userRepository.initConnection();
-    }
+//    private static final IDatabaseContext userRepository;
 
     public static ResponseContent returnUsers() {
         return new ResponseContent.Builder().setData(users).build();
@@ -39,13 +34,11 @@ public class UserService {
         return new ResponseContent.Builder().setData(user).build();
     }
 
-    public static ResponseContent addUser(User userData) {
+    public static ResponseContent addUser(User user) {
         for (User existingUser: users) {
-            handleUniqueProperties(userData, existingUser);
+            handleUniqueProperties(user, existingUser);
         }
-        userData.refreshCreationDate();
-        User user = userData.setNewId();
-        users.add(user);
+        users.add(user.createAsNew());
         return new ResponseContent.Builder().setMessage("Successfully added user with ID { id: " + user.getId() + " }").build();
     }
 
@@ -56,7 +49,7 @@ public class UserService {
     }
 
     public static ResponseContent replaceUserById(String id, User userData) {
-        User oldUser = getUserById(id);
+        User user = getUserById(id);
 
         for (User existingUser: users) {
             if (!Objects.equals(existingUser.getId(), id)) {
@@ -64,18 +57,8 @@ public class UserService {
             }
         }
 
-        User updatedUser = new User();
-        updatedUser
-                .setId(id)
-                .setUsername(Util.getNonNull(userData.getUsername(), oldUser.getUsername()))
-                .setFullName(Util.getNonNull(userData.getFullName(), oldUser.getFullName()))
-                .setEmail(Util.getNonNull(userData.getEmail(), oldUser.getEmail()))
-                .setPhone(Util.getNonNull(userData.getPhone(), oldUser.getPhone()))
-                .setCreatedOn(oldUser.getCreatedOn())
-                .refreshUpdateDate();
-
-        users.remove(oldUser);
-        users.add(updatedUser);
+        users.remove(user);
+        users.add(user.updateInfo(userData));
 
         return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
     }
@@ -94,4 +77,8 @@ public class UserService {
         }
         throw Errors.USER_NOT_FOUND.getException();
     }
+
+//    static {
+//        userRepository = new SqlPersistence("dbi433816", "admin", "studmysql01.fhict.local", "dbi433816");
+//    }
 }
