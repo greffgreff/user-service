@@ -7,11 +7,12 @@ public enum Errors {
     NOT_FOUND(new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found")),
     USER_NOT_FOUND(new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find user with specified arguments")),
     CONFLICT(new ResponseStatusException(HttpStatus.CONFLICT, "Resource conflict occurred")),
-    USER_ALREADY_EXISTS(new ResponseStatusException(HttpStatus.CONFLICT, "User with matching unique properties already exists"));
+    USER_ALREADY_EXISTS(new ResponseStatusException(HttpStatus.CONFLICT, "User with matching unique property already exists")),
+    DATABASE_CONNECTION_FAILED(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to establish connection to database"));
 
     private final ResponseStatusException exception;
 
-    private Errors(ResponseStatusException exception) {
+    Errors(ResponseStatusException exception) {
         this.exception = exception;
     }
 
