@@ -3,47 +3,49 @@ package io.rently.userservice.dtos;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.rently.userservice.persistency.annotations.SqlEntity;
-import io.rently.userservice.persistency.annotations.SqlField;
+import io.rently.userservice.annotations.PersistentObjectId;
+import io.rently.userservice.annotations.PersistentObject;
+import io.rently.userservice.annotations.PersistentField;
 import io.rently.userservice.util.Util;
 
 import java.sql.Timestamp;
 import java.util.UUID;
 
-@SqlEntity(tableName = "users")
+@PersistentObject(name = "users")
 @JsonDeserialize
 public class User {
-    @SqlField(columnName = "id")
+    @PersistentObjectId
+    @PersistentField(name = "id")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String id;
 
-    @SqlField(columnName = "username")
+    @PersistentField(name = "username")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String username;
 
-    @SqlField(columnName = "full_name")
+    @PersistentField(name = "full_name")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String fullName;
 
-    @SqlField(columnName = "email")
+    @PersistentField(name = "email")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String email;
 
-    @SqlField(columnName = "phone_number")
+    @PersistentField(name = "phone_number")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String phone;
 
-    @SqlField(columnName = "creation_date")
+    @PersistentField(name = "creation_date")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp createdOn;
 
-    @SqlField(columnName = "last_update")
+    @PersistentField(name = "last_update")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp updatedOn;
@@ -67,25 +69,6 @@ public class User {
     public String getPhone() {
         return phone;
     }
-
-    /// testing only
-    public User setUsername(String username) {
-        this.username = username;
-        return this;
-    }
-    public User setFullName(String fullName) {
-        this.fullName = fullName;
-        return this;
-    }
-    public User setEmail(String email) {
-        this.email = email;
-        return this;
-    }
-    public User setPhone(String phone) {
-        this.phone = phone;
-        return this;
-    }
-    ///
 
     public User createAsNew() {
         id = UUID.randomUUID().toString();
