@@ -3,9 +3,7 @@ package io.rently.userservice._controllers;
 import io.rently.userservice._services.UserService;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;
-import io.rently.userservice.errors.HttpException;
 import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,12 +28,6 @@ public class UserController implements ErrorController {
     @PutMapping(value = "/users/{id}")
     public static ResponseContent replaceUser(@PathVariable String id, @RequestBody User user) {
         return UserService.replaceUserById(id, user);
-    }
-
-    @PatchMapping(value = "/users/{id}")
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-    public static ResponseContent updatedUser(@PathVariable String id, @RequestBody User user) {
-        throw new HttpException(HttpStatus.NOT_IMPLEMENTED, "PATCH request not implemented");
     }
 
     @DeleteMapping(value = "/users/{id}")
