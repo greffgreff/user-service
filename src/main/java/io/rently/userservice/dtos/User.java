@@ -11,6 +11,7 @@ import org.springframework.lang.NonNull;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.UUID;
 
 @SqlEntity(tableName = "users")
 @JsonDeserialize
@@ -42,22 +43,13 @@ public class User {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp updatedOn;
 
-    public User(String id) {
-        this.id = id;
-    }
-
-    public User(String id, String username, String fullName, String email, String phone, Timestamp createdOn, Timestamp updatedOn) {
-        this.id = id;
-        this.username = username;
-        this.fullName = fullName;
-        this.email = email;
-        this.phone = phone;
-        this.createdOn = createdOn;
-        this.updatedOn = updatedOn;
+    public User setNewId() {
+        this.id = UUID.randomUUID().toString();
+        return this;
     }
 
     @JsonProperty
-    public User setId(@NonNull String id) {
+    public User setId(String id) {
         this.id = id;
         return this;
     }
