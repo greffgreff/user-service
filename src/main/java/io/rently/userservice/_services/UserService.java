@@ -2,29 +2,33 @@ package io.rently.userservice._services;
 
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;
-import io.rently.userservice.errors.ConflictException;
-import io.rently.userservice.errors.NotFoundException;
+import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.interfaces.IDatabaseContext;
 import io.rently.userservice.persistency.SqlPersistence;
 import io.rently.userservice.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@Service
 public class UserService {
     private static final List<User> users = new ArrayList<User>(Arrays.asList(
-            new User("1", "branlix2000", "Noah Greff", "noahgreff@gmail.com", "+31 06 41 53 14", Util.getCurrentTs(), Util.getCurrentTs()),
-            new User("2", "then00ber", "Chandler Greff", "chandlegreff@gmail.com", "+31 56 41 84 27", Util.getCurrentTs(), Util.getCurrentTs()),
-            new User("3", "chew_kok", "Chew kok", "noahgreff@gmail.com", null, Util.getCurrentTs(), Util.getCurrentTs())
+            new User().setUsername("branlix2000").setFullName("Noah Greff").setEmail("noahgreff@gmail.com").setPhone("+31 56 41 84 27").refreshCreationDate().refreshUpdateDate(),
+            new User().setUsername("then00ber").setFullName("Chandler Greff").setEmail("chandlegreff@gmail.com").setPhone("+31 06 41 53 14").refreshCreationDate().refreshUpdateDate(),
+            new User().setUsername("chew_kok").setFullName("Chew kok").setPhone("+31 56 41 84 27").refreshCreationDate().refreshUpdateDate()
     ));
 
-//    private final IDatabaseContext<User> repository;
-//    public UserService(IDatabaseContext<User> repository) {
-//        this.repository = repository;
-//    }
+    private final IDatabaseContext<User> userRepository;
+
+    @Autowired
+    public UserService(IDatabaseContext<User> userRepository) {
+        this.userRepository = userRepository;
+        userRepository.initConnection();
+    }
 
     public static ResponseContent returnUsers() {
         return new ResponseContent.Builder().setData(users).build();
@@ -35,12 +39,12 @@ public class UserService {
         return new ResponseContent.Builder().setData(user).build();
     }
 
-    public static ResponseContent addUser(User user) {
-        handleUserExistence(user.getId());
+    public static ResponseContent addUser(User userData) {
         for (User existingUser: users) {
-            handleUniqueProperties(user, existingUser);
+            handleUniqueProperties(userData, existingUser);
         }
-        user.refreshCreationDate();
+        userData.refreshCreationDate();
+        User user = userData.setNewId();
         users.add(user);
         return new ResponseContent.Builder().setMessage("Successfully added user with ID { id: " + user.getId() + " }").build();
     }
@@ -60,8 +64,9 @@ public class UserService {
             }
         }
 
-        User updatedUser = new User(id);
+        User updatedUser = new User();
         updatedUser
+                .setId(id)
                 .setUsername(Util.getNonNull(userData.getUsername(), oldUser.getUsername()))
                 .setFullName(Util.getNonNull(userData.getFullName(), oldUser.getFullName()))
                 .setEmail(Util.getNonNull(userData.getEmail(), oldUser.getEmail()))
@@ -76,18 +81,8 @@ public class UserService {
     }
 
     private static void handleUniqueProperties(User user, User existingUser) {
-        if (Objects.equals(existingUser.getUsername(), user.getUsername())) {
-            throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[1], user.getUsername());
-        } else if (Objects.equals(existingUser.getEmail(), user.getEmail())) {
-            throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[3], user.getEmail());
-        }
-    }
-
-    private static void handleUserExistence(String id) {
-        for (User existingUser : users) {
-            if (Objects.equals(existingUser.getId(), id)) {
-                throw new ConflictException.UserConflictException(User.class.getDeclaredFields()[0], id);
-            }
+        if (Objects.equals(existingUser.getUsername(), user.getUsername()) || Objects.equals(existingUser.getEmail(), user.getEmail())) {
+            throw Errors.USER_ALREADY_EXISTS.getException();
         }
     }
 
@@ -97,6 +92,6 @@ public class UserService {
                 return existingUser;
             }
         }
-        throw new NotFoundException.UserNotFoundException(User.class.getDeclaredFields()[0], id);
+        throw Errors.USER_NOT_FOUND.getException();
     }
 }
