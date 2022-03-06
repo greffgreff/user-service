@@ -14,73 +14,39 @@ import java.util.UUID;
 @JsonDeserialize
 public class User {
     @SqlField(columnName = "id")
+    @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String id;
 
     @SqlField(columnName = "username")
+    @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String username;
 
     @SqlField(columnName = "full_name")
+    @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String fullName;
 
     @SqlField(columnName = "email")
+    @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String email;
 
     @SqlField(columnName = "phone_number")
+    @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String phone;
 
     @SqlField(columnName = "creation_date")
+    @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp createdOn;
 
     @SqlField(columnName = "last_update")
+    @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp updatedOn;
-
-    @JsonProperty
-    public User setId(String id) {
-        this.id = id;
-        return this;
-    }
-
-    @JsonProperty
-    public User setUsername(String username) {
-        this.username = username;
-        return this;
-    }
-
-    @JsonProperty
-    public User setFullName(String fullName) {
-        this.fullName = fullName;
-        return this;
-    }
-
-    @JsonProperty
-    public User setEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
-    @JsonProperty
-    public User setPhone(String phone) {
-        this.phone = phone;
-        return this;
-    }
-
-    @JsonProperty
-    public User setCreatedOn(Timestamp createdOn) {
-        this.createdOn = createdOn;
-        return this;
-    }
-
-    @JsonProperty
-    public User setUpdatedOn(Timestamp updatedOn) {
-        this.updatedOn = updatedOn;
-        return this;
-    }
 
     public String getId() {
         return id;
@@ -102,26 +68,37 @@ public class User {
         return phone;
     }
 
-    public Timestamp getCreatedOn() {
-        return createdOn;
+    /// testing only
+    public User setUsername(String username) {
+        this.username = username;
+        return this;
     }
-
-    public Timestamp getUpdatedOn() {
-        return updatedOn;
+    public User setFullName(String fullName) {
+        this.fullName = fullName;
+        return this;
     }
+    public User setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+    public User setPhone(String phone) {
+        this.phone = phone;
+        return this;
+    }
+    ///
 
     public User createAsNew() {
-        this.id = UUID.randomUUID().toString();
-        this.createdOn = Util.getCurrentTs();
+        id = UUID.randomUUID().toString();
+        createdOn = Util.getCurrentTs();
         return this;
     }
 
     public User updateInfo(User userData) {
-        this.setUsername(Util.getNonNull(username, userData.getUsername()));
-        this.setFullName(Util.getNonNull(fullName, userData.getFullName()));
-        this.setEmail(Util.getNonNull(email, userData.getEmail()));
-        this.setPhone(Util.getNonNull(phone, userData.getPhone()));
-        this.updatedOn = Util.getCurrentTs();
+        username = Util.getNonNull(username, userData.getUsername());
+        fullName = Util.getNonNull(fullName, userData.getFullName());
+        email = Util.getNonNull(email, userData.getEmail());
+        phone = Util.getNonNull(phone, userData.getPhone());
+        updatedOn = Util.getCurrentTs();
         return this;
     }
 }
