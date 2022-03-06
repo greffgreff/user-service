@@ -90,6 +90,7 @@ public class User {
     public User createAsNew() {
         id = UUID.randomUUID().toString();
         createdOn = Util.getCurrentTs();
+        updatedOn = Util.getCurrentTs();
         return this;
     }
 
