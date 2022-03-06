@@ -1,4 +1,4 @@
-package io.rently.userservice.annotations;
+package io.rently.userservice.persistency.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -3,14 +3,11 @@ package io.rently.userservice.dtos;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.rently.userservice.annotations.SqlEntity;
-import io.rently.userservice.annotations.SqlField;
+import io.rently.userservice.persistency.annotations.SqlEntity;
+import io.rently.userservice.persistency.annotations.SqlField;
 import io.rently.userservice.util.Util;
-import org.springframework.lang.NonNull;
 
-import java.lang.reflect.Field;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.UUID;
 
 @SqlEntity(tableName = "users")

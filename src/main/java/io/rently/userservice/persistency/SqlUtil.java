@@ -1,7 +1,7 @@
 package io.rently.userservice.persistency;
 
-import io.rently.userservice.annotations.SqlEntity;
-import io.rently.userservice.annotations.SqlField;
+import io.rently.userservice.persistency.annotations.SqlEntity;
+import io.rently.userservice.persistency.annotations.SqlField;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
