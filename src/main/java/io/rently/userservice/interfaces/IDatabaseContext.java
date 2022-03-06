@@ -1,17 +1,18 @@
 package io.rently.userservice.interfaces;
 
-import org.springframework.web.server.ResponseStatusException;
+import io.rently.userservice.annotations.PersistentField;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface IDatabaseContext {
+public interface IDatabaseContext<T> {
 
-    ArrayList<Object> get();
+    T getById(String id);
 
-    void add(Object obj);
+    ArrayList<T> get(PersistentField field, String value);
 
-    void update(Object obj);
+    void add(T obj);
 
-    void delete(Object obj);
+    void update(T obj);
+
+    void delete(T obj);
 }
