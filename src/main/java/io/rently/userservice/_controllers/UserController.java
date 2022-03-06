@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1")
 public class UserController implements ErrorController {
 
-    @GetMapping(value = "/users")
-    public static ResponseContent getUsers() {
-        return UserService.returnUsers();
-    }
-
     @GetMapping(value = "/users/{id}")
     public static ResponseContent getUser(@PathVariable String id) {
         return UserService.returnUserById(id);
