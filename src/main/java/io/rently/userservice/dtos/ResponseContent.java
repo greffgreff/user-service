@@ -1,5 +1,6 @@
 package io.rently.userservice.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.lang.NonNull;
 import java.sql.Timestamp;
 
 public class ResponseContent {
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonProperty
     @NonNull
     private final Timestamp timestamp;
