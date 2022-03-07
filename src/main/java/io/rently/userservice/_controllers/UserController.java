@@ -3,30 +3,36 @@ package io.rently.userservice._controllers;
 import io.rently.userservice._services.UserService;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1")
 public class UserController implements ErrorController {
+    public final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping(value = "/users/{id}")
-    public static ResponseContent getUser(@PathVariable String id) {
-        return UserService.returnUserById(id);
+    public ResponseContent getUser(@PathVariable String id) {
+        return userService.returnUserById(id);
     }
 
     @PostMapping(value = "/users")
-    public static ResponseContent addUser(@RequestBody User user) {
-        return UserService.addUser(user);
+    public ResponseContent addUser(@RequestBody User user) {
+        return userService.addUser(user);
     }
 
     @PutMapping(value = "/users/{id}")
-    public static ResponseContent replaceUser(@PathVariable String id, @RequestBody User user) {
-        return UserService.replaceUserById(id, user);
+    public ResponseContent replaceUser(@PathVariable String id, @RequestBody User user) {
+        return userService.replaceUserById(id, user);
     }
 
     @DeleteMapping(value = "/users/{id}")
-    public static ResponseContent deleteUser(@PathVariable String id) {
-        return UserService.deleteUserById(id);
+    public ResponseContent deleteUser(@PathVariable String id) {
+        return userService.deleteUserById(id);
     }
 }
