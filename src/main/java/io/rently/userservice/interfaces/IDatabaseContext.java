@@ -4,15 +4,15 @@ import io.rently.userservice.annotations.PersistentField;
 
 import java.util.ArrayList;
 
-public interface IDatabaseContext<T> {
+public interface IDatabaseContext {
 
-    T getById(String id);
+    <T> T getById(Class<T> dto, String id);
 
-    ArrayList<T> get(PersistentField field, String value);
+    <T> ArrayList<T> get(Class<T> dto, PersistentField field, String value);
 
-    void add(T obj);
+    <T> void add(T obj);
 
-    void update(T obj);
+    <T> void update(T obj);
 
-    void delete(T obj);
+    <T> void delete(T obj);
 }
