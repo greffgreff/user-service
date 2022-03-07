@@ -13,10 +13,7 @@ import java.util.Objects;
 
 public class SqlMapper {
 
-    public static <T> T mapResultSetToObject(Class<T> dto, HashMap<String, String> data) throws Exception {
-        Constructor<T> dtoConstructor = dto.getConstructor();
-        T persistentObj = dtoConstructor.newInstance();
-
+    public static <T> T mapResultSetToObject(T persistentObj, HashMap<String, String> data) throws Exception {
         for (Field field: persistentObj.getClass().getDeclaredFields()) {
             PersistentField persistentField = field.getDeclaredAnnotation(PersistentField.class);
 
