@@ -17,10 +17,19 @@ public class UserService {
     // 0269aec5-21cb-4b19-9fe1-90e1d5595dd9
     // 747af12c-6be0-4dfe-8964-f447305d6737
     public static ResponseContent returnUserById(String id) {
-        User user = repository.getById(User.class, id);
+        User user;
+        try {
+            user = repository.getById(User.class, id);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw Errors.INTERNAL_SERVER_ERROR.getException();
+        }
+
         if (user == null) {
             throw Errors.USER_NOT_FOUND.getException();
         }
+        
         return new ResponseContent.Builder().setData(user).build();
     }
 
