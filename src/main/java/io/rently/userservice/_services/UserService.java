@@ -5,6 +5,7 @@ import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.interfaces.IDatabaseContext;
 import io.rently.userservice.persistency.SqlPersistence;
+import io.rently.userservice.util.Broadcaster;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,20 +28,25 @@ public class UserService {
         }
 
         if (user == null) {
+            Broadcaster.info("User not found (ID: " + id + ")");
             throw Errors.USER_NOT_FOUND.getException();
         }
-        
+
         return new ResponseContent.Builder().setData(user).build();
     }
 
-    public static ResponseContent addUser(User user) {
-        repository.add(user.createAsNew());
-        return new ResponseContent.Builder().setMessage("Successfully added user with ID { id: " + user.getId() + " }").build();
+    public static ResponseContent addUser(User userData) {
+        if (userData.getEmail() == null || userData.getUsername() == null || userData.getPassword() == null) { }
+        User user = userData.createAsNew();
+        repository.add(user);
+        Broadcaster.info("User added to database (ID: " + user.getId() + ")");
+        return new ResponseContent.Builder().setData(user).setMessage("Successfully added user to database").build();
     }
 
     public static ResponseContent deleteUserById(String id) {
 //        User user = (User) repository.get(User.class.getDeclaredAnnotation(PersistentField.class), id);
 //        repository.delete(user);
+        Broadcaster.info("User removed from database (ID: " + id + ")");
         return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id: " + id + " }").build();
     }
 
@@ -48,6 +54,7 @@ public class UserService {
 //        User user = (User) repository.get();
 //        repository.delete(user);
 //        repository.add(user.updateInfo(userData));
+        Broadcaster.info("User information update (ID: " + id + ")");
         return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
     }
 

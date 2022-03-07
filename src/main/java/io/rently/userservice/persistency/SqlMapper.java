@@ -1,6 +1,7 @@
 package io.rently.userservice.persistency;
 
 import io.rently.userservice.annotations.PersistentField;
+import io.rently.userservice.util.Broadcaster;
 import io.rently.userservice.util.Util;
 
 import java.lang.reflect.Constructor;
@@ -30,7 +31,7 @@ public class SqlMapper {
                             else field.set(persistentObj, pair.getValue());
                         }
                         catch (Exception ex) {
-                            System.out.println(ex.getMessage());
+                            Broadcaster.warn("Could not parse property: " + ex.getMessage());
                         }
                     }
                 }
