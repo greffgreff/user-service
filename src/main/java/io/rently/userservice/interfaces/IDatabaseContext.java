@@ -1,7 +1,5 @@
 package io.rently.userservice.interfaces;
 
-import io.rently.userservice.annotations.PersistentField;
-
 import java.util.List;
 
 public interface IDatabaseContext {

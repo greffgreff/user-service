@@ -2,7 +2,6 @@ package io.rently.userservice.persistency;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import io.rently.userservice.annotations.PersistentObject;
-import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.interfaces.IDatabaseContext;
 import io.rently.userservice.util.Broadcaster;
@@ -57,6 +56,7 @@ public class SqlPersistence implements IDatabaseContext {
         catch(Exception ignore) { }
     }
 
+    @Override
     public <T> T getById(Class<T> dto, String id) throws Exception {
         List<T> objList = get(dto, "id", id);
         if (objList.isEmpty()) return null;

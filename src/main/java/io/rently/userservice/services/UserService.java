@@ -13,10 +13,7 @@ import java.util.List;
 @Service
 public class UserService {
     private final IDatabaseContext repository = new SqlPersistence("dbi433816", "admin", "studmysql01.fhict.local", "dbi433816");
-
-    // 9aef044d-6549-4785-9234-cb7f9314777a
-    // 0269aec5-21cb-4b19-9fe1-90e1d5595dd9
-    // 747af12c-6be0-4dfe-8964-f447305d6737
+    
     public ResponseContent returnUserById(String id) {
         User user = getUserById(id);
         return new ResponseContent.Builder().setData(user).build();
@@ -48,12 +45,10 @@ public class UserService {
     private User getUserById(String id) {
         try {
             User user = repository.getById(User.class, id);
-
             if (user == null) {
                 Broadcaster.info("User not found (ID: " + id + ")");
                 throw Errors.USER_NOT_FOUND.getException();
             }
-
             return user;
         }
         catch (Exception ex) {
