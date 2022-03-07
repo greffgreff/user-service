@@ -27,7 +27,7 @@ public class UserController implements ErrorController {
 
     @PutMapping(value = "/users/{id}")
     public ResponseContent replaceUser(@PathVariable String id, @RequestBody User user) {
-        return userService.replaceUserById(id, user);
+        return userService.updateUserById(id, user);
     }
 
     @DeleteMapping(value = "/users/{id}")
