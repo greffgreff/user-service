@@ -4,7 +4,6 @@ import io.rently.userservice.annotations.PersistentField;
 import io.rently.userservice.util.Broadcaster;
 import io.rently.userservice.util.Util;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class SqlMapper {
                             else field.set(persistentObj, pair.getValue());
                         }
                         catch (Exception ex) {
-                            Broadcaster.warn("Could not parse property: " + ex.getMessage());
+                            Broadcaster.warn("Could not parse property { " + field.getName() + " }: " + ex.getMessage());
                         }
                     }
                 }
