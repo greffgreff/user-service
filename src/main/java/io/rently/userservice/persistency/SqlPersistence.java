@@ -1,12 +1,15 @@
 package io.rently.userservice.persistency;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
-import io.rently.userservice.annotations.PersistentField;
+import io.rently.userservice.annotations.PersistentObject;
+import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.interfaces.IDatabaseContext;
+import io.rently.userservice.util.Broadcaster;
 
+import java.lang.reflect.Constructor;
 import java.sql.*;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,32 +57,26 @@ public class SqlPersistence implements IDatabaseContext {
         catch(Exception ignore) { }
     }
 
-    @Override
     public <T> T getById(Class<T> dto, String id) throws Exception {
-        createConnection();
-        Statement statement = cnn.createStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM `_rently_users` WHERE id='" + id +"'");
-        HashMap<String, String> data = new HashMap<>();
-
-        while(result.next()) {
-            ResultSetMetaData meta = result.getMetaData();
-            for(int i = 1; i<=meta.getColumnCount(); i++) {
-                data.put(meta.getColumnName(i), result.getString(i));
-            }
-        }
-        statement.close();
-        terminateConnection();
-
-        if (data.isEmpty()) return null;
-
-        return SqlMapper.mapResultSetToObject(dto, data);
+        List<T> objList = get(dto, "id", id);
+        if (objList.isEmpty()) return null;
+        return objList.get(0);
     }
 
     @Override
-    public <T> List<T> get(Class<T> dto, PersistentField field, String value) throws Exception {
+    public <T> List<T> get(Class<T> dto, String field, String value) throws Exception {
+        Constructor<T> dtoConstructor = dto.getConstructor();
+        T persistentObj = dtoConstructor.newInstance();
+
+        PersistentObject object = persistentObj.getClass().getDeclaredAnnotation(PersistentObject.class);
+        if (object == null) {
+            Broadcaster.error("Object passed to class is not annotated with PersistentObject");
+            throw Errors.INTERNAL_SERVER_ERROR.getException();
+        }
+
         createConnection();
         Statement statement = cnn.createStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM `_rently_users` WHERE id='" + field.name() +"'");
+        ResultSet result = statement.executeQuery("SELECT * FROM `" + object.name() + "` WHERE " + field + "='" + value +"'");
         HashMap<String, String> data = new HashMap<>();
 
         while(result.next()) {
@@ -88,12 +85,12 @@ public class SqlPersistence implements IDatabaseContext {
                 data.put(meta.getColumnName(i), result.getString(i));
             }
         }
+
         statement.close();
         terminateConnection();
 
-        if (data.isEmpty()) return null;
-
-        return List.of(SqlMapper.mapResultSetToObject(dto, data));
+        if (data.isEmpty()) return new ArrayList<>();
+        return List.of(SqlMapper.mapResultSetToObject(persistentObj, data));
     }
 
     @Override
