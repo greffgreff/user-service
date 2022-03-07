@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class UserService {
     private final IDatabaseContext repository = new SqlPersistence("dbi433816", "admin", "studmysql01.fhict.local", "dbi433816");
-    
+
     public ResponseContent returnUserById(String id) {
         User user = getUserById(id);
         return new ResponseContent.Builder().setData(user).build();
@@ -72,8 +72,8 @@ public class UserService {
             Broadcaster.info("User if email already exists (Email: " + userData.getEmail() + ")");
             throw Errors.EMAIL_ALREADY_EXISTS.getException();
         }
-        if (!getUsersByKey("username", userData.getEmail()).isEmpty()) {
-            Broadcaster.info("User if email already exists (Email: " + userData.getEmail() + ")");
+        if (!getUsersByKey("username", userData.getUsername()).isEmpty()) {
+            Broadcaster.info("User if username already exists (Username: " + userData.getUsername() + ")");
             throw Errors.USERNAME_ALREADY_EXISTS.getException();
         }
     }
