@@ -1,29 +1,37 @@
 package io.rently.userservice.persistency;
 
 import io.rently.userservice.annotations.PersistentField;
-import io.rently.userservice.errors.enums.Errors;
+import io.rently.userservice.util.Util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class SqlMapper {
 
-    // Make use of supplier instead of reflection
     public static <T> T mapResultSetToObject(Class<T> dto, HashMap<String, String> data) throws Exception {
         Constructor<T> dtoConstructor = dto.getConstructor();
         T persistentObj = dtoConstructor.newInstance();
 
         for (Field field: persistentObj.getClass().getDeclaredFields()) {
             PersistentField persistentField = field.getDeclaredAnnotation(PersistentField.class);
+
             if (persistentField != null) {
                 for (Map.Entry<String, String> pair : data.entrySet()) {
+                    String name = Util.getNonNull(persistentField.name(), field.getName()); // <-- implement this
+
                     if (Objects.equals(pair.getKey(), persistentField.name())) {
-                        field.setAccessible(true);
-                        field.set(persistentObj, pair.getValue());
+                        try {
+                            field.setAccessible(true);
+                            if (field.getType() == Timestamp.class) field.set(persistentObj, new Timestamp(Long.parseLong(pair.getValue())));
+                            else field.set(persistentObj, pair.getValue());
+                        }
+                        catch (Exception ex) {
+                            System.out.println(ex.getMessage());
+                        }
                     }
                 }
             }
