@@ -9,7 +9,8 @@ public enum Errors {
     CONFLICT(new ResponseStatusException(HttpStatus.CONFLICT, "Resource conflict occurred")),
     USER_ALREADY_EXISTS(new ResponseStatusException(HttpStatus.CONFLICT, "User with matching unique property already exists")),
     DATABASE_CONNECTION_FAILED(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to establish connection to database")),
-    INVALID_URL_PATH(new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid or incomplete request"));
+    INVALID_URL_PATH(new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid or incomplete request")),
+    INTERNAL_SERVER_ERROR(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Request could not be processed due to an internal server error"));
 
     private final ResponseStatusException exception;
 
