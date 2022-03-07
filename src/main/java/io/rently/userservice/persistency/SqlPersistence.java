@@ -54,39 +54,21 @@ public class SqlPersistence implements IDatabaseContext {
     }
 
     @Override
-    public <T> T getById(Class<T> dto, String id) {
+    public <T> T getById(Class<T> dto, String id) throws Exception {
         createConnection();
-
-        Statement statement;
-        try {
-            statement = cnn.createStatement();
-        }
-        catch(SQLException ex) {
-            System.out.println(ex.getMessage());
-            System.out.println("Statement error");
-            throw Errors.DATABASE_CONNECTION_FAILED.getException();
-        }
-
+        Statement statement = cnn.createStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM `_rently_users` WHERE id='" + id +"'");
         HashMap<String, String> data = new HashMap<>();
-        try {
-            ResultSet result = statement.executeQuery("SELECT * FROM `_rently_users` WHERE id='" + id +"'");
-            while(result.next()) {
-                ResultSetMetaData meta = result.getMetaData();
-                int count = meta.getColumnCount();
-                for(int i = 1; i<=count; i++) {
-                    data.put(meta.getColumnName(i), result.getString(i));
-                }
+
+        while(result.next()) {
+            ResultSetMetaData meta = result.getMetaData();
+            for(int i = 1; i<=meta.getColumnCount(); i++) {
+                data.put(meta.getColumnName(i), result.getString(i));
             }
-            statement.close();
-        }
-        catch(SQLException ex) {
-            System.out.println(ex.getMessage());
-            System.out.println("Result error");
-            throw Errors.DATABASE_CONNECTION_FAILED.getException();
         }
 
+        statement.close();
         terminateConnection();
-
         return SqlMapper.mapResultSetToObject(dto, data);
     }
 

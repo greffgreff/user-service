@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public interface IDatabaseContext {
 
-    <T> T getById(Class<T> dto, String id);
+    <T> T getById(Class<T> dto, String id) throws Exception;
 
     <T> ArrayList<T> get(Class<T> dto, PersistentField field, String value);
 
