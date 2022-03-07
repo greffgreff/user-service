@@ -8,7 +8,7 @@ import io.rently.userservice.persistency.SqlPersistence;
 import io.rently.userservice.util.Broadcaster;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -18,25 +18,16 @@ public class UserService {
     // 0269aec5-21cb-4b19-9fe1-90e1d5595dd9
     // 747af12c-6be0-4dfe-8964-f447305d6737
     public ResponseContent returnUserById(String id) {
-        User user;
-        try {
-            user = repository.getById(User.class, id);
-        }
-        catch (Exception ex) {
-            Broadcaster.error("An error occurred while attempting to get user: " + ex.getMessage());
-            throw Errors.INTERNAL_SERVER_ERROR.getException();
-        }
-
+        User user = getUserById(id);
         if (user == null) {
             Broadcaster.info("User not found (ID: " + id + ")");
             throw Errors.USER_NOT_FOUND.getException();
         }
-
         return new ResponseContent.Builder().setData(user).build();
     }
 
     public ResponseContent addUser(User userData) {
-        if (userData.getEmail() == null || userData.getUsername() == null || userData.getPassword() == null) { }
+        handleUniqueValueCheck(userData);
         User user = userData.createAsNew();
         repository.add(user);
         Broadcaster.info("User added to database (ID: " + user.getId() + ")");
@@ -44,23 +35,56 @@ public class UserService {
     }
 
     public ResponseContent deleteUserById(String id) {
-//        User user = (User) repository.get(User.class.getDeclaredAnnotation(PersistentField.class), id);
-//        repository.delete(user);
+        User user = getUserById(id);
+        if (user == null) {
+            Broadcaster.info("User not found (ID: " + id + ")");
+            throw Errors.USER_NOT_FOUND.getException();
+        }
+        repository.delete(user);
         Broadcaster.info("User removed from database (ID: " + id + ")");
         return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id: " + id + " }").build();
     }
 
-    public ResponseContent replaceUserById(String id, User userData) {
-//        User user = (User) repository.get();
-//        repository.delete(user);
-//        repository.add(user.updateInfo(userData));
+    public ResponseContent updateUserById(String id, User userData) {
+        User user = getUserById(id);
+        if (user == null) {
+            Broadcaster.info("User not found (ID: " + id + ")");
+            throw Errors.USER_NOT_FOUND.getException();
+        }
+        handleUniqueValueCheck(userData);
+        repository.update(user);
         Broadcaster.info("User information update (ID: " + id + ")");
         return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
     }
 
-    private void handleUniqueProperties(User user, User existingUser) {
-        if (Objects.equals(existingUser.getUsername(), user.getUsername()) || Objects.equals(existingUser.getEmail(), user.getEmail())) {
-            throw Errors.USER_ALREADY_EXISTS.getException();
+    private User getUserById(String id) {
+        try {
+            return repository.getById(User.class, id);
+        }
+        catch (Exception ex) {
+            Broadcaster.error("An error occurred while attempting to get user: " + ex.getMessage());
+            throw Errors.INTERNAL_SERVER_ERROR.getException();
+        }
+    }
+
+    private List<User> getUsersByKey(String key, String value) {
+        try {
+            return repository.get(User.class, key, value);
+        }
+        catch (Exception ex) {
+            Broadcaster.error("An error occurred while attempting to get user: " + ex.getMessage());
+            throw Errors.INTERNAL_SERVER_ERROR.getException();
+        }
+    }
+
+    private void handleUniqueValueCheck(User userData) {
+        if (!getUsersByKey("email", userData.getEmail()).isEmpty()) {
+            Broadcaster.info("User if email already exists (Email: " + userData.getEmail() + ")");
+            throw Errors.EMAIL_ALREADY_EXISTS.getException();
+        }
+        if (!getUsersByKey("username", userData.getEmail()).isEmpty()) {
+            Broadcaster.info("User if email already exists (Email: " + userData.getEmail() + ")");
+            throw Errors.USERNAME_ALREADY_EXISTS.getException();
         }
     }
 }
