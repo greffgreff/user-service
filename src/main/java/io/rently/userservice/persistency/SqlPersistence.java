@@ -66,9 +66,11 @@ public class SqlPersistence implements IDatabaseContext {
                 data.put(meta.getColumnName(i), result.getString(i));
             }
         }
-
         statement.close();
         terminateConnection();
+
+        if (data.isEmpty()) return null;
+
         return SqlMapper.mapResultSetToObject(dto, data);
     }
 
