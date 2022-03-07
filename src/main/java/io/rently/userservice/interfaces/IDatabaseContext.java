@@ -2,13 +2,13 @@ package io.rently.userservice.interfaces;
 
 import io.rently.userservice.annotations.PersistentField;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IDatabaseContext {
 
     <T> T getById(Class<T> dto, String id) throws Exception;
 
-    <T> ArrayList<T> get(Class<T> dto, PersistentField field, String value);
+    <T> List<T> get(Class<T> dto, PersistentField field, String value) throws Exception;
 
     <T> void add(T obj);
 

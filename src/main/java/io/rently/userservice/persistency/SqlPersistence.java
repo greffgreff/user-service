@@ -6,8 +6,9 @@ import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.interfaces.IDatabaseContext;
 
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class SqlPersistence implements IDatabaseContext {
     private static final MysqlDataSource dataSource = new MysqlDataSource();
@@ -75,8 +76,24 @@ public class SqlPersistence implements IDatabaseContext {
     }
 
     @Override
-    public <T> ArrayList<T> get(Class<T> dto, PersistentField field, String value) {
-        return null;
+    public <T> List<T> get(Class<T> dto, PersistentField field, String value) throws Exception {
+        createConnection();
+        Statement statement = cnn.createStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM `_rently_users` WHERE id='" + field.name() +"'");
+        HashMap<String, String> data = new HashMap<>();
+
+        while(result.next()) {
+            ResultSetMetaData meta = result.getMetaData();
+            for(int i = 1; i<=meta.getColumnCount(); i++) {
+                data.put(meta.getColumnName(i), result.getString(i));
+            }
+        }
+        statement.close();
+        terminateConnection();
+
+        if (data.isEmpty()) return null;
+
+        return List.of(SqlMapper.mapResultSetToObject(dto, data));
     }
 
     @Override
