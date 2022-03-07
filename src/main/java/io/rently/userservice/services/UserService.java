@@ -1,4 +1,4 @@
-package io.rently.userservice._services;
+package io.rently.userservice.services;
 
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;

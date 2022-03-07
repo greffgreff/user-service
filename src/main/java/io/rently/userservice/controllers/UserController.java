@@ -1,9 +1,8 @@
-package io.rently.userservice._controllers;
+package io.rently.userservice.controllers;
 
-import io.rently.userservice._services.UserService;
+import io.rently.userservice.services.UserService;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.*;
 
