@@ -8,7 +8,7 @@ import io.rently.userservice.persistency.SqlPersistence;
 import io.rently.userservice.util.Broadcaster;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Objects;
 
 @Service
 public class UserService {

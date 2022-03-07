@@ -1,7 +1,7 @@
 package io.rently.userservice.errors.enums;
 
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 public enum Errors {
     NOT_FOUND(new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found")),

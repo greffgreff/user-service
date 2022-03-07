@@ -3,10 +3,9 @@ package io.rently.userservice.errors;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.util.Broadcaster;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
