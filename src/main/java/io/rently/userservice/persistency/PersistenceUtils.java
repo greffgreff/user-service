@@ -2,7 +2,7 @@ package io.rently.userservice.persistency;
 
 import io.rently.userservice.annotations.PersistentObject;
 import io.rently.userservice.annotations.PersistentField;
-import io.rently.userservice.annotations.PersistentObjectId;
+import io.rently.userservice.annotations.PersistentKeyField;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -17,6 +17,11 @@ public class PersistenceUtils {
                 persistentFields.add(field);
             }
         }
+//        for (Field f: MyClass.class.getFields()) {
+//            Column column = f.getAnnotation(Column.class);
+//            if (column != null)
+//                System.out.println(column.columnName());
+//        }
         return persistentFields;
     }
 
@@ -25,6 +30,6 @@ public class PersistenceUtils {
     }
 
     public static String getObjectId(Class<?> persistentObj) {
-        return persistentObj.getDeclaredAnnotation(PersistentObjectId.class).name();
+        return persistentObj.getDeclaredAnnotation(PersistentKeyField.class).name();
     }
 }
