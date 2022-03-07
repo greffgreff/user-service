@@ -15,7 +15,6 @@ import java.util.UUID;
 @JsonDeserialize
 public class User {
     @PersistentObjectId
-    @PersistentField(name = "id")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String id;
@@ -35,10 +34,25 @@ public class User {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String email;
 
+    @PersistentField(name = "gender")
+    @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String gender;
+
     @PersistentField(name = "phone_number")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String phone;
+
+    @PersistentField(name = "password")
+    @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String password;
+
+    @PersistentField(name = "salt")
+    @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String salt;
 
     @PersistentField(name = "creation_date")
     @JsonProperty
@@ -66,8 +80,20 @@ public class User {
         return email;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
     public String getPhone() {
         return phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getSalt() {
+        return salt;
     }
 
     public User createAsNew() {
@@ -81,7 +107,10 @@ public class User {
         username = Util.getNonNull(username, userData.getUsername());
         fullName = Util.getNonNull(fullName, userData.getFullName());
         email = Util.getNonNull(email, userData.getEmail());
+        gender = Util.getNonNull(gender, userData.getGender());
         phone = Util.getNonNull(phone, userData.getPhone());
+        password = Util.getNonNull(password, userData.getPassword());
+        salt = Util.getNonNull(salt, userData.getSalt());
         updatedOn = Util.getCurrentTs();
         return this;
     }
