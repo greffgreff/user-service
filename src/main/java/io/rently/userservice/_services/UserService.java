@@ -5,48 +5,40 @@ import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.interfaces.IDatabaseContext;
 import io.rently.userservice.persistency.SqlPersistence;
-import io.rently.userservice.util.Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class UserService {
-    private static final IDatabaseContext userRepository;
+    private static final IDatabaseContext repository;
 
+    // 9aef044d-6549-4785-9234-cb7f9314777a
+    // 0269aec5-21cb-4b19-9fe1-90e1d5595dd9
+    // 747af12c-6be0-4dfe-8964-f447305d6737
     public static ResponseContent returnUserById(String id) {
-        User user = getUserById(id);
+        User user = repository.getById(User.class, id);
+        if (user == null) {
+            throw Errors.USER_NOT_FOUND.getException();
+        }
         return new ResponseContent.Builder().setData(user).build();
     }
 
     public static ResponseContent addUser(User user) {
-        for (User existingUser: SqlPersistence.users) {
-            handleUniqueProperties(user, existingUser);
-        }
-        userRepository.add(user.createAsNew());
+        repository.add(user.createAsNew());
         return new ResponseContent.Builder().setMessage("Successfully added user with ID { id: " + user.getId() + " }").build();
     }
 
     public static ResponseContent deleteUserById(String id) {
-        User user = getUserById(id);
-        userRepository.delete(user);
+//        User user = (User) repository.get(User.class.getDeclaredAnnotation(PersistentField.class), id);
+//        repository.delete(user);
         return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id: " + id + " }").build();
     }
 
     public static ResponseContent replaceUserById(String id, User userData) {
-        User user = getUserById(id);
-        for (User existingUser: SqlPersistence.users) {
-            if (!Objects.equals(existingUser.getId(), id)) {
-                handleUniqueProperties(userData, existingUser);
-            }
-        }
-        userRepository.delete(user);
-        userRepository.add(user.updateInfo(userData));
+//        User user = (User) repository.get();
+//        repository.delete(user);
+//        repository.add(user.updateInfo(userData));
         return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
     }
 
@@ -56,16 +48,7 @@ public class UserService {
         }
     }
 
-    private static User getUserById(String id) {
-        for (User existingUser : SqlPersistence.users) {
-            if (Objects.equals(existingUser.getId(), id)) {
-                return existingUser;
-            }
-        }
-        throw Errors.USER_NOT_FOUND.getException();
-    }
-
     static {
-        userRepository = new SqlPersistence("dbi433816", "admin", "studmysql01.fhict.local", "dbi433816");
+        repository = new SqlPersistence("dbi433816", "admin", "studmysql01.fhict.local", "dbi433816");
     }
 }
