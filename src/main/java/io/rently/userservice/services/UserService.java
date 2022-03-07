@@ -19,10 +19,6 @@ public class UserService {
     // 747af12c-6be0-4dfe-8964-f447305d6737
     public ResponseContent returnUserById(String id) {
         User user = getUserById(id);
-        if (user == null) {
-            Broadcaster.info("User not found (ID: " + id + ")");
-            throw Errors.USER_NOT_FOUND.getException();
-        }
         return new ResponseContent.Builder().setData(user).build();
     }
 
@@ -31,35 +27,34 @@ public class UserService {
         User user = userData.createAsNew();
         repository.add(user);
         Broadcaster.info("User added to database (ID: " + user.getId() + ")");
-        return new ResponseContent.Builder().setData(user).setMessage("Successfully added user to database").build();
+        return new ResponseContent.Builder().setData(user).setMessage("Successfully added user to database (ID: " + user.getId() + ")").build();
     }
 
     public ResponseContent deleteUserById(String id) {
         User user = getUserById(id);
-        if (user == null) {
-            Broadcaster.info("User not found (ID: " + id + ")");
-            throw Errors.USER_NOT_FOUND.getException();
-        }
         repository.delete(user);
         Broadcaster.info("User removed from database (ID: " + id + ")");
-        return new ResponseContent.Builder().setMessage("Successfully removed user with ID { id: " + id + " }").build();
+        return new ResponseContent.Builder().setMessage("Successfully removed user (ID: " + id + ")").build();
     }
 
     public ResponseContent updateUserById(String id, User userData) {
         User user = getUserById(id);
-        if (user == null) {
-            Broadcaster.info("User not found (ID: " + id + ")");
-            throw Errors.USER_NOT_FOUND.getException();
-        }
         handleUniqueValueCheck(userData);
         repository.update(user);
         Broadcaster.info("User information update (ID: " + id + ")");
-        return new ResponseContent.Builder().setMessage("Successfully updated user with ID { id: " + id + " }").build();
+        return new ResponseContent.Builder().setMessage("Successfully updated user (ID: " + id + ")").build();
     }
 
     private User getUserById(String id) {
         try {
-            return repository.getById(User.class, id);
+            User user = repository.getById(User.class, id);
+
+            if (user == null) {
+                Broadcaster.info("User not found (ID: " + id + ")");
+                throw Errors.USER_NOT_FOUND.getException();
+            }
+
+            return user;
         }
         catch (Exception ex) {
             Broadcaster.error("An error occurred while attempting to get user: " + ex.getMessage());
