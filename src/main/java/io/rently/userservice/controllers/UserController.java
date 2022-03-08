@@ -37,5 +37,3 @@ public class UserController implements ErrorController {
 }
 
 // 9aef044d-6549-4785-9234-cb7f9314777a
-// 0269aec5-21cb-4b19-9fe1-90e1d5595dd9
-// 747af12c-6be0-4dfe-8964-f447305d6737

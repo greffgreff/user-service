@@ -105,15 +105,15 @@ public class SqlPersistence implements IDatabaseContext {
 
     @Override
     public <T> void add(T obj) {
-        TreeMap<PersistentField, String> persistentFields = getFields(obj);
+        TreeMap<String, String> persistentFields = getFields(obj);
 
         StringBuilder columns = new StringBuilder();
         StringBuilder values = new StringBuilder();
-        for (Map.Entry<PersistentField, String> keyPair: persistentFields.entrySet()) {
-            columns.append("`").append(keyPair.getKey().name()).append("`");
-            values.append("`").append(keyPair.getValue()).append("`");
+        for (Map.Entry<String, String> keyPair: persistentFields.entrySet()) {
+            columns.append("`").append(keyPair.getKey()).append("`");
+            values.append("'").append(keyPair.getValue()).append("'");
 
-            if (!Objects.equals(keyPair.getKey().name(), persistentFields.lastKey().name())) {
+            if (!Objects.equals(keyPair.getKey(), persistentFields.lastKey())) {
                 columns.append(",");
                 values.append(",");
             }
@@ -122,8 +122,8 @@ public class SqlPersistence implements IDatabaseContext {
         try {
             createConnection();
             Statement statement = cnn.createStatement();
-            Broadcaster.debug("INSERT INTO `"+ getTableName(obj) + "` ("+ columns +") VALUES(" + values +")");
-            statement.executeQuery("INSERT INTO `"+ getTableName(obj) + "` ("+ columns +") VALUES(" + values +")");
+            Broadcaster.debug("INSERT INTO `"+ getTableName(obj) + "`("+ columns +") VALUES(" + values +")");
+            statement.executeUpdate("INSERT INTO `"+ getTableName(obj) + "`("+ columns +") VALUES(" + values +")");
             terminateConnection();
         }
         catch(Exception ex) {
@@ -178,13 +178,14 @@ public class SqlPersistence implements IDatabaseContext {
         return persistentObject.name();
     }
 
-    private <T> TreeMap<PersistentField, String> getFields(T obj) {
-        TreeMap<PersistentField, String> persistentFields = new TreeMap<>();
+    private <T> TreeMap<String, String> getFields(T obj) {
+        TreeMap<String, String> persistentFields = new TreeMap<>();
         for (Field field: obj.getClass().getDeclaredFields()) {
             PersistentField persistentField = field.getDeclaredAnnotation(PersistentField.class);
             if (persistentField != null) {
                 try {
-                    persistentFields.put(persistentField, field.get(obj).toString());
+                    field.setAccessible(true);
+                    persistentFields.put(persistentField.name(), field.get(obj).toString());
                 } catch (Exception ex) {
                     Broadcaster.error("Error occurred while fetching fields: " + ex.getMessage(), ex);
                 }

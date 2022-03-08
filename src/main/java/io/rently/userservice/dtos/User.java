@@ -8,7 +8,6 @@ import io.rently.userservice.annotations.PersistentKeyField;
 import io.rently.userservice.annotations.PersistentObject;
 import io.rently.userservice.util.Util;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @PersistentObject(name = "_rently_users")
@@ -58,12 +57,12 @@ public class User {
     @PersistentField(name = "creation_date")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Timestamp createdOn;
+    private String createdOn;
 
     @PersistentField(name = "last_update")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Timestamp updatedOn;
+    private String updatedOn;
 
     public String getId() {
         return id;
@@ -99,8 +98,8 @@ public class User {
 
     public User createAsNew() {
         id = UUID.randomUUID().toString();
-        createdOn = Util.getCurrentTs();
-        updatedOn = Util.getCurrentTs();
+        createdOn = Util.getCurrentTs().toString();
+        updatedOn = Util.getCurrentTs().toString();
         return this;
     }
 
@@ -112,7 +111,7 @@ public class User {
         phone = Util.getNonNull(phone, userData.getPhone());
         password = Util.getNonNull(password, userData.getPassword());
         salt = Util.getNonNull(salt, userData.getSalt());
-        updatedOn = Util.getCurrentTs();
+        updatedOn = Util.getCurrentTs().toString();
         return this;
     }
 }
