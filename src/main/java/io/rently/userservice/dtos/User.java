@@ -98,6 +98,14 @@ public class User {
         return salt;
     }
 
+    public String getCreatedOn() {
+        return createdOn;
+    }
+
+    public String getUpdatedOn() {
+        return updatedOn;
+    }
+
     public User createAsNew() {
         id = UUID.randomUUID().toString();
         createdOn = new Timestamp(System.currentTimeMillis()).toString();
@@ -113,6 +121,7 @@ public class User {
         phone = Util.getNonNull(userData.getPhone(), phone);
         password = Util.getNonNull(userData.getPassword(), password);
         salt = Util.getNonNull(userData.getSalt(), salt);
+        createdOn = Util.getNonNull(userData.getCreatedOn(), createdOn);
         updatedOn = new Timestamp(System.currentTimeMillis()).toString();
         return this;
     }
