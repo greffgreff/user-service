@@ -14,8 +14,7 @@ import java.util.List;
 public class UserService {
     private final IDatabaseContext repository = new SqlPersistence("dbi433816", "admin", "studmysql01.fhict.local", "dbi433816");
 
-    public UserService() { // FIXME add DI
-    }
+    public UserService() { } // FIXME add DI
 
     public ResponseContent returnUserById(String id) {
         User user = getUserById(id);
@@ -25,12 +24,7 @@ public class UserService {
     public ResponseContent addUser(User userData) {
         handleUniqueValueCheck(userData);
         User user = userData.createAsNew();
-        try {
-            repository.add(user);
-        } catch (Exception ex) {
-            Broadcaster.error("An error occurred while attempting to add user (ID: " + user.getId() + "): " + ex.getMessage());
-            throw Errors.USER_NOT_FOUND.getException();
-        }
+        repository.add(user);
         Broadcaster.info("User added to database (ID: " + user.getId() + ")");
         return new ResponseContent.Builder().setData(user).setMessage("Successfully added user to database (ID: " + user.getId() + ")").build();
     }
@@ -52,11 +46,9 @@ public class UserService {
 
     private User getUserById(String id) {
         User user = repository.getById(User.class, id);
-        if (user == null) {
-            Broadcaster.info("User not found (ID: " + id + ")");
-            throw Errors.USER_NOT_FOUND.getException();
-        }
-        return user;
+        if (user != null) return user;
+        Broadcaster.info("User not found (ID: " + id + ")");
+        throw Errors.USER_NOT_FOUND.getException();
     }
 
     private void handleUniqueValueCheck(User userData) {
