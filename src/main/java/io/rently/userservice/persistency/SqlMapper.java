@@ -18,11 +18,11 @@ public class SqlMapper {
 
             if (persistentField != null) {
                 for (Map.Entry<String, String> pair : data.entrySet()) {
-                    String name = Util.getNonNull(persistentField.name(), field.getName()); // <-- implement this
+                    String name = Util.getNonNull(persistentField.name(), field.getName()); // FIXME <-- implement this
 
                     if (Objects.equals(pair.getKey(), persistentField.name())) {
                         try {
-                            field.setAccessible(true);
+                            field.setAccessible(true); // FIXME make parsing scalable
                             if (field.getType() == Timestamp.class) field.set(persistentObj, new Timestamp(Long.parseLong(pair.getValue())));
                             else field.set(persistentObj, pair.getValue());
                         }

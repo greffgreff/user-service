@@ -18,4 +18,10 @@ public class Broadcaster {
     public static void error(Object obj) {
         System.out.println(PREFIX + Util.getCurrentTs() + " [ERROR] " + obj);
     }
+
+    public static void error(Object msg, Exception ex) {
+        System.out.println(PREFIX + Util.getCurrentTs() + " [ERROR] " + msg);
+        System.out.println("----------------- Stack trace -----------------");
+        ex.printStackTrace();
+    }
 }

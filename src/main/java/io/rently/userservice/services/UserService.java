@@ -14,6 +14,9 @@ import java.util.List;
 public class UserService {
     private final IDatabaseContext repository = new SqlPersistence("dbi433816", "admin", "studmysql01.fhict.local", "dbi433816");
 
+    public UserService() { // FIXME add DI
+    }
+
     public ResponseContent returnUserById(String id) {
         User user = getUserById(id);
         return new ResponseContent.Builder().setData(user).build();
@@ -22,7 +25,12 @@ public class UserService {
     public ResponseContent addUser(User userData) {
         handleUniqueValueCheck(userData);
         User user = userData.createAsNew();
-        repository.add(user);
+        try {
+            repository.add(user);
+        } catch (Exception ex) {
+            Broadcaster.error("An error occurred while attempting to add user (ID: " + user.getId() + "): " + ex.getMessage());
+            throw Errors.USER_NOT_FOUND.getException();
+        }
         Broadcaster.info("User added to database (ID: " + user.getId() + ")");
         return new ResponseContent.Builder().setData(user).setMessage("Successfully added user to database (ID: " + user.getId() + ")").build();
     }
@@ -43,36 +51,20 @@ public class UserService {
     }
 
     private User getUserById(String id) {
-        try {
-            User user = repository.getById(User.class, id);
-            if (user == null) {
-                Broadcaster.info("User not found (ID: " + id + ")");
-                throw Errors.USER_NOT_FOUND.getException();
-            }
-            return user;
+        User user = repository.getById(User.class, id);
+        if (user == null) {
+            Broadcaster.info("User not found (ID: " + id + ")");
+            throw Errors.USER_NOT_FOUND.getException();
         }
-        catch (Exception ex) {
-            Broadcaster.error("An error occurred while attempting to get user: " + ex.getMessage());
-            throw Errors.INTERNAL_SERVER_ERROR.getException();
-        }
-    }
-
-    private List<User> getUsersByKey(String key, String value) {
-        try {
-            return repository.get(User.class, key, value);
-        }
-        catch (Exception ex) {
-            Broadcaster.error("An error occurred while attempting to get user: " + ex.getMessage());
-            throw Errors.INTERNAL_SERVER_ERROR.getException();
-        }
+        return user;
     }
 
     private void handleUniqueValueCheck(User userData) {
-        if (!getUsersByKey("email", userData.getEmail()).isEmpty()) {
+        if (!repository.get(User.class, "email", userData.getEmail()).isEmpty()) {
             Broadcaster.info("User if email already exists (Email: " + userData.getEmail() + ")");
             throw Errors.EMAIL_ALREADY_EXISTS.getException();
         }
-        if (!getUsersByKey("username", userData.getUsername()).isEmpty()) {
+        if (!repository.get(User.class, "username", userData.getUsername()).isEmpty()) {
             Broadcaster.info("User if username already exists (Username: " + userData.getUsername() + ")");
             throw Errors.USERNAME_ALREADY_EXISTS.getException();
         }

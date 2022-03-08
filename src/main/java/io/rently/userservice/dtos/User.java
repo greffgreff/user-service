@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.rently.userservice.annotations.PersistentField;
+import io.rently.userservice.annotations.PersistentKeyField;
 import io.rently.userservice.annotations.PersistentObject;
 import io.rently.userservice.util.Util;
 
@@ -14,6 +15,7 @@ import java.util.UUID;
 @JsonDeserialize
 public class User {
     @PersistentField(name = "id")
+    @PersistentKeyField(name = "id")
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String id;

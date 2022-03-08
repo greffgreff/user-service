@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface PersistentKeyField {
 
-    String name() default "id";
+    String name();
 }
