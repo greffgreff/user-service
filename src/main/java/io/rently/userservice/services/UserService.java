@@ -39,7 +39,7 @@ public class UserService {
     public ResponseContent updateUserById(String id, User userData) {
         User user = getUserById(id);
         handleUniqueValueCheck(userData);
-        repository.update(user);
+        repository.update(user.updateInfo(userData));
         Broadcaster.info("User information update (ID: " + id + ")");
         return new ResponseContent.Builder().setMessage("Successfully updated user (ID: " + id + ")").build();
     }
