@@ -8,7 +8,7 @@ import io.rently.userservice.persistency.SqlPersistence;
 import io.rently.userservice.util.Broadcaster;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -22,7 +22,7 @@ public class UserService {
     }
 
     public ResponseContent addUser(User userData) {
-        handleUniqueValueCheck(userData);
+        checkUniqueValues(userData, null);
         User user = userData.createAsNew();
         repository.add(user);
         Broadcaster.info("User added to database (ID: " + user.getId() + ")");
@@ -38,7 +38,7 @@ public class UserService {
 
     public ResponseContent updateUserById(String id, User userData) {
         User user = getUserById(id);
-        handleUniqueValueCheck(userData);
+        checkUniqueValues(userData, id);
         repository.update(user.updateInfo(userData));
         Broadcaster.info("User information update (ID: " + id + ")");
         return new ResponseContent.Builder().setMessage("Successfully updated user (ID: " + id + ")").build();
@@ -51,14 +51,18 @@ public class UserService {
         throw Errors.USER_NOT_FOUND.getException();
     }
 
-    private void handleUniqueValueCheck(User userData) {
-        if (!repository.get(User.class, "email", userData.getEmail()).isEmpty()) {
-            Broadcaster.info("User if email already exists (Email: " + userData.getEmail() + ")");
-            throw Errors.EMAIL_ALREADY_EXISTS.getException();
+    private void checkUniqueValues(User userData, String id) {
+        for (User user : repository.get(User.class, "email", userData.getEmail())) {
+            if (!Objects.equals(user.getId(), id)) {
+                Broadcaster.info("User if email already exists (Email: " + userData.getEmail() + ")");
+                throw Errors.EMAIL_NOT_FOUND.getException();
+            }
         }
-        if (!repository.get(User.class, "username", userData.getUsername()).isEmpty()) {
-            Broadcaster.info("User if username already exists (Username: " + userData.getUsername() + ")");
-            throw Errors.USERNAME_ALREADY_EXISTS.getException();
+        for (User user : repository.get(User.class, "username", userData.getUsername())) {
+            if (!Objects.equals(user.getId(), id)) {
+                Broadcaster.info("User if username already exists (Username: " + userData.getUsername() + ")");
+                throw Errors.USERNAME_ALREADY_EXISTS.getException();
+            }
         }
     }
 }

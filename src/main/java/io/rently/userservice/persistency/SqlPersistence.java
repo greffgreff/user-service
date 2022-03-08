@@ -80,8 +80,9 @@ public class SqlPersistence implements IDatabaseContext {
 
             createConnection();
             Statement statement = cnn.createStatement();
-            Broadcaster.debug("SELECT * FROM `" + getTableName(persistentObj) + "` WHERE " + field + "='" + value +"'");
-            ResultSet result = statement.executeQuery("SELECT * FROM `" + getTableName(persistentObj) + "` WHERE " + field + "='" + value +"'");
+            String sql = "SELECT * FROM `" + getTableName(persistentObj) + "` WHERE " + field + "='" + value +"'";
+            Broadcaster.debug(sql);
+            ResultSet result = statement.executeQuery(sql);
             HashMap<String, String> data = new HashMap<>();
 
             while(result.next()) {
@@ -110,6 +111,10 @@ public class SqlPersistence implements IDatabaseContext {
         StringBuilder columns = new StringBuilder();
         StringBuilder values = new StringBuilder();
         for (Map.Entry<String, String> keyPair: persistentFields.entrySet()) {
+            if (keyPair.getValue().length() > 100) {
+                Broadcaster.info("Payload too long ("+ keyPair.getValue().length()+"): " + keyPair.getValue());
+                throw Errors.PAYLOAD_TOO_LARGE.getException();
+            }
             columns.append("`").append(keyPair.getKey()).append("`");
             values.append("'").append(keyPair.getValue()).append("'");
 
@@ -122,8 +127,9 @@ public class SqlPersistence implements IDatabaseContext {
         try {
             createConnection();
             Statement statement = cnn.createStatement();
-            Broadcaster.debug("INSERT INTO `"+ getTableName(obj) + "`("+ columns +") VALUES(" + values +")");
-            statement.executeUpdate("INSERT INTO `"+ getTableName(obj) + "`("+ columns +") VALUES(" + values +")");
+            String sql = "INSERT INTO `"+ getTableName(obj) + "`("+ columns +") VALUES(" + values +")";
+            Broadcaster.debug(sql);
+            statement.executeUpdate(sql);
             terminateConnection();
         }
         catch(Exception ex) {
@@ -143,8 +149,9 @@ public class SqlPersistence implements IDatabaseContext {
         try {
             createConnection();
             Statement statement = cnn.createStatement();
-            Broadcaster.debug("DELETE FROM `" + getTableName(obj) + "` WHERE " + getKeyName(obj) + "='" + getKeyFieldValue(obj) + "'");
-            statement.executeUpdate("DELETE FROM `" + getTableName(obj) + "` WHERE " + getKeyName(obj) + " = '" + getKeyFieldValue(obj) + "'");
+            String sql = "DELETE FROM `" + getTableName(obj) + "` WHERE " + getKeyName(obj) + "='" + getKeyFieldValue(obj) + "'";
+            Broadcaster.debug(sql);
+            statement.executeUpdate(sql);
             terminateConnection();
         }
         catch(Exception ex) {
@@ -172,7 +179,7 @@ public class SqlPersistence implements IDatabaseContext {
     private <T> String getTableName(T obj) {
         PersistentObject persistentObject = obj.getClass().getDeclaredAnnotation(PersistentObject.class);
         if (persistentObject == null) {
-            Broadcaster.error("Object passed is not annotated with PersistentObject");
+            Broadcaster.error("Object passed is not annotated field with PersistentObject");
             throw Errors.INTERNAL_SERVER_ERROR.getException();
         }
         return persistentObject.name();
@@ -187,7 +194,7 @@ public class SqlPersistence implements IDatabaseContext {
                     field.setAccessible(true);
                     persistentFields.put(persistentField.name(), field.get(obj).toString());
                 } catch (Exception ex) {
-                    Broadcaster.error("Error occurred while fetching fields: " + ex.getMessage(), ex);
+                    Broadcaster.error("Error occurred while fetching field: " + ex.getMessage(), ex);
                 }
             }
         }
@@ -201,7 +208,7 @@ public class SqlPersistence implements IDatabaseContext {
                 return persistentField.name();
             }
         }
-        Broadcaster.error("Could not find object identifier: No field is annotated with PersistentKeyField");
+        Broadcaster.error("Object passed does not contain annotated field with PersistentKeyField");
         throw Errors.INTERNAL_SERVER_ERROR.getException();
     }
 }

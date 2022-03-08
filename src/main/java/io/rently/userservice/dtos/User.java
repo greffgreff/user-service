@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.rently.userservice.annotations.PersistentField;
 import io.rently.userservice.annotations.PersistentKeyField;
 import io.rently.userservice.annotations.PersistentObject;
+import io.rently.userservice.util.Broadcaster;
 import io.rently.userservice.util.Util;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @PersistentObject(name = "_rently_users")
@@ -98,20 +100,20 @@ public class User {
 
     public User createAsNew() {
         id = UUID.randomUUID().toString();
-        createdOn = Util.getCurrentTs().toString();
-        updatedOn = Util.getCurrentTs().toString();
+        createdOn = new Timestamp(System.currentTimeMillis()).toString();
+        updatedOn = new Timestamp(System.currentTimeMillis()).toString();
         return this;
     }
 
     public User updateInfo(User userData) {
-        username = Util.getNonNull(username, userData.getUsername());
-        fullName = Util.getNonNull(fullName, userData.getFullName());
-        email = Util.getNonNull(email, userData.getEmail());
-        gender = Util.getNonNull(gender, userData.getGender());
-        phone = Util.getNonNull(phone, userData.getPhone());
-        password = Util.getNonNull(password, userData.getPassword());
-        salt = Util.getNonNull(salt, userData.getSalt());
-        updatedOn = Util.getCurrentTs().toString();
+        username = Util.getNonNull(userData.getUsername(), username);
+        fullName = Util.getNonNull(userData.getFullName(), fullName);
+        email = Util.getNonNull(userData.getEmail(), email);
+        gender = Util.getNonNull(userData.getGender(), gender);
+        phone = Util.getNonNull(userData.getPhone(), phone);
+        password = Util.getNonNull(userData.getPassword(), password);
+        salt = Util.getNonNull(userData.getSalt(), salt);
+        updatedOn = new Timestamp(System.currentTimeMillis()).toString();
         return this;
     }
 }
