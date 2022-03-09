@@ -26,23 +26,20 @@ public class UserController implements ErrorController {
 
     @PostMapping(value = "/users")
     public ResponseContent addUser(@RequestBody(required = false) User userData) {
-        User user = userService.addUser(userData);
-        Broadcaster.info("User added to database (ID: " + user.getId() + ")");
-        return new ResponseContent.Builder().setMessage("Successfully added user (ID: " + user.getId() + ")").build();
+        userService.addUser(userData);
+        return new ResponseContent.Builder().setMessage("Successfully added user to database").build();
     }
 
     @PutMapping(value = "/users/{id}")
     public ResponseContent replaceUser(@PathVariable String id, @RequestBody(required = false) User userData) {
-        User user = userService.updateUserById(id, userData);
-        Broadcaster.info("User information update (ID: " + user.getId() + ")");
-        return new ResponseContent.Builder().setMessage("Successfully updated user (ID: " + user.getId() + ")").build();
+        userService.updateUserById(id, userData);
+        return new ResponseContent.Builder().setMessage("Successfully updated user in database").build();
     }
 
     @DeleteMapping(value = "/users/{id}")
     public ResponseContent deleteUser(@PathVariable String id) {
-        User user = userService.deleteUserById(id);
-        Broadcaster.info("User removed from database (ID: " + user.getId() + ")");
-        return new ResponseContent.Builder().setMessage("Successfully delete user (ID: " + user.getId() + ")").build();
+        userService.deleteUserById(id);
+        return new ResponseContent.Builder().setMessage("Successfully delete user from database").build();
     }
 }
 
