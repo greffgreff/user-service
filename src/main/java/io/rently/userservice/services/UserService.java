@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 public class UserService {
@@ -24,7 +25,9 @@ public class UserService {
     }
 
     public User addUser(User userData) {
+        checkUserData(userData);
         checkUniqueValues(userData, null);
+
         if (userData.getUsername() == null) {
             throw Errors.USERNAME_NOT_FOUND.getException();
         }
@@ -47,6 +50,7 @@ public class UserService {
     }
 
     public User updateUserById(String id, User userData) {
+        checkUserData(userData);
         User user = getUserById(id);
         checkUniqueValues(userData, id);
         repository.update(user.updateInfo(userData));
@@ -72,6 +76,13 @@ public class UserService {
                 Broadcaster.info("Username already exists (Username: " + userData.getUsername() + ")");
                 throw Errors.USERNAME_ALREADY_EXISTS.getException();
             }
+        }
+    }
+
+    private void checkUserData(User userData) {
+        if (userData == null) {
+            Broadcaster.info("No data in request body found");
+            throw Errors.NO_DATA.getException();
         }
     }
 }
