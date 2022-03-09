@@ -14,6 +14,7 @@ public enum Errors {
     EMAIL_NOT_FOUND(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address unset")),
     PASSWORD_NOT_FOUND(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password unset")),
     NO_DATA(new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "No content found in request body")),
+    INVALID_DATA(new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Invalid data provided by client")),
     PAYLOAD_TOO_LARGE(new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, "One or more fields exceeds 100 characters"));
 
     private final ResponseStatusException exception;
