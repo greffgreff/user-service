@@ -2,7 +2,6 @@ package io.rently.userservice.persistency;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import io.rently.userservice.annotations.PersistentField;
-import io.rently.userservice.annotations.PersistentKeyField;
 import io.rently.userservice.annotations.PersistentObject;
 import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.interfaces.IDatabaseContext;
@@ -17,6 +16,8 @@ public class SqlPersistence implements IDatabaseContext {
     private static final MysqlDataSource dataSource = new MysqlDataSource();
     private static Connection cnn;
 
+    public SqlPersistence() { }
+
     public SqlPersistence(String user, String password, String server, String db) {
         setUser(user);
         setPassword(password);
@@ -24,23 +25,23 @@ public class SqlPersistence implements IDatabaseContext {
         setDatabaseName(db);
     }
 
-    public static void setUser(String user) {
+    public void setUser(String user) {
         dataSource.setUser(user);
     }
 
-    public static void setPassword(String password) {
+    public void setPassword(String password) {
         dataSource.setPassword(password);
     }
 
-    public static void setServerName(String server) {
+    public void setServerName(String server) {
         dataSource.setServerName(server);
     }
 
-    public static void setDatabaseName(String db) {
+    public void setDatabaseName(String db) {
         dataSource.setDatabaseName(db);
     }
 
-    private static void createConnection() {
+    private void createConnection() {
         try {
             cnn = dataSource.getConnection();
         }
@@ -50,7 +51,7 @@ public class SqlPersistence implements IDatabaseContext {
         }
     }
 
-    private static void terminateConnection() {
+    private void terminateConnection() {
         try {
             cnn.close();
         }
