@@ -6,42 +6,51 @@ import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.interfaces.IDatabaseContext;
 import io.rently.userservice.persistency.SqlPersistence;
 import io.rently.userservice.util.Broadcaster;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
 public class UserService {
-    private final IDatabaseContext repository = new SqlPersistence("dbi433816", "admin", "studmysql01.fhict.local", "dbi433816");
+    private final IDatabaseContext repository;
 
-    public UserService() { } // FIXME add DI
-
-    public ResponseContent returnUserById(String id) {
-        User user = getUserById(id);
-        return new ResponseContent.Builder().setData(user).build();
+    public UserService(IDatabaseContext repository) {
+        this.repository = repository;
     }
 
-    public ResponseContent addUser(User userData) {
+    public User returnUserById(String id) {
+        return getUserById(id);
+    }
+
+    public User addUser(User userData) {
         checkUniqueValues(userData, null);
+        if (userData.getUsername() == null) {
+            throw Errors.USERNAME_NOT_FOUND.getException();
+        }
+        if (userData.getEmail() == null) {
+            throw Errors.EMAIL_NOT_FOUND.getException();
+        }
+        if (userData.getPassword() == null) {
+            throw Errors.PASSWORD_NOT_FOUND.getException();
+        }
+
         User user = userData.createAsNew();
         repository.add(user);
-        Broadcaster.info("User added to database (ID: " + user.getId() + ")");
-        return new ResponseContent.Builder().setData(user).setMessage("Successfully added user to database (ID: " + user.getId() + ")").build();
+        return user;
     }
 
-    public ResponseContent deleteUserById(String id) {
+    public User deleteUserById(String id) {
         User user = getUserById(id);
         repository.delete(user);
-        Broadcaster.info("User removed from database (ID: " + id + ")");
-        return new ResponseContent.Builder().setMessage("Successfully removed user (ID: " + id + ")").build();
+        return user;
     }
 
-    public ResponseContent updateUserById(String id, User userData) {
+    public User updateUserById(String id, User userData) {
         User user = getUserById(id);
         checkUniqueValues(userData, id);
         repository.update(user.updateInfo(userData));
-        Broadcaster.info("User information update (ID: " + id + ")");
-        return new ResponseContent.Builder().setMessage("Successfully updated user (ID: " + id + ")").build();
+        return user;
     }
 
     private User getUserById(String id) {
@@ -54,13 +63,13 @@ public class UserService {
     private void checkUniqueValues(User userData, String id) {
         for (User user : repository.get(User.class, "email", userData.getEmail())) {
             if (!Objects.equals(user.getId(), id)) {
-                Broadcaster.info("User if email already exists (Email: " + userData.getEmail() + ")");
-                throw Errors.EMAIL_NOT_FOUND.getException();
+                Broadcaster.info("Email already exists (Email: " + userData.getEmail() + ")");
+                throw Errors.EMAIL_ALREADY_EXISTS.getException();
             }
         }
         for (User user : repository.get(User.class, "username", userData.getUsername())) {
             if (!Objects.equals(user.getId(), id)) {
-                Broadcaster.info("User if username already exists (Username: " + userData.getUsername() + ")");
+                Broadcaster.info("Username already exists (Username: " + userData.getUsername() + ")");
                 throw Errors.USERNAME_ALREADY_EXISTS.getException();
             }
         }
