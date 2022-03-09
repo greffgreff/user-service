@@ -25,13 +25,13 @@ public class UserController implements ErrorController {
     }
 
     @PostMapping(value = "/users")
-    public ResponseContent addUser(@RequestBody(required = false) User userData) {
+    public ResponseContent addUser(@RequestBody User userData) {
         userService.addUser(userData);
         return new ResponseContent.Builder().setMessage("Successfully added user to database").build();
     }
 
     @PutMapping(value = "/users/{id}")
-    public ResponseContent replaceUser(@PathVariable String id, @RequestBody(required = false) User userData) {
+    public ResponseContent replaceUser(@PathVariable String id, @RequestBody User userData) {
         userService.updateUserById(id, userData);
         return new ResponseContent.Builder().setMessage("Successfully updated user in database").build();
     }
