@@ -8,11 +8,11 @@ public enum Errors {
     EMAIL_ALREADY_EXISTS(new ResponseStatusException(HttpStatus.CONFLICT, "User with matching email already exists")),
     USERNAME_ALREADY_EXISTS(new ResponseStatusException(HttpStatus.CONFLICT, "User with matching username already exists")),
     DATABASE_CONNECTION_FAILED(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to establish connection to database")),
-    INVALID_URL_PATH(new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid or incomplete request")),
+    INVALID_URI_PATH(new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Invalid or incomplete URI")),
     INTERNAL_SERVER_ERROR(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Request could not be processed due to an internal server error")),
-    USERNAME_NOT_FOUND(new ResponseStatusException(HttpStatus.NOT_FOUND, "Username unset")),
-    EMAIL_NOT_FOUND(new ResponseStatusException(HttpStatus.NOT_FOUND, "Email address unset")),
-    PASSWORD_NOT_FOUND(new ResponseStatusException(HttpStatus.NOT_FOUND, "Password unset")),
+    USERNAME_NOT_FOUND(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username unset")),
+    EMAIL_NOT_FOUND(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address unset")),
+    PASSWORD_NOT_FOUND(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password unset")),
     PAYLOAD_TOO_LARGE(new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, "One or more fields exceeds 100 characters"));
 
     private final ResponseStatusException exception;
