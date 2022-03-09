@@ -23,7 +23,7 @@ public class ErrorController {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public static ResponseContent handleInvalidPath(HttpServletResponse response, NoHandlerFoundException ex) {
-        ResponseStatusException respEx = Errors.INVALID_URL_PATH.getException();
+        ResponseStatusException respEx = Errors.INVALID_URI_PATH.getException();
         response.setStatus(respEx.getStatus().value());
         Broadcaster.info("Invalid request path (PATH: " + ex.getRequestURL() + ", METHOD: " + ex.getHttpMethod() + ")");
         return new ResponseContent.Builder(respEx.getStatus()).setMessage(respEx.getReason()).build();
