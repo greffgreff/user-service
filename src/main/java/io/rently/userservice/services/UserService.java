@@ -24,10 +24,9 @@ public class UserService {
         return getUserById(id);
     }
 
-    public User addUser(User userData) {
+    public void addUser(User userData) {
         checkUserData(userData);
         checkUniqueValues(userData, null);
-
         if (userData.getUsername() == null) {
             throw Errors.USERNAME_NOT_FOUND.getException();
         }
@@ -37,24 +36,23 @@ public class UserService {
         if (userData.getPassword() == null) {
             throw Errors.PASSWORD_NOT_FOUND.getException();
         }
-
         User user = userData.createAsNew();
         repository.add(user);
-        return user;
+        Broadcaster.info("User added to database (ID: " + user.getId() + ")");
     }
 
-    public User deleteUserById(String id) {
+    public void deleteUserById(String id) {
         User user = getUserById(id);
         repository.delete(user);
-        return user;
+        Broadcaster.info("User removed from database (ID: " + user.getId() + ")");
     }
 
-    public User updateUserById(String id, User userData) {
+    public void updateUserById(String id, User userData) {
         checkUserData(userData);
         User user = getUserById(id);
         checkUniqueValues(userData, id);
         repository.update(user.updateInfo(userData));
-        return user;
+        Broadcaster.info("User information update (ID: " + user.getId() + ")");
     }
 
     private User getUserById(String id) {
