@@ -21,7 +21,7 @@ public class Broadcaster {
 
     public static void error(Object msg, Exception ex) {
         System.out.println(PREFIX + Util.getCurrentTs() + " [ERROR] " + msg);
-        System.out.println("----------------- Stack trace -----------------");
+        System.out.println("---------------------------------- Stack trace ----------------------------------");
         ex.printStackTrace();
     }
 }

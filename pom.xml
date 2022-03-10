@@ -57,13 +57,13 @@
 				<configuration>
 					<appName>user-service-rently</appName>
 					<includeTarget>false</includeTarget>
-<!--					<includes>-->
-<!--						<include>${project.build.directory}/${project.build.finalName}.jar</include>-->
-<!--					</includes>-->
+					<includes>
+						<include>${project.build.directory}/${project.build.finalName}.jar</include>
+					</includes>
 					<jdkVersion>${java.version}</jdkVersion>
-<!--					<processTypes>-->
-<!--						<web>java $JAVA_OPTS -jar ./target/${project.build.finalName}.jar</web>-->
-<!--					</processTypes>-->
+					<processTypes>
+						<web>java $JAVA_OPTS -jar ./target/${project.build.finalName}.jar</web>
+					</processTypes>
 				</configuration>
 			</plugin>
 		</plugins>
