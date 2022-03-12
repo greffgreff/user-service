@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Analysising codebase...
-        uses: github/super-linter@v4
+      - uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: master
