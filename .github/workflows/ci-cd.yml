@@ -52,6 +52,5 @@ jobs:
           image: dockeroo80/semester3
           tags: v1, latest
           registry: docker.io
-          dockerfile: Dockerfile.ci
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
