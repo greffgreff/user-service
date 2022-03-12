@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout...
     - uses: actions/checkout@v2
     - name: Setting up JDK 17...
       uses: actions/setup-java@v2
@@ -29,24 +30,26 @@ jobs:
     needs: Building
     
     steps:
-      - uses: actions/checkout@v2
-      - name: Publishing work on heroku...
-      - uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{secrets.HEROKU_APP}}
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          
-#   Linter:
+    - name: Checkout...
+    - uses: actions/checkout@v2
+    - name: Publishing work on heroku...
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: ${{secrets.HEROKU_APP}}
+        heroku_email: ${{secrets.HEROKU_EMAIL}}
 
-#     runs-on: ubuntu-latest
-# # every step must define a `uses` or `run` key
+  Linter:
 
-#     steps:
-#       - uses: actions/checkout@v2
-#       - name: Analysising codebase...
-#       - uses: github/super-linter@v4
-#         env:
-#           VALIDATE_ALL_CODEBASE: true
-#           DEFAULT_BRANCH: master
-#           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+    runs-on: ubuntu-latest
+# every step must define a `uses` or `run` key
+
+    steps:
+    - name: Checkout...
+    - uses: actions/checkout@v2
+    - name: Analysising codebase...
+    - uses: github/super-linter@v4
+      env:
+        VALIDATE_ALL_CODEBASE: true
+        DEFAULT_BRANCH: master
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
