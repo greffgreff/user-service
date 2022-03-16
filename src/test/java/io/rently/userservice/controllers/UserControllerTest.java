@@ -1,7 +1,7 @@
 package io.rently.userservice.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.rently.userservice.configs.TestConfigs;
+import io.rently.userservice.configs.UserControllerTestConfigs;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.services.UserService;
@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(UserController.class)
-@ContextConfiguration(classes = TestConfigs.class)
+@ContextConfiguration(classes = UserControllerTestConfigs.class)
 class UserControllerTest {
 
     @Autowired
@@ -320,7 +320,6 @@ class UserControllerTest {
                 .setPassword("validUpdatedPassword").build();
         String jsonBody = new ObjectMapper().writeValueAsString(validUserData);
 
-
         Mockito.doNothing()
                 .when(userService)
                 .updateUserById(Mockito.any(validUserId.getClass()), Mockito.any(validUserData.getClass()));
@@ -382,7 +381,6 @@ class UserControllerTest {
     void deleteRequest_validUri_validUserId_isOk() throws Exception {
         String validUri = "/api/v1/users/someUserId";
         String invalidUserId = "invalidUserId";
-
 
         Mockito.doNothing()
                 .when(userService)

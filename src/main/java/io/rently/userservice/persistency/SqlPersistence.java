@@ -18,13 +18,6 @@ public class SqlPersistence implements IDatabaseContext {
 
     public SqlPersistence() { }
 
-    public SqlPersistence(String user, String password, String server, String db) {
-        setUser(user);
-        setPassword(password);
-        setServerName(server);
-        setDatabaseName(db);
-    }
-
     public void setUser(String user) {
         dataSource.setUser(user);
     }

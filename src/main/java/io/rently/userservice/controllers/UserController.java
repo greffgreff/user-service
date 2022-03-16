@@ -3,7 +3,6 @@ package io.rently.userservice.controllers;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.services.UserService;
-import io.rently.userservice.util.Broadcaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.*;
@@ -11,34 +10,34 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1")
 public class UserController implements ErrorController {
-    public final UserService userService;
+    public final UserService service;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserService service) {
+        this.service = service;
     }
 
-    @GetMapping(value = "/users/{id}")
+    @GetMapping("/users/{id}")
     public ResponseContent getUser(@PathVariable String id) {
-        User user = userService.returnUserById(id);
+        User user = service.returnUserById(id);
         return new ResponseContent.Builder().setData(user).build();
     }
 
-    @PostMapping(value = "/users")
+    @PostMapping("/users")
     public ResponseContent addUser(@RequestBody User userData) {
-        userService.addUser(userData);
+        service.addUser(userData);
         return new ResponseContent.Builder().setMessage("Successfully added user to database").build();
     }
 
-    @PutMapping(value = "/users/{id}")
+    @PutMapping("/users/{id}")
     public ResponseContent replaceUser(@PathVariable String id, @RequestBody User userData) {
-        userService.updateUserById(id, userData);
+        service.updateUserById(id, userData);
         return new ResponseContent.Builder().setMessage("Successfully updated user in database").build();
     }
 
-    @DeleteMapping(value = "/users/{id}")
+    @DeleteMapping("/users/{id}")
     public ResponseContent deleteUser(@PathVariable String id) {
-        userService.deleteUserById(id);
+        service.deleteUserById(id);
         return new ResponseContent.Builder().setMessage("Successfully delete user from database").build();
     }
 }

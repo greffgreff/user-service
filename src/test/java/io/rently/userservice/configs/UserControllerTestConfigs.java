@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
 @TestConfiguration
-public class TestConfigs {
+public class UserControllerTestConfigs {
 
     @Bean
     @Primary

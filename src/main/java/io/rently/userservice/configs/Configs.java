@@ -5,10 +5,12 @@ import io.rently.userservice.persistency.SqlPersistence;
 import io.rently.userservice.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class Configs {
 
+    @Primary
     @Bean
     public IDatabaseContext repositoryBean() {
         SqlPersistence sqlService = new SqlPersistence();
@@ -19,6 +21,7 @@ public class Configs {
         return sqlService;
     }
 
+    @Primary
     @Bean
     public UserService userServiceBean() {
         return new UserService(repositoryBean());
