@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1")
 public class UserController implements ErrorController {
@@ -17,10 +19,22 @@ public class UserController implements ErrorController {
         this.service = service;
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseContent getUser(@PathVariable String id) {
+    @GetMapping("/users/id/{id}")
+    public ResponseContent getUserById(@PathVariable String id) {
         User user = service.returnUserById(id);
         return new ResponseContent.Builder().setData(user).build();
+    }
+
+    @GetMapping("/users/username/{username}")
+    public ResponseContent getUserByUsername(@PathVariable String username) {
+        List<User> users = service.returnUsersByUsername(username);
+        return new ResponseContent.Builder().setData(users).build();
+    }
+
+    @GetMapping("/users/email/{email}")
+    public ResponseContent getUserByEmail(@PathVariable String email) {
+        List<User> users = service.returnUsersByEmail(email);
+        return new ResponseContent.Builder().setData(users).build();
     }
 
     @PostMapping("/users")
@@ -42,4 +56,4 @@ public class UserController implements ErrorController {
     }
 }
 
-// 9aef044d-6549-4785-9234-cb7f9314777a
+// 3bdb141f-deb6-4260-a8ac-999e6ab9c89d

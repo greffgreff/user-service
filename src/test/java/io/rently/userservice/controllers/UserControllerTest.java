@@ -46,7 +46,7 @@ class UserControllerTest {
 
     @Test
     void getRequest_validUri_invalidUserId_notFound() throws Exception {
-        String validUri = "/api/v1/users/{id}";
+        String validUri = "/api/v1/users/id/{id}";
         String invalidUserId = "invalidUserId";
 
         Mockito.when(userService.returnUserById(invalidUserId)).thenThrow(Errors.USER_NOT_FOUND.getException());
@@ -66,7 +66,7 @@ class UserControllerTest {
 
     @Test
     void getRequest_validUri_validUserId_isOk() throws Exception {
-        String validUri = "/api/v1/users/{id}";
+        String validUri = "/api/v1/users/id/{id}";
         String validUserId = "validUserId";
         User user = new User.Builder().setId("validUserId").build();
 

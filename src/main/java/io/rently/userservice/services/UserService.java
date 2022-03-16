@@ -1,16 +1,13 @@
 package io.rently.userservice.services;
 
-import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.enums.Errors;
 import io.rently.userservice.interfaces.IDatabaseContext;
-import io.rently.userservice.persistency.SqlPersistence;
 import io.rently.userservice.util.Broadcaster;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 @Service
 public class UserService {
@@ -18,6 +15,14 @@ public class UserService {
 
     public UserService(IDatabaseContext repository) {
         this.repository = repository;
+    }
+
+    public List<User> returnUsersByUsername(String username) {
+        return getUsersByUsername(username);
+    }
+
+    public List<User> returnUsersByEmail(String email) {
+        return getUsersByEmail(email);
     }
 
     public User returnUserById(String id) {
@@ -62,14 +67,22 @@ public class UserService {
         throw Errors.USER_NOT_FOUND.getException();
     }
 
+    private List<User> getUsersByEmail(String email) {
+        return repository.get(User.class, "email", email);
+    }
+
+    private List<User> getUsersByUsername(String username) {
+        return repository.get(User.class, "username", username);
+    }
+
     private void checkUniqueValues(User userData, String id) {
-        for (User user : repository.get(User.class, "email", userData.getEmail())) {
+        for (User user : getUsersByEmail(userData.getEmail())) {
             if (!Objects.equals(user.getId(), id)) {
                 Broadcaster.info("Email already exists (Email: " + userData.getEmail() + ")");
                 throw Errors.EMAIL_ALREADY_EXISTS.getException();
             }
         }
-        for (User user : repository.get(User.class, "username", userData.getUsername())) {
+        for (User user : getUsersByUsername(userData.getUsername())) {
             if (!Objects.equals(user.getId(), id)) {
                 Broadcaster.info("Username already exists (Username: " + userData.getUsername() + ")");
                 throw Errors.USERNAME_ALREADY_EXISTS.getException();
