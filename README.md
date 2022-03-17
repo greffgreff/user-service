@@ -9,6 +9,8 @@ This project is one among other RESTful APIs used in the larger Rently.io projec
 
 **DEPRECATED** Due to security concerns, it was decided to drop the use of this version of the endpoint so it is now deprecated. Reasons for this can be found [at the bottom](#deprecated).
 
+<br />
+
 ## Response Data
 
 ### Response Object
@@ -34,6 +36,8 @@ This project is one among other RESTful APIs used in the larger Rently.io projec
 | `salt`, string | The password's corresponding salt |
 | `createdOn`, timestamp | Timestamp of when the user was created  |
 | `updatedOn`, timestamp | Timestamp of when the last changes to the data was made |
+
+<br />
 
 ## Request Mappings
 
