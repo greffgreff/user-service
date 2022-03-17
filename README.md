@@ -7,7 +7,7 @@
 
 This project is one among other RESTful APIs used in the larger Rently.io project whose frontend can be found [here](https://github.com/greffgreff/rently). More specifically, this endpoint is intended to serve requests regarding users-related data. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
 
-**DEPRECATED** Due to security concerns, it was decided to drop the use of this version of the endpoint so it is now deprecated. Reasons for this can be found [at the bottom](#deprecated).
+**DEPRECATED** Due to security concerns, it was decided to drop the use of this version of the endpoint so it is now deprecated. Reasons for this can be found [here](https://github.com/greffgreff/user-service/blob/V1.0/DEPRECATED.md).
 
 <br />
 
@@ -32,7 +32,7 @@ This project is one among other RESTful APIs used in the larger Rently.io projec
 | `email` string | The user's email address, unique |
 | `gender` string | The user's gender |
 | `phone` string | The user's phone number |
-| `password`, string | A hashed password |
+| `password`, string | The user's password |
 | `salt`, string | The password's corresponding salt |
 | `createdOn`, timestamp | Timestamp of when the user was created  |
 | `updatedOn`, timestamp | Timestamp of when the last changes to the data was made |
@@ -78,6 +78,7 @@ Returns a json [response](#response-object) object containing one [user](#user-o
 |:---:|---|---|
 | `404` | *"Could not find user with specified arguments"* | No user found on the database with specified request parameter | 
 
+<br />
 
 ### `GET /api/v1/users/username/{username}`
 
@@ -118,6 +119,7 @@ Returns a json [response](#response-object) object containing an array of [user]
 |:---:|---|---|
 | `404` | *"Could not find user with specified arguments"* | No user found on the database with specified request parameter | 
 
+<br />
 
 ### `GET /api/v1/users/email/{email}`
 
@@ -158,6 +160,7 @@ Returns a json [response](#response-object) object containing an array of [user]
 |:---:|---|---|
 | `404` | *"Could not find user with specified arguments"* | No user found on the database with specified request parameter | 
 
+<br />
 
 ### `POST /api/v1/users`
 
@@ -193,6 +196,7 @@ Creates a user using the request body data in json format and inserts it to the 
 | `406` | *"No content found in request body"* | No content was provided in the request body | 
 | `406` | *"Invalid data provided by client"* | The content in the request body was malformated or is not in json format | 
 
+<br />
 
 ### `PUT /api/v1/users/{id}`
 
@@ -232,6 +236,7 @@ Updates a user using the request body data in json format from the database.
 | `406` | *"No content found in request body"* | No content was provided in the request body | 
 | `406` | *"Invalid data provided by client"* | The content in the request body was malformated or is not in json format | 
 
+<br />
 
 ### `DELETE /api/v1/users/{id}`
 
