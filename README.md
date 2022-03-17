@@ -9,8 +9,6 @@ This project is one among other RESTful APIs used in the larger Rently.io projec
 
 **DEPRECATED** Due to security concerns, it was decided to drop the use of this version of the endpoint so it is now deprecated. Reasons for this can be found [here](https://github.com/greffgreff/user-service/blob/V1.0/DEPRECATED.md).
 
-<br />
-
 ## Response Data
 
 ### Response Object
