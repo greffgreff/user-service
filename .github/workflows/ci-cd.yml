@@ -1,4 +1,4 @@
-name: Build + Testing + Deploy
+name: User Endpoint CI CD
 
 on:
   push:
