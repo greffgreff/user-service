@@ -49,6 +49,6 @@ jobs:
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: V2.0-latest
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
 
