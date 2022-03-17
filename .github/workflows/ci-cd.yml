@@ -2,9 +2,9 @@ name: Build + Testing + Deploy
 
 on:
   push:
-    branches: [ master ]
+    branches: [ V2.0-latest ]
   pull_request:
-    branches: [ master ]
+    branches: [ V2.0-latest ]
 
 jobs:
   Building:
