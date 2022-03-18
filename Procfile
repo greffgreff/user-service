@@ -1,1 +1,1 @@
-web java $JAVA_OPTS -cp ./target/classes:target/dependency/* ./target/${project.build.finalName}.jar
+web java $JAVA_OPTS -cp ./target/classes:target/dependency/* /target/classes/io/rently/userservice/UserApi.java
