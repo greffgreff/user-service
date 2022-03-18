@@ -7,7 +7,7 @@
 
 This project is one among other RESTful APIs used in the larger Rently.io project whose frontend can be found [here](https://github.com/greffgreff/rently). More specifically, this endpoint is intended to serve requests regarding fetching or creating users and storing insinde a MySQL database. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
 
-After each subsequent additions and changes to the codebase of the service, tests are ran and the, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/)
+After each subsequent additions and changes to the codebase of the service, tests are ran and the, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/).
 
 **DEPRECATED** Due to security concerns, it was decided to drop the use of this version of the endpoint so it is now deprecated. Reasons for this can be found [here](https://github.com/greffgreff/user-service/blob/V1.0/DEPRECATED.md).
 
