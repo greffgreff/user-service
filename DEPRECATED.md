@@ -19,3 +19,6 @@ Below are some of the key security and technical reasons I will be discussing:
 - Conclusion
   - Make use of JDC and other plugins to solve issues
   - Make use of oauth2
+
+
+Work with others!
