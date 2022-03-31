@@ -6,54 +6,56 @@ import io.rently.userservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
-@RequestMapping("api/v1")
 public class UserController implements ErrorController {
-    public final UserService service;
+    public static final String PREFIX = "/api/v2";
 
     @Autowired
-    public UserController(UserService service) {
-        this.service = service;
+    public UserService service;
+
+    @GetMapping("/**")
+    public RedirectView redirectGets() {
+        return new RedirectView(PREFIX + "/");
     }
 
-    @GetMapping("/users/id/{id}")
-    public ResponseContent getUserById(@PathVariable String id) {
-        User user = service.returnUserById(id);
+    @PutMapping("/**")
+    public RedirectView redirectPuts() {
+        return new RedirectView(PREFIX + "/");
+    }
+
+    @PostMapping("/**")
+    public RedirectView redirectPosts() {
+        return new RedirectView(PREFIX + "/");
+    }
+
+    @DeleteMapping("/**")
+    public RedirectView redirectDeletes() {
+        return new RedirectView(PREFIX + "/");
+    }
+
+    @GetMapping(PREFIX + "/{provider}/{id}")
+    public ResponseContent handleGetRequest(@RequestParam String provider, @RequestParam String id) {
+        User user = service.getUser(provider, id);
         return new ResponseContent.Builder().setData(user).build();
     }
 
-    @GetMapping("/users/username/{username}")
-    public ResponseContent getUserByUsername(@PathVariable String username) {
-        List<User> users = service.returnUsersByUsername(username);
-        return new ResponseContent.Builder().setData(users).build();
+    @PutMapping(PREFIX + "/{provider}/{id}")
+    public ResponseContent handlePutRequest(@RequestParam String provider, @RequestParam String id) {
+        User user = service.updateUser(provider, id);
+        return new ResponseContent.Builder().setData(user).build();
     }
 
-    @GetMapping("/users/email/{email}")
-    public ResponseContent getUserByEmail(@PathVariable String email) {
-        List<User> users = service.returnUsersByEmail(email);
-        return new ResponseContent.Builder().setData(users).build();
+    @PostMapping(PREFIX + "/{provider}/{id}")
+    public ResponseContent handlePostRequest(@RequestParam String provider, @RequestParam String id) {
+        User user = service.addUser(provider, id);
+        return new ResponseContent.Builder().setData(user).build();
     }
 
-    @PostMapping("/users")
-    public ResponseContent addUser(@RequestBody User userData) {
-        service.addUser(userData);
-        return new ResponseContent.Builder().setMessage("Successfully added user to database").build();
-    }
-
-    @PutMapping("/users/{id}")
-    public ResponseContent replaceUser(@PathVariable String id, @RequestBody User userData) {
-        service.updateUserById(id, userData);
-        return new ResponseContent.Builder().setMessage("Successfully updated user in database").build();
-    }
-
-    @DeleteMapping("/users/{id}")
-    public ResponseContent deleteUser(@PathVariable String id) {
-        service.deleteUserById(id);
-        return new ResponseContent.Builder().setMessage("Successfully delete user from database").build();
+    @DeleteMapping(PREFIX + "/{provider}/{id}")
+    public ResponseContent handleDeleteRequest(@RequestParam String provider, @RequestParam String id) {
+        User user = service.deleteUser(provider, id);
+        return new ResponseContent.Builder().setData(user).build();
     }
 }
-
-// 3bdb141f-deb6-4260-a8ac-999e6ab9c89d
