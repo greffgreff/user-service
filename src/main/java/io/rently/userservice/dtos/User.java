@@ -3,17 +3,39 @@ package io.rently.userservice.dtos;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.rently.userservice.errors.HttpValidationFailure;
+import io.rently.userservice.util.Validation;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.sql.Timestamp;
+import java.util.UUID;
+
+@Entity(name = "users")
 @JsonDeserialize(builder = User.Builder.class)
 public class User {
-    public final String id;
-    public final String providerId;
-    public final String provider;
-    public final String name;
-    public final String email;
-    public final String phone;
-    public final String createdAt;
-    public final String updatedAt;
+    @Id
+    @Column(updatable = false, nullable = false, unique = true)
+    private String id;
+    // both `providerId` (user id from provider)
+    // and `provider` can act as candidate primary keys
+    // and won't be changing for users.
+    // `id` key added for the sake of convenience
+    @Column(updatable = false, nullable = false, columnDefinition = "TEXT")
+    private String providerId;
+    @Column(updatable = false, nullable = false, columnDefinition = "TEXT")
+    private String provider;
+    @Column(columnDefinition = "TEXT")
+    private String name;
+    @Column(columnDefinition = "TEXT")
+    private String email;
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String createdAt;
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String updatedAt;
+
+    protected User() { }
 
     public User(Builder builder) {
         this.id = builder.id;
@@ -21,9 +43,49 @@ public class User {
         this.provider = builder.provider;
         this.name = builder.name;
         this.email = builder.email;
-        this.phone = builder.phone;
         this.createdAt = builder.createdAt;
         this.updatedAt = builder.updatedAt;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", providerId='" + providerId + '\'' +
+                ", provider='" + provider + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                '}';
     }
 
     public static class Builder {
@@ -38,8 +100,6 @@ public class User {
         @JsonProperty
         public String email;
         @JsonProperty
-        public String phone;
-        @JsonProperty
         public String createdAt;
         @JsonProperty
         public String updatedAt;
@@ -47,6 +107,31 @@ public class User {
         public Builder(String providerId, String provider) {
             this.providerId = providerId;
             this.provider = provider;
+        }
+
+        public Builder setId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder setCreatedAt(String createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder setUpdatedAt(String updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
         }
 
         @JsonCreator
