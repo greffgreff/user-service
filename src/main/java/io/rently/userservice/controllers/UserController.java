@@ -23,9 +23,10 @@ public class UserController implements ErrorController {
     }
 
     @PutMapping(PREFIX + "/{provider}/{id}")
-    public ResponseContent handlePutRequest(@PathVariable String provider, @PathVariable String id) {
-        User user = service.updateUser(provider, id);
-        return new ResponseContent.Builder().setData(user).build();
+    public ResponseContent handlePutRequest(@PathVariable String provider, @PathVariable String id, @RequestBody User user) {
+        service.deleteUser(provider, id);
+        service.addUser(user);
+        return new ResponseContent.Builder().setData("Successfully updated user from database.").build();
     }
 
     @PostMapping(PREFIX + "/")
