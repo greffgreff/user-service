@@ -31,12 +31,12 @@ public class UserController implements ErrorController {
     @PostMapping(PREFIX + "/")
     public ResponseContent handlePostRequest(@RequestBody User user) {
         service.addUser(user);
-        return new ResponseContent.Builder().setData(user).build();
+        return new ResponseContent.Builder().setMessage("Successfully added user to database.").build();
     }
 
     @DeleteMapping(PREFIX + "/{provider}/{id}")
     public ResponseContent handleDeleteRequest(@PathVariable String provider, @PathVariable String id) {
-        User user = service.deleteUser(provider, id);
-        return new ResponseContent.Builder().setData(user).build();
+        service.deleteUser(provider, id);
+        return new ResponseContent.Builder().setData("Successfully removed user from database.").build();
     }
 }

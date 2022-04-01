@@ -13,6 +13,7 @@ public class UserService {
     private UserRepository repository;
 
     public User getUser(String provider, String id) {
+        Broadcaster.info("Adding user to database " + provider + " " + id);
         return repository.findByProviderInfo(provider, id);
     }
 
@@ -24,7 +25,8 @@ public class UserService {
         return null;
     }
 
-    public User deleteUser(String provider, String id) {
-        return null;
+    public void deleteUser(String provider, String id) {
+        Broadcaster.info("Removing user from database " + provider + " " + id);
+        repository.deleteByProviderInfo(provider, id);
     }
 }
