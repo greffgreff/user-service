@@ -17,7 +17,7 @@ public class ErrorController {
     @ResponseBody
     public ResponseContent handleGenericException(HttpServletResponse response, Exception exception) {
         Broadcaster.error(exception.getMessage());
-        ResponseStatusException resEx = Errors.INTERNAL_SERVER_ERROR.getException();
+        ResponseStatusException resEx = Errors.INTERNAL_SERVER_ERROR;
         response.setStatus(resEx.getStatus().value());
         return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getMessage()).build();
     }
@@ -33,7 +33,7 @@ public class ErrorController {
     @ExceptionHandler(MethodNotAllowedException.class)
     @ResponseBody
     public static ResponseContent handleInvalidURI(HttpServletResponse response) {
-        ResponseStatusException resEx = Errors.INVALID_URI_PATH.getException();
+        ResponseStatusException resEx = Errors.INVALID_URI_PATH;
         response.setStatus(resEx.getStatus().value());
         return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getMessage()).build();
     }

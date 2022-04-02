@@ -3,7 +3,7 @@ package io.rently.userservice.dtos;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.rently.userservice.errors.HttpValidationFailure;
+import io.rently.userservice.errors.Errors;
 import io.rently.userservice.util.Validation;
 
 import javax.persistence.Column;
@@ -15,13 +15,13 @@ import java.util.UUID;
 @Entity(name = "users")
 @JsonDeserialize(builder = User.Builder.class)
 public class User {
+    // both `providerId` (user id from provider)
+    // and `provider` can act as composite primary keys
+    // and won't be changing for users.
+    // `id` key added for the sake of convenience with JPA
     @Id
     @Column(updatable = false, nullable = false, unique = true)
     private String id;
-    // both `providerId` (user id from provider)
-    // and `provider` can act as candidate primary keys
-    // and won't be changing for users.
-    // `id` key added for the sake of convenience
     @Column(updatable = false, nullable = false, columnDefinition = "TEXT")
     private String providerId;
     @Column(updatable = false, nullable = false, columnDefinition = "TEXT")
@@ -90,7 +90,7 @@ public class User {
 
     public static class Builder {
         @JsonProperty
-        public String id;
+        public final String id;
         @JsonProperty
         public final String providerId;
         @JsonProperty
@@ -105,13 +105,9 @@ public class User {
         public String updatedAt;
 
         public Builder(String providerId, String provider) {
+            this.id = UUID.randomUUID().toString();
             this.providerId = providerId;
             this.provider = provider;
-        }
-
-        public Builder setId(String id) {
-            this.id = id;
-            return this;
         }
 
         public Builder setName(String name) {
@@ -136,7 +132,17 @@ public class User {
 
         @JsonCreator
         public User build() {
+            validate();
             return new User(this);
+        }
+
+        private void validate() {
+            if (provider == null) {
+                throw new Errors.HttpFieldMissing("provider");
+            }
+            if (providerId == null) {
+                throw new Errors.HttpFieldMissing("providerId");
+            }
         }
     }
 }
