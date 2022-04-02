@@ -8,6 +8,8 @@ import io.rently.userservice.util.Broadcaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -25,13 +27,13 @@ public class UserService {
     }
 
     public void addUser(User user) {
-        Broadcaster.info("Adding user to database: " + user.getProvider() + " " + user.getProviderId());
+        Broadcaster.info("Adding user to database: " + user.getId());
         validateData(user);
         repository.saveAndFlush(user);
     }
 
     public void updateUser(String id, User user) {
-        Broadcaster.info("Updating user from database by id: " + id);
+        Broadcaster.info("Updating user from database: " + id);
         tryFindUserById(id);
         validateData(user);
         deleteUser(id);
@@ -39,25 +41,29 @@ public class UserService {
     }
 
     public void deleteUser(String id) {
-        Broadcaster.info("Removing user from database by id: " + id);
+        Broadcaster.info("Removing user from database: " + id);
         tryFindUserById(id);
         repository.deleteById(id);
     }
 
     public User tryFindUserByProvider(String provider, String providerId) {
-        User user = repository.findByProviderInfo(provider, providerId).get();
-        if (user == null) {
+        Optional<User> user = repository.findByProviderInfo(provider, providerId);
+        try {
+            return user.get();
+        }
+        catch(Exception e) {
             throw Errors.USER_NOT_FOUND;
         }
-        return user;
     }
 
     public User tryFindUserById(String id) {
-        User user = repository.findById(id).get();
-        if (user == null) {
+        Optional<User> user = repository.findById(id);
+        try {
+            return user.get();
+        }
+        catch(Exception e) {
             throw Errors.USER_NOT_FOUND;
         }
-        return user;
     }
 
     public void validateData(User user) {

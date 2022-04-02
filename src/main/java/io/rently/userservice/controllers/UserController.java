@@ -28,7 +28,7 @@ public class UserController implements ErrorController {
         return new ResponseContent.Builder().setData(user).build();
     }
 
-    @PutMapping(PREFIX + "/{id}}")
+    @PutMapping(PREFIX + "/{id}")
     public ResponseContent handlePutRequest(@PathVariable String id, @RequestBody User user) {
         service.updateUser(id, user);
         return new ResponseContent.Builder().setData("Successfully updated user from database.").build();
