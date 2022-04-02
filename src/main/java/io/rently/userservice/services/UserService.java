@@ -16,29 +16,19 @@ public class UserService {
 
     public User getUser(String provider, String id) {
         Broadcaster.info("Fetching user from database: " + provider + " " + id);
-        User user = repository.findByProviderInfo(provider, id);
-        if (user == null) {
-            throw Errors.USER_NOT_FOUND;
-        }
-        return user;
+        return tryFindUser(provider, id);
     }
 
     public void addUser(User user) {
-        if (user == null) {
-            throw Errors.NO_DATA;
-        }
         Broadcaster.info("Adding user to database: " + user.getProvider() + " " + user.getProviderId());
+        validateData(user);
         repository.saveAndFlush(user);
     }
 
     public User updateUser(String provider, String id, User user) {
-        if (user == null) {
-            throw Errors.NO_DATA;
-        }
-        if (repository.findByProviderInfo(provider, id) == null) {
-            throw Errors.USER_NOT_FOUND;
-        }
         Broadcaster.info("Updating user from database: " + provider + " " + id);
+        tryFindUser(provider, id);
+        validateData(user);
         deleteUser(provider, id);
         addUser(user);
         return null;
@@ -46,6 +36,27 @@ public class UserService {
 
     public void deleteUser(String provider, String id) {
         Broadcaster.info("Removing user from database: " + provider + " " + id);
+        tryFindUser(provider, id);
         repository.deleteByProviderInfo(provider, id);
+    }
+
+    public User tryFindUser(String provider, String providerId) {
+        User user = repository.findByProviderInfo(provider, providerId);
+        if (user == null) {
+            throw Errors.USER_NOT_FOUND;
+        }
+        return user;
+    }
+
+    public void validateData(User user) {
+        if (user == null) {
+            throw Errors.NO_DATA;
+        }
+        if (user.getProvider() == null) {
+            throw new Errors.HttpFieldMissing("provider");
+        }
+        if (user.getProviderId() == null) {
+            throw new Errors.HttpFieldMissing("providerId");
+        }
     }
 }

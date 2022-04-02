@@ -132,17 +132,7 @@ public class User {
 
         @JsonCreator
         public User build() {
-            validate();
             return new User(this);
-        }
-
-        private void validate() {
-            if (provider == null) {
-                throw new Errors.HttpFieldMissing("provider");
-            }
-            if (providerId == null) {
-                throw new Errors.HttpFieldMissing("providerId");
-            }
         }
     }
 }
