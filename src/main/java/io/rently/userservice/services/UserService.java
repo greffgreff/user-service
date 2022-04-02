@@ -16,7 +16,11 @@ public class UserService {
 
     public User getUser(String provider, String id) {
         Broadcaster.info("Fetching user from database: " + provider + " " + id);
-        return findUserInDatabase(provider, id);
+        User user = repository.findByProviderInfo(provider, id);
+        if (user == null) {
+            throw Errors.USER_NOT_FOUND;
+        }
+        return user;
     }
 
     public void addUser(User user) {
@@ -31,8 +35,10 @@ public class UserService {
         if (user == null) {
             throw Errors.NO_DATA;
         }
+        if (repository.findByProviderInfo(provider, id) == null) {
+            throw Errors.USER_NOT_FOUND;
+        }
         Broadcaster.info("Updating user from database: " + provider + " " + id);
-        findUserInDatabase(provider, id);
         deleteUser(provider, id);
         addUser(user);
         return null;
@@ -41,13 +47,5 @@ public class UserService {
     public void deleteUser(String provider, String id) {
         Broadcaster.info("Removing user from database: " + provider + " " + id);
         repository.deleteByProviderInfo(provider, id);
-    }
-
-    public User findUserInDatabase(String provider, String id) {
-        User user = repository.findByProviderInfo(provider, id);
-        if (user == null) {
-            throw Errors.USER_NOT_FOUND;
-        }
-        return user;
     }
 }
