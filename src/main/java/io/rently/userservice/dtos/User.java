@@ -104,8 +104,8 @@ public class User {
         @JsonProperty
         public String updatedAt;
 
-        public Builder(String providerId, String provider) {
-            this.id = UUID.randomUUID().toString();
+        public Builder(String id, String providerId, String provider) {
+            this.id = id;
             this.providerId = providerId;
             this.provider = provider;
         }

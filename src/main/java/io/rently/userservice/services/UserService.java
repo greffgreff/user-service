@@ -14,9 +14,14 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    public User getUser(String provider, String id) {
-        Broadcaster.info("Fetching user from database: " + provider + " " + id);
-        return tryFindUser(provider, id);
+    public User getUserByProvider(String provider, String providerId) {
+        Broadcaster.info("Fetching user from database by provider: " + provider + " " + providerId);
+        return tryFindUserByProvider(provider, providerId);
+    }
+
+    public User getUserById(String id) {
+        Broadcaster.info("Fetching user from database by id: " + id);
+        return tryFindUserById(id);
     }
 
     public void addUser(User user) {
@@ -25,23 +30,30 @@ public class UserService {
         repository.saveAndFlush(user);
     }
 
-    public User updateUser(String provider, String id, User user) {
-        Broadcaster.info("Updating user from database: " + provider + " " + id);
-        tryFindUser(provider, id);
+    public void updateUser(String id, User user) {
+        Broadcaster.info("Updating user from database by id: " + id);
+        tryFindUserById(id);
         validateData(user);
-        deleteUser(provider, id);
+        deleteUser(id);
         addUser(user);
-        return null;
     }
 
-    public void deleteUser(String provider, String id) {
-        Broadcaster.info("Removing user from database: " + provider + " " + id);
-        tryFindUser(provider, id);
-        repository.deleteByProviderInfo(provider, id);
+    public void deleteUser(String id) {
+        Broadcaster.info("Removing user from database by id: " + id);
+        tryFindUserById(id);
+        repository.deleteById(id);
     }
 
-    public User tryFindUser(String provider, String providerId) {
-        User user = repository.findByProviderInfo(provider, providerId);
+    public User tryFindUserByProvider(String provider, String providerId) {
+        User user = repository.findByProviderInfo(provider, providerId).get();
+        if (user == null) {
+            throw Errors.USER_NOT_FOUND;
+        }
+        return user;
+    }
+
+    public User tryFindUserById(String id) {
+        User user = repository.findById(id).get();
         if (user == null) {
             throw Errors.USER_NOT_FOUND;
         }
