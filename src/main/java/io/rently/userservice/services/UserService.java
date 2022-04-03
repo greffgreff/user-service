@@ -5,10 +5,13 @@ import io.rently.userservice.errors.Errors;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.interfaces.UserRepository;
 import io.rently.userservice.util.Broadcaster;
+import io.rently.userservice.util.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -48,20 +51,18 @@ public class UserService {
 
     public User tryFindUserByProvider(String provider, String providerId) {
         Optional<User> user = repository.findByProviderInfo(provider, providerId);
-        try {
+        if (user.isPresent()) {
             return user.get();
-        }
-        catch(Exception e) {
+        } else {
             throw Errors.USER_NOT_FOUND;
         }
     }
 
     public User tryFindUserById(String id) {
         Optional<User> user = repository.findById(id);
-        try {
+        if (user.isPresent()) {
             return user.get();
-        }
-        catch(Exception e) {
+        } else {
             throw Errors.USER_NOT_FOUND;
         }
     }
@@ -69,11 +70,13 @@ public class UserService {
     public void validateData(User user) {
         if (user == null) {
             throw Errors.NO_DATA;
-        }
-        if (user.getProvider() == null) {
+        } else if (user.getId() == null) {
+            throw new Errors.HttpFieldMissing("id");
+        } else if (Validation.tryParseUUID(user.getId()) == null) {
+            throw new Errors.HttpValidationFailure("id", UUID.class, user.getId());
+        } else if (user.getProvider() == null) {
             throw new Errors.HttpFieldMissing("provider");
-        }
-        if (user.getProviderId() == null) {
+        } else if (user.getProviderId() == null) {
             throw new Errors.HttpFieldMissing("providerId");
         }
     }

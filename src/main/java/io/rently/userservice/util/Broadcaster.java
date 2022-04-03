@@ -3,7 +3,7 @@ package io.rently.userservice.util;
 import org.springframework.web.server.ResponseStatusException;
 
 public class Broadcaster {
-    private static final String PREFIX = "[LISTING ENDPOINT]";
+    private static final String PREFIX = "[USER ENDPOINT]";
 
     public static void debug(Object obj) {
         System.out.println(defaultFormat("[DEBUG]") + obj);
@@ -26,6 +26,6 @@ public class Broadcaster {
     }
 
     private static String defaultFormat(String type) {
-        return String.format("%-24s ", Utils.getCurrentTs()) + PREFIX + String.format(" %13s ", type);
+        return String.format("%-24s ", Utils.getCurrentTs()) + PREFIX + String.format(" %16s ", type);
     }
 }
