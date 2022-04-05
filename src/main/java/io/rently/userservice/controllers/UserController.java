@@ -28,20 +28,22 @@ public class UserController implements ErrorController {
         return new ResponseContent.Builder().setData(user).build();
     }
 
-    @PutMapping(PREFIX + "/{id}")
-    public ResponseContent handlePutRequest(@PathVariable String id, @RequestBody User user) {
-        service.updateUser(id, user);
-        return new ResponseContent.Builder().setData("Successfully updated user from database.").build();
-    }
-
     @PostMapping(PREFIX + "/")
     public ResponseContent handlePostRequest(@RequestBody User user) {
         service.addUser(user);
         return new ResponseContent.Builder().setMessage("Successfully added user to database.").build();
     }
 
+    @PutMapping(PREFIX + "/{id}")
+    public ResponseContent handlePutRequest(@RequestHeader("Authorization") String header, @PathVariable String id, @RequestBody User user) {
+        service.verifyOwnership(header, user);
+        service.updateUser(id, user);
+        return new ResponseContent.Builder().setData("Successfully updated user from database.").build();
+    }
+
     @DeleteMapping(PREFIX + "/{id}")
-    public ResponseContent handleDeleteRequest(@PathVariable String id) {
+    public ResponseContent handleDeleteRequest(@RequestHeader("Authorization") String header, @PathVariable String id) {
+        service.verifyOwnership(header, id);
         service.deleteUser(id);
         return new ResponseContent.Builder().setData("Successfully removed user from database.").build();
     }

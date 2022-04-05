@@ -5,11 +5,13 @@ import io.rently.userservice.errors.Errors;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.interfaces.UserRepository;
 import io.rently.userservice.util.Broadcaster;
+import io.rently.userservice.util.Jwt;
 import io.rently.userservice.util.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,15 +39,16 @@ public class UserService {
 
     public void updateUser(String id, User user) {
         Broadcaster.info("Updating user from database: " + id);
-        tryFindUserById(id);
+        if (!Objects.equals(id, user.getId())) {
+            throw Errors.INVALID_REQUEST;
+        }
         validateData(user);
-        deleteUser(id);
-        addUser(user);
+        repository.deleteById(id);
+        repository.save(user);
     }
 
     public void deleteUser(String id) {
         Broadcaster.info("Removing user from database: " + id);
-        tryFindUserById(id);
         repository.deleteById(id);
     }
 
@@ -64,6 +67,23 @@ public class UserService {
             return user.get();
         } else {
             throw Errors.USER_NOT_FOUND;
+        }
+    }
+
+    public void verifyOwnership(String header, String userId) {
+        User user = tryFindUserById(userId);
+        String id = Jwt.getClaims(header).getSubject();
+
+        if (!Objects.equals(id, user.getId())) {
+            throw Errors.UNAUTHORIZED_REQUEST;
+        }
+    }
+
+    public void verifyOwnership(String header, User user) {
+        String id = Jwt.getClaims(header).getSubject();
+
+        if (!Objects.equals(id, user.getId())) {
+            throw Errors.UNAUTHORIZED_REQUEST;
         }
     }
 
