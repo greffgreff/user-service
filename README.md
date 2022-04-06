@@ -156,7 +156,7 @@ A [user](#user-object) object.
 
 ### `PUT /api/v2/{id}`
 
-Updates a user using the request body data in json format. Perform validation on fields and throws an error accordingly verifies ownership beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
+Updates a user using the request body data in json format. Performs validation on fields and throws an error accordingly alongside verifying ownership beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
 
 #### URL parameters: 
 | **Parameter** | **Description** | **Required**
@@ -188,7 +188,7 @@ A [user](#user-object) object.
 
 ### `DELETE /api/v2/{id}`
 
-Deletes a user from the database. Performs owership verification beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
+Deletes a user from the database. Performs ownership verification beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
 
 #### URL parameters: 
 | **Parameter** | **Description** | **Required**
