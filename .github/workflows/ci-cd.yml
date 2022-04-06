@@ -2,9 +2,9 @@ name: User Endpoint CI CD
 
 on:
   push:
-    branches: [ V1.0 ]
+    branches: [ V2.0-latest ]
   pull_request:
-    branches: [ V1.0 ]
+    branches: [ V2.0-latest ]
 
 jobs:
   Building:
@@ -35,4 +35,3 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
-       
