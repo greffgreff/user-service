@@ -7,7 +7,7 @@
 
 This Spring Boot project is one among other RESTful APIs used in the larger Rently.io project whose frontend can be found [here](https://github.com/greffgreff/rently). More specifically, this endpoint is intended to serve requests when users login into the Rently system for safe keeping purposes. Users are stored insinde a MySQL database using JPA. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
 
-After each subsequent additions and changes to the codebase of the service, tests are ran and, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/).
+After each subsequent additions and changes to the codebase of the service, tests are ran and, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/api/v2/298dfb2f-90be-4bc3-8966-646634e5be07).
 
 Unlike the previous iteration, this endpoint no longer handles sensitive data such as passwords and salt to an authentication endpoint since autherization is now based on OAuth exclusively. As a result, users are now identified by a composite key of the `id` supplied by a provider (e.g. Google ID) and the `provider` itself (e.g. Google) in the unlikely event the id from the provider matches that of another provider. On requests other than GET, data ownership is verified by comparing Json Web Tokens subject to the data's holder id. A middleware was added that verifies the JWT's validity upon every requests.
 
