@@ -28,7 +28,7 @@ Unlike the previous iteration, this endpoint no longer handles sensitive data su
 
 |**Field**|**Description**|
 |---|---|
-| `id` uuid string | The user's username |
+| `id` uuid string | The user's id |
 | `providerId` string | The user's id given by the provider (e.g Google ID) |
 | `provider` string | The user's origin (e.g. Google) |
 | `name` string | The user's name from the provider |
