@@ -50,7 +50,7 @@ Unlike the previous iteration, this endpoint no longer handles sensitive data su
 
 ## Request Mappings
 
-### `GET /api/v2/users/{provider}/{providerId}`
+### `GET /api/v2/{provider}/{providerId}`
 
 Returns a json [response](#response-object) object containing one [user](#user-object) object. Permits fetching user data using a `provider` and a `provider account id`. 
 
@@ -88,7 +88,7 @@ Returns a json [response](#response-object) object containing one [user](#user-o
 <br />
 
 
-### `GET /api/v2/users/{id}`
+### `GET /api/v2/{id}`
 
 Returns a json [response](#response-object) object containing one [user](#user-object) object. Permits fetching user data by `id`. 
 
