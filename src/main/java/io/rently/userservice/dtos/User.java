@@ -1,207 +1,132 @@
 package io.rently.userservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import io.rently.userservice.annotations.PersistentField;
-import io.rently.userservice.annotations.PersistentKeyField;
-import io.rently.userservice.annotations.PersistentObject;
-import io.rently.userservice.util.Broadcaster;
-import io.rently.userservice.util.Util;
+import io.rently.userservice.errors.Errors;
+import io.rently.userservice.util.Validation;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-@PersistentObject(name = "_rently_users")
+@Entity(name = "users")
 @JsonDeserialize(builder = User.Builder.class)
 public class User {
-    @PersistentField(name = "id")
-    @PersistentKeyField(name = "id")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    // both `providerId` (user id from provider)
+    // and `provider` can act as composite primary keys
+    // and won't be changing for users.
+    // `id` key added for the sake of convenience with JPA
+    @Id
+    @Column(updatable = false, nullable = false, unique = true)
     private String id;
-
-    @PersistentField(name = "username")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String username;
-
-    @PersistentField(name = "full_name")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String fullName;
-
-    @PersistentField(name = "email")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Column(updatable = false, nullable = false, columnDefinition = "TEXT")
+    private String providerId;
+    @Column(updatable = false, nullable = false, columnDefinition = "TEXT")
+    private String provider;
+    @Column(columnDefinition = "TEXT")
+    private String name;
+    @Column(columnDefinition = "TEXT")
     private String email;
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String createdAt;
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String updatedAt;
 
-    @PersistentField(name = "gender")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String gender;
-
-    @PersistentField(name = "phone_number")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String phone;
-
-    @PersistentField(name = "password")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String password;
-
-    @PersistentField(name = "salt")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String salt;
-
-    @PersistentField(name = "creation_date")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String createdOn;
-
-    @PersistentField(name = "last_update")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String updatedOn;
-
-    public User() { }
+    protected User() { }
 
     public User(Builder builder) {
         this.id = builder.id;
-        this.username = builder.username;
-        this.fullName = builder.fullName;
+        this.providerId = builder.providerId;
+        this.provider = builder.provider;
+        this.name = builder.name;
         this.email = builder.email;
-        this.gender = builder.gender;
-        this.phone = builder.phone;
-        this.password = builder.password;
-        this.salt = builder.salt;
-        this.createdOn = builder.createdOn;
-        this.updatedOn = builder.updatedOn;
+        this.createdAt = builder.createdAt;
+        this.updatedAt = builder.updatedAt;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getProviderId() {
+        return providerId;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getGender() {
-        return gender;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public String getCreatedOn() {
-        return createdOn;
-    }
-
-    public String getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public User createAsNew() {
-        id = UUID.randomUUID().toString();
-        createdOn = new Timestamp(System.currentTimeMillis()).toString();
-        updatedOn = new Timestamp(System.currentTimeMillis()).toString();
-        return this;
-    }
-
-    public User updateInfo(User userData) {
-        username = Util.getNonNull(userData.getUsername(), username);
-        fullName = Util.getNonNull(userData.getFullName(), fullName);
-        email = Util.getNonNull(userData.getEmail(), email);
-        gender = Util.getNonNull(userData.getGender(), gender);
-        phone = Util.getNonNull(userData.getPhone(), phone);
-        password = Util.getNonNull(userData.getPassword(), password);
-        salt = Util.getNonNull(userData.getSalt(), salt);
-        createdOn = Util.getNonNull(userData.getCreatedOn(), createdOn);
-        updatedOn = new Timestamp(System.currentTimeMillis()).toString();
-        return this;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", providerId='" + providerId + '\'' +
+                ", provider='" + provider + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                '}';
     }
 
     public static class Builder {
-        public String id;
-        public String username;
-        public String fullName;
+        @JsonProperty
+        public final String id;
+        @JsonProperty
+        public final String providerId;
+        @JsonProperty
+        public final String provider;
+        @JsonProperty
+        public String name;
+        @JsonProperty
         public String email;
-        public String gender;
-        public String phone;
-        public String password;
-        public String salt;
-        public String createdOn;
-        public String updatedOn;
-
         @JsonProperty
-        public Builder setId(String id) {
+        public String createdAt;
+        @JsonProperty
+        public String updatedAt;
+
+        public Builder(String id, String providerId, String provider) {
             this.id = id;
+            this.providerId = providerId;
+            this.provider = provider;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
             return this;
         }
 
-        @JsonProperty
-        public Builder setUsername(String username) {
-            this.username = username;
-            return this;
-        }
-
-        @JsonProperty
-        public Builder setFullName(String fullName) {
-            this.fullName = fullName;
-            return this;
-        }
-
-        @JsonProperty
         public Builder setEmail(String email) {
             this.email = email;
             return this;
         }
 
-        @JsonProperty
-        public Builder setGender(String gender) {
-            this.gender = gender;
+        public Builder setCreatedAt(String createdAt) {
+            this.createdAt = createdAt;
             return this;
         }
 
-        @JsonProperty
-        public Builder setPhone(String phone) {
-            this.phone = phone;
-            return this;
-        }
-
-        @JsonProperty
-        public Builder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        @JsonProperty
-        public Builder setSalt(String salt) {
-            this.salt = salt;
-            return this;
-        }
-
-        @JsonProperty
-        public Builder setCreatedOn(String createdOn) {
-            this.createdOn = createdOn;
-            return this;
-        }
-
-        @JsonProperty
-        public Builder setUpdatedOn(String updatedOn) {
-            this.updatedOn = updatedOn;
+        public Builder setUpdatedAt(String updatedAt) {
+            this.updatedAt = updatedAt;
             return this;
         }
 

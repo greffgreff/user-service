@@ -1,99 +1,106 @@
 package io.rently.userservice.services;
 
 import io.rently.userservice.dtos.User;
-import io.rently.userservice.errors.enums.Errors;
-import io.rently.userservice.interfaces.IDatabaseContext;
+import io.rently.userservice.errors.Errors;
+import io.rently.userservice.errors.Errors;
+import io.rently.userservice.interfaces.UserRepository;
 import io.rently.userservice.util.Broadcaster;
+import io.rently.userservice.util.Jwt;
+import io.rently.userservice.util.Validation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
-    private final IDatabaseContext repository;
 
-    public UserService(IDatabaseContext repository) {
-        this.repository = repository;
+    @Autowired
+    private UserRepository repository;
+
+    public User getUserByProvider(String provider, String providerId) {
+        Broadcaster.info("Fetching user from database by provider: " + provider + " " + providerId);
+        return tryFindUserByProvider(provider, providerId);
     }
 
-    public List<User> returnUsersByUsername(String username) {
-        return getUsersByUsername(username);
+    public User getUserById(String id) {
+        Broadcaster.info("Fetching user from database by id: " + id);
+        return tryFindUserById(id);
     }
 
-    public List<User> returnUsersByEmail(String email) {
-        return getUsersByEmail(email);
-    }
-
-    public User returnUserById(String id) {
-        return getUserById(id);
-    }
-
-    public void addUser(User userData) {
-        checkUserData(userData);
-        checkUniqueValues(userData, null);
-        if (userData.getUsername() == null) {
-            throw Errors.USERNAME_NOT_FOUND.getException();
+    public void addUser(User user) {
+        Broadcaster.info("Adding user to database: " + user.getId());
+        if (tryFindUserByProvider(user.getProvider(), user.getProviderId()) != null) {
+            throw Errors.USER_ALREADY_EXISTS;
         }
-        if (userData.getEmail() == null) {
-            throw Errors.EMAIL_NOT_FOUND.getException();
+        validateData(user);
+        repository.saveAndFlush(user);
+    }
+
+    public void updateUser(String id, User user) {
+        Broadcaster.info("Updating user from database: " + id);
+        if (!Objects.equals(id, user.getId())) {
+            throw Errors.INVALID_REQUEST;
         }
-        if (userData.getPassword() == null) {
-            throw Errors.PASSWORD_NOT_FOUND.getException();
-        }
-        User user = userData.createAsNew();
-        repository.add(user);
-        Broadcaster.info("User added to database (ID: " + user.getId() + ")");
+        validateData(user);
+        repository.deleteById(id);
+        repository.saveAndFlush(user);
     }
 
-    public void deleteUserById(String id) {
-        User user = getUserById(id);
-        repository.delete(user);
-        Broadcaster.info("User removed from database (ID: " + user.getId() + ")");
+    public void deleteUser(String id) {
+        Broadcaster.info("Removing user from database: " + id);
+        repository.deleteById(id);
     }
 
-    public void updateUserById(String id, User userData) {
-        checkUserData(userData);
-        User user = getUserById(id);
-        checkUniqueValues(userData, id);
-        repository.update(user.updateInfo(userData));
-        Broadcaster.info("User information update (ID: " + user.getId() + ")");
-    }
-
-    private User getUserById(String id) {
-        User user = repository.getById(User.class, id);
-        if (user != null) return user;
-        Broadcaster.info("User not found (ID: " + id + ")");
-        throw Errors.USER_NOT_FOUND.getException();
-    }
-
-    private List<User> getUsersByEmail(String email) {
-        return repository.get(User.class, "email", email);
-    }
-
-    private List<User> getUsersByUsername(String username) {
-        return repository.get(User.class, "username", username);
-    }
-
-    private void checkUniqueValues(User userData, String id) {
-        for (User user : getUsersByEmail(userData.getEmail())) {
-            if (!Objects.equals(user.getId(), id)) {
-                Broadcaster.info("Email already exists (Email: " + userData.getEmail() + ")");
-                throw Errors.EMAIL_ALREADY_EXISTS.getException();
-            }
-        }
-        for (User user : getUsersByUsername(userData.getUsername())) {
-            if (!Objects.equals(user.getId(), id)) {
-                Broadcaster.info("Username already exists (Username: " + userData.getUsername() + ")");
-                throw Errors.USERNAME_ALREADY_EXISTS.getException();
-            }
+    public User tryFindUserByProvider(String provider, String providerId) {
+        Optional<User> user = repository.findByProviderInfo(provider, providerId);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw Errors.USER_NOT_FOUND;
         }
     }
 
-    private void checkUserData(User userData) {
-        if (userData == null) {
-            Broadcaster.info("No data in request body found");
-            throw Errors.NO_DATA.getException();
+    public User tryFindUserById(String id) {
+        Optional<User> user = repository.findById(id);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw Errors.USER_NOT_FOUND;
+        }
+    }
+
+    public void verifyOwnership(String header, String userId) {
+        User user = tryFindUserById(userId);
+        String id = Jwt.getClaims(header).getSubject();
+
+        if (!Objects.equals(id, user.getId())) {
+            throw Errors.UNAUTHORIZED_REQUEST;
+        }
+    }
+
+    public void verifyOwnership(String header, User user) {
+        String id = Jwt.getClaims(header).getSubject();
+
+        if (!Objects.equals(id, user.getId())) {
+            throw Errors.UNAUTHORIZED_REQUEST;
+        }
+    }
+
+    public void validateData(User user) {
+        if (user == null) {
+            throw Errors.NO_DATA;
+        } else if (user.getId() == null) {
+            throw new Errors.HttpFieldMissing("id");
+        } else if (Validation.tryParseUUID(user.getId()) == null) {
+            throw new Errors.HttpValidationFailure("id", UUID.class, user.getId());
+        } else if (user.getProvider() == null) {
+            throw new Errors.HttpFieldMissing("provider");
+        } else if (user.getProviderId() == null) {
+            throw new Errors.HttpFieldMissing("providerId");
         }
     }
 }
