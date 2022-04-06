@@ -36,7 +36,7 @@ public class ErrorController {
     public static ResponseContent handleInvalidURI(HttpServletResponse response) {
         ResponseStatusException resEx = Errors.INVALID_URI_PATH;
         response.setStatus(resEx.getStatus().value());
-        return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getMessage()).build();
+        return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getReason()).build();
     }
 
     @ResponseBody
@@ -44,6 +44,6 @@ public class ErrorController {
     public static ResponseContent handleInvalidMethod(HttpServletResponse response) {
         ResponseStatusException resEx = Errors.INVALID_URI_PATH;
         response.setStatus(resEx.getStatus().value());
-        return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getMessage()).build();
+        return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getReason()).build();
     }
 }

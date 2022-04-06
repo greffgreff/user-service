@@ -10,7 +10,7 @@ public class Errors {
     public static final ResponseStatusException INVALID_URI_PATH = new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Invalid or incomplete URI");
     public static final ResponseStatusException INTERNAL_SERVER_ERROR = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Request could not be processed due to an internal server error");
     public static final ResponseStatusException NO_DATA = new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "No content found in request body");
-    public static final ResponseStatusException USER_ALREADY_EXISTS = new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User with provider and provider account id already exists");
+    public static final ResponseStatusException USER_ALREADY_EXISTS = new ResponseStatusException(HttpStatus.CONFLICT, "User with provider and provider account id already exists");
     public static final ResponseStatusException DATABASE_CONNECTION_FAILED = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to establish connection to database");
 
     public static class HttpFieldMissing extends ResponseStatusException {
