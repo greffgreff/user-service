@@ -33,6 +33,9 @@ public class UserService {
 
     public void addUser(User user) {
         Broadcaster.info("Adding user to database: " + user.getId());
+        if (tryFindUserByProvider(user.getProvider(), user.getProviderId()) != null) {
+            throw Errors.USER_ALREADY_EXISTS;
+        }
         validateData(user);
         repository.saveAndFlush(user);
     }
@@ -44,7 +47,7 @@ public class UserService {
         }
         validateData(user);
         repository.deleteById(id);
-        repository.save(user);
+        repository.saveAndFlush(user);
     }
 
     public void deleteUser(String id) {
