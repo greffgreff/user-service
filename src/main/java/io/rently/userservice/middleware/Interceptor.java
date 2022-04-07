@@ -3,6 +3,7 @@ package io.rently.userservice.middleware;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.util.Broadcaster;
 import io.rently.userservice.util.Jwt;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,8 +18,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class Interceptor implements HandlerInterceptor {
-    private static final String secretKey = "HelloDarknessMyOldFriend"; // move to .env file
-    public final List<String> blackListedMethods;
+    private final List<String> blackListedMethods;
 
     public Interceptor(RequestMethod... excludedMethods) {
         this.blackListedMethods = Arrays.stream(excludedMethods).toList().stream()

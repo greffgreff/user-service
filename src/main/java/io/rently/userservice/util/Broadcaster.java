@@ -22,7 +22,7 @@ public class Broadcaster {
     }
 
     public static void httpError(ResponseStatusException ex) {
-        System.out.println(defaultFormat("[ERROR]") + "[" + ex.getStatus() + "] " + ex.getReason());
+        System.out.println(defaultFormat("[HTTP ERROR]") + "[" + ex.getStatus() + "] " + ex.getReason());
     }
 
     private static String defaultFormat(String type) {

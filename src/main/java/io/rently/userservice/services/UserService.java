@@ -55,7 +55,7 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    public User tryFindUserByProvider(String provider, String providerId) {
+    private User tryFindUserByProvider(String provider, String providerId) {
         Optional<User> user = repository.findByProviderInfo(provider, providerId);
         if (user.isPresent()) {
             return user.get();
@@ -64,7 +64,7 @@ public class UserService {
         }
     }
 
-    public User tryFindUserById(String id) {
+    private User tryFindUserById(String id) {
         Optional<User> user = repository.findById(id);
         if (user.isPresent()) {
             return user.get();
@@ -90,7 +90,7 @@ public class UserService {
         }
     }
 
-    public void validateData(User user) {
+    private void validateData(User user) {
         if (user == null) {
             throw Errors.NO_DATA;
         } else if (user.getId() == null) {
