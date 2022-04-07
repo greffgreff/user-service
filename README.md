@@ -150,6 +150,7 @@ A [user](#user-object) object.
 | `409` | *"User with provider and provider account id already"* | A user was found with a matching provider and provider account id provided in the request body, request terminated | 
 | `406` | *"A non-optional field has missing value. Value of field '`field`' was expected but got null"* | Non-optional field was missing | 
 | `406` | *"Validation failure occurred. Value of field '`field`' could not be recognized as type "`type`" (value: '`value`')"* | Non-optional field was of the wrong type | 
+| `406` | *"No content found in request body"* | No data was sent through the request's body in json format | 
 
 <br />
 
