@@ -184,7 +184,7 @@ A [user](#user-object) object.
 | `406` | *"Validation failure occurred. Value of field '`field`' could not be recognized as type "`type`" (value: '`value`')"* | Non-optional field was of the wrong type | 
 | `401` | *"Request is either no longer valid or has been tampered with"* | Request bearer has either expired or the subject and the data holder do not match | 
 | `406` | *"No content found in request body"* | No data was sent through the request's body in json format | 
-
+|`400`| *"Invalid request made"* | The user id provided in the URI and the user object present in the body do not match |
 <br />
 
 
