@@ -47,7 +47,7 @@ class UserControllerTest {
     }
 
     @AfterEach
-    public void reset_mocks() {
+    void reset_mocks() {
         Mockito.reset(service);
     }
 

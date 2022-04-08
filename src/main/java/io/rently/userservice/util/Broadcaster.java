@@ -2,6 +2,8 @@ package io.rently.userservice.util;
 
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Timestamp;
+
 public class Broadcaster {
     private static final String PREFIX = "[USER ENDPOINT]";
 
@@ -26,6 +28,6 @@ public class Broadcaster {
     }
 
     private static String defaultFormat(String type) {
-        return String.format("%-24s ", Utils.getCurrentTs()) + PREFIX + String.format(" %16s ", type);
+        return String.format("%-24s ", new Timestamp(System.currentTimeMillis())) + PREFIX + String.format(" %16s ", type);
     }
 }
