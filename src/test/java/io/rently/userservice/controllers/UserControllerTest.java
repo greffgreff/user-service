@@ -1,6 +1,5 @@
 package io.rently.userservice.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,8 +7,7 @@ import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.services.UserService;
 import io.rently.userservice.util.Jwt;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -46,6 +44,11 @@ class UserControllerTest {
                 .setExpiration(new Date(System.currentTimeMillis()+100000))
                 .signWith(SignatureAlgorithm.HS256, Jwt.SECRET_KEY_SPEC)
                 .compact();
+    }
+
+    @AfterEach
+    public void reset_mocks() {
+        Mockito.reset(service);
     }
 
     @Test
@@ -512,11 +515,11 @@ class UserControllerTest {
     @Test
     void putUser_validBody_validRequest_ok() throws Exception {
         String id = "abc123";
-        User newUser = new User
+        User userData = new User
                 .Builder(id, "provider", "providerAccountId")
                 .build();
         String jsonBody = new ObjectMapper()
-                .writeValueAsString(newUser);
+                .writeValueAsString(userData);
 
         ResultActions response = mvc.perform(MockMvcRequestBuilders
                 .put("/api/v2/{id}", id)
