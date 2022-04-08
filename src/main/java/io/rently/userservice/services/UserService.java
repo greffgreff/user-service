@@ -55,7 +55,7 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    private User tryFindUserByProvider(String provider, String providerId) {
+    public User tryFindUserByProvider(String provider, String providerId) {
         Optional<User> user = repository.findByProviderInfo(provider, providerId);
         if (user.isPresent()) {
             return user.get();
@@ -64,7 +64,7 @@ public class UserService {
         }
     }
 
-    private User tryFindUserById(String id) {
+    public User tryFindUserById(String id) {
         Optional<User> user = repository.findById(id);
         if (user.isPresent()) {
             return user.get();
@@ -90,7 +90,9 @@ public class UserService {
         }
     }
 
-    private void validateData(User user) {
+    public void validateData(User user) {
+        Broadcaster.debug("validating");
+        Broadcaster.debug("UUID " + Validation.tryParseUUID(user.getId()));
         if (user == null) {
             throw Errors.NO_DATA;
         } else if (user.getId() == null) {

@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
+import io.rently.userservice.errors.Errors;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -19,11 +20,20 @@ public class Jwt {
     public static final JwtParser PARSER;
 
     public static boolean validateBearerToken(String token) {
+        checkExpiration(token);
         String bearer = token.split(" ")[1];
         String[] chunks = bearer.split("\\.");
         String tokenWithoutSignature = chunks[0] + "." + chunks[1];
         String signature = chunks[2];
-        return VALIDATOR.isValid(tokenWithoutSignature, signature) && getClaims(token).getExpiration().after(new Date());
+        return VALIDATOR.isValid(tokenWithoutSignature, signature);
+    }
+
+    public static void checkExpiration(String token) {
+        try {
+            getClaims(token);
+        } catch (Exception e) {
+            throw Errors.UNAUTHORIZED_REQUEST;
+        }
     }
 
     public static Claims getClaims(String token) {
