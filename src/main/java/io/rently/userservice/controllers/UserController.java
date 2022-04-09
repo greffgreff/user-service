@@ -32,6 +32,7 @@ public class UserController implements ErrorController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(PREFIX + "/")
     public ResponseContent handlePostRequest(@RequestBody User user) {
+        Broadcaster.debug(user.toString());
         service.addUser(user);
         return new ResponseContent.Builder(HttpStatus.CREATED).setMessage("Successfully added user to database").build();
     }

@@ -92,8 +92,6 @@ public class UserService {
     }
 
     public void validateData(User user) {
-        Broadcaster.debug("validating");
-        Broadcaster.debug("UUID " + Validation.tryParseUUID(user.getId()));
         if (user == null) {
             throw Errors.NO_DATA;
         } else if (user.getId() == null) {
