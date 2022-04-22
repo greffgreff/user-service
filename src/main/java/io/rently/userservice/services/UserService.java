@@ -1,5 +1,6 @@
 package io.rently.userservice.services;
 
+import io.rently.userservice.apis.MailerService;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.errors.Errors;
@@ -39,6 +40,12 @@ public class UserService {
         }
         validateData(user);
         repository.save(user);
+        try {
+            MailerService.dispatchGreeting(user.getName(), user.getEmail());
+        } catch (Exception exception) {
+            Broadcaster.warn("Greetings not dispatched to " + user.getEmail());
+            Broadcaster.error(exception);
+        }
     }
 
     public void updateUser(String id, User user) {
@@ -47,13 +54,16 @@ public class UserService {
             throw Errors.INVALID_REQUEST;
         }
         validateData(user);
+        tryFindUserById(id);
         repository.deleteById(id);
         repository.save(user);
     }
 
     public void deleteUser(String id) {
         Broadcaster.info("Removing user from database: " + id);
+        User user = tryFindUserById(id);
         repository.deleteById(id);
+        MailerService.dispatchGoodbye(user.getName(), user.getEmail());
     }
 
     public User tryFindUserByProvider(String provider, String providerId) {

@@ -29,7 +29,7 @@ public class Interceptor implements HandlerInterceptor {
         }
     }
 
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (RequestMethod.OPTIONS.name().equals(request.getMethod())) {
             handleOptionRequest(response);
             return true;
