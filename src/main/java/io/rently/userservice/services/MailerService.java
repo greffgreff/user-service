@@ -47,7 +47,7 @@ public class MailerService {
         report.put("type", "DEV_ERROR");
         report.put("datetime", new Date());
         report.put("message", exception.getMessage());
-        report.put("service", "Mailer service");
+        report.put("service", "User service");
         report.put("cause", exception.getCause());
         report.put("trace", Arrays.toString(exception.getStackTrace()));
         report.put("exceptionType", exception.getClass());
