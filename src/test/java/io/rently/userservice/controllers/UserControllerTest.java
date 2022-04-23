@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.services.UserService;
-import io.rently.userservice.util.Jwt;
+import io.rently.userservice.utils.Jwt;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,17 +1,14 @@
 package io.rently.userservice.services;
 
-import io.rently.userservice.apis.MailerService;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.Errors;
-import io.rently.userservice.errors.Errors;
 import io.rently.userservice.interfaces.UserRepository;
-import io.rently.userservice.util.Broadcaster;
-import io.rently.userservice.util.Jwt;
-import io.rently.userservice.util.Validation;
+import io.rently.userservice.utils.Jwt;
+import io.rently.userservice.utils.Broadcaster;
+import io.rently.userservice.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;

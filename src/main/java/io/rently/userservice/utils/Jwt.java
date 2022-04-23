@@ -1,4 +1,4 @@
-package io.rently.userservice.util;
+package io.rently.userservice.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
