@@ -3,12 +3,10 @@ package io.rently.userservice.controllers;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.services.UserService;
-import io.rently.userservice.util.Broadcaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 public class UserController implements ErrorController {

@@ -3,14 +3,10 @@ package io.rently.userservice.dtos;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.rently.userservice.errors.Errors;
-import io.rently.userservice.util.Validation;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.sql.Timestamp;
-import java.util.UUID;
 
 @Entity(name = "users")
 @JsonDeserialize(builder = User.Builder.class)

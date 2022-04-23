@@ -1,4 +1,4 @@
-package io.rently.userservice.util;
+package io.rently.userservice.utils;
 
 import org.springframework.web.server.ResponseStatusException;
 
