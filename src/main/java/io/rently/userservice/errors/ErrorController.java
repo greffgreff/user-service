@@ -1,8 +1,10 @@
 package io.rently.userservice.errors;
 
+import com.bugsnag.Bugsnag;
 import io.rently.userservice.services.MailerService;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.utils.Broadcaster;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,12 +18,16 @@ import javax.servlet.http.HttpServletResponse;
 @ControllerAdvice
 public class ErrorController {
 
+    @Autowired
+    private Bugsnag bugsnag;
+
     @ResponseBody
     @ExceptionHandler(Exception.class)
     public ResponseContent unhandledException(HttpServletResponse response, Exception exception) {
         Broadcaster.error(exception.getMessage());
         ResponseStatusException resEx = Errors.INTERNAL_SERVER_ERROR;
         MailerService.dispatchErrorToDevs(exception);
+        bugsnag.notify(exception);
         response.setStatus(resEx.getStatus().value());
         return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getReason()).build();
     }
