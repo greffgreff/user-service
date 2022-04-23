@@ -12,12 +12,17 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
 public class Jwt {
-    // @Value("${secret}") MOVE TO .ENV
-    private static final String SECRET = "HelloDarknessMyOldFriend";
-    public static final SignatureAlgorithm ALGO = SignatureAlgorithm.HS256;
-    public static final SecretKeySpec SECRET_KEY_SPEC;
-    public static final DefaultJwtSignatureValidator VALIDATOR;
-    public static final JwtParser PARSER;
+    public static SignatureAlgorithm ALGO = SignatureAlgorithm.HS256;
+    public static SecretKeySpec SECRET_KEY_SPEC;
+    public static DefaultJwtSignatureValidator VALIDATOR;
+    public static JwtParser PARSER;
+
+    @Value("${server.secret}")
+    public void setSecret(String secret) {
+        SECRET_KEY_SPEC = new SecretKeySpec(secret.getBytes(), ALGO.getJcaName());
+        VALIDATOR = new DefaultJwtSignatureValidator(ALGO, SECRET_KEY_SPEC);
+        PARSER = Jwts.parser().setSigningKey(SECRET_KEY_SPEC);
+    }
 
     public static boolean validateBearerToken(String token) {
         checkExpiration(token);
@@ -39,11 +44,5 @@ public class Jwt {
     public static Claims getClaims(String token) {
         String bearer = token.split(" ")[1];
         return PARSER.parseClaimsJws(bearer).getBody();
-    }
-
-    static {
-        SECRET_KEY_SPEC = new SecretKeySpec(SECRET.getBytes(), ALGO.getJcaName());
-        VALIDATOR = new DefaultJwtSignatureValidator(ALGO, SECRET_KEY_SPEC);
-        PARSER = Jwts.parser().setSigningKey(SECRET_KEY_SPEC);
     }
 }
