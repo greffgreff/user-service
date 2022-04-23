@@ -19,7 +19,12 @@ public class MailerService {
         data.put("type", "GREETINGS");
         data.put("name", recipientName);
         data.put("email", recipientEmail);
-        restTemplate.postForObject(BASE_URL, data, String.class);
+        try {
+            restTemplate.postForObject(BASE_URL, data, String.class);
+        } catch (Exception ex) {
+            Broadcaster.warn("Could not send greetings to " + recipientEmail);
+            Broadcaster.error(ex);
+        }
     }
 
     public static void dispatchGoodbye(String recipientName, String recipientEmail) {
@@ -28,7 +33,12 @@ public class MailerService {
         data.put("type", "ACCOUNT_DELETION");
         data.put("name", recipientName);
         data.put("email", recipientEmail);
-        restTemplate.postForObject(BASE_URL, data, String.class);
+        try {
+            restTemplate.postForObject(BASE_URL, data, String.class);
+        } catch (Exception ex) {
+            Broadcaster.warn("Could not send goodbyes to " + recipientEmail);
+            Broadcaster.error(ex);
+        }
     }
 
     public static void dispatchErrorToDevs(Exception exception) {
@@ -41,6 +51,11 @@ public class MailerService {
         report.put("cause", exception.getCause());
         report.put("trace", Arrays.toString(exception.getStackTrace()));
         report.put("exceptionType", exception.getClass());
-        restTemplate.postForObject(BASE_URL, report, String.class);
+        try {
+            restTemplate.postForObject(BASE_URL, report, String.class);
+        } catch (Exception ex) {
+            Broadcaster.warn("Could not dispatch error report.");
+            Broadcaster.error(ex);
+        }
     }
 }
