@@ -17,19 +17,19 @@ import java.util.UUID;
 public class UserService {
 
     @Autowired
-    private static UserRepository repository;
+    private UserRepository repository;
 
-    public static User getUserByProvider(String provider, String providerId) {
+    public User getUserByProvider(String provider, String providerId) {
         Broadcaster.info("Fetching user from database by provider: " + provider + " " + providerId);
         return tryFindUserByProvider(provider, providerId);
     }
 
-    public static User getUserById(String id) {
+    public User getUserById(String id) {
         Broadcaster.info("Fetching user from database by id: " + id);
         return tryFindUserById(id);
     }
 
-    public static void addUser(User user) {
+    public void addUser(User user) {
         Broadcaster.info("Adding user to database: " + user.getId());
         Optional<User> existingUser = repository.findByProviderInfo(user.getProvider(), user.getProviderId());
         if (existingUser.isPresent()) {
@@ -45,7 +45,7 @@ public class UserService {
         }
     }
 
-    public static void updateUser(String id, User user) {
+    public void updateUser(String id, User user) {
         Broadcaster.info("Updating user from database: " + id);
         if (!Objects.equals(id, user.getId())) {
             throw Errors.INVALID_REQUEST;
@@ -56,14 +56,14 @@ public class UserService {
         repository.save(user);
     }
 
-    public static void deleteUser(String id) {
+    public void deleteUser(String id) {
         Broadcaster.info("Removing user from database: " + id);
         User user = tryFindUserById(id);
         repository.deleteById(id);
         MailerService.dispatchGoodbye(user.getName(), user.getEmail());
     }
 
-    public static User tryFindUserByProvider(String provider, String providerId) {
+    public User tryFindUserByProvider(String provider, String providerId) {
         Optional<User> user = repository.findByProviderInfo(provider, providerId);
         if (user.isPresent()) {
             return user.get();
@@ -72,7 +72,7 @@ public class UserService {
         }
     }
 
-    public static User tryFindUserById(String id) {
+    public User tryFindUserById(String id) {
         Optional<User> user = repository.findById(id);
         if (user.isPresent()) {
             return user.get();
@@ -81,7 +81,7 @@ public class UserService {
         }
     }
 
-    public static void verifyOwnership(String header, String userId) {
+    public void verifyOwnership(String header, String userId) {
         User user = tryFindUserById(userId);
         String id = Jwt.getClaims(header).getSubject();
 
