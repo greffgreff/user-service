@@ -19,6 +19,9 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private Jwt jwt;
+
     public User getUserByProvider(String provider, String providerId) {
         Broadcaster.info("Fetching user from database by provider: " + provider + " " + providerId);
         return tryFindUserByProvider(provider, providerId);
@@ -83,15 +86,15 @@ public class UserService {
 
     public void verifyOwnership(String header, String userId) {
         User user = tryFindUserById(userId);
-        String id = Jwt.getClaims(header).getSubject();
+        String id = jwt.getClaims(header).getSubject();
 
         if (!Objects.equals(id, user.getId())) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }
     }
 
-    public static void verifyOwnership(String header, User user) {
-        String id = Jwt.getClaims(header).getSubject();
+    public void verifyOwnership(String header, User user) {
+        String id = jwt.getClaims(header).getSubject();
 
         if (!Objects.equals(id, user.getId())) {
             throw Errors.UNAUTHORIZED_REQUEST;

@@ -6,34 +6,40 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
 import io.rently.userservice.errors.Errors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
+@Component
 public class Jwt {
-    public static SignatureAlgorithm ALGO = SignatureAlgorithm.HS256;
-    public static SecretKeySpec SECRET_KEY_SPEC;
-    public static DefaultJwtSignatureValidator VALIDATOR;
-    public static JwtParser PARSER;
+    public final DefaultJwtSignatureValidator validator;
+    public final JwtParser parser;
+    public final SecretKeySpec secretKeySpec;
 
-    @Value("${server.secret}")
-    public void setSecret(String secret) {
-        SECRET_KEY_SPEC = new SecretKeySpec(secret.getBytes(), ALGO.getJcaName());
-        VALIDATOR = new DefaultJwtSignatureValidator(ALGO, SECRET_KEY_SPEC);
-        PARSER = Jwts.parser().setSigningKey(SECRET_KEY_SPEC);
+    @Autowired
+    public Jwt(@Value("${server.secret}") String secret) {
+        this(secret, SignatureAlgorithm.HS256);
     }
 
-    public static boolean validateBearerToken(String token) {
+    public Jwt(String secret, SignatureAlgorithm algo) {
+        this.secretKeySpec = new SecretKeySpec(secret.getBytes(), algo.getJcaName());
+        this.validator = new DefaultJwtSignatureValidator(algo, secretKeySpec);
+        this.parser = Jwts.parser().setSigningKey(secretKeySpec);
+    }
+
+    public boolean validateBearerToken(String token) {
         checkExpiration(token);
         String bearer = token.split(" ")[1];
         String[] chunks = bearer.split("\\.");
         String tokenWithoutSignature = chunks[0] + "." + chunks[1];
         String signature = chunks[2];
-        return VALIDATOR.isValid(tokenWithoutSignature, signature);
+        return validator.isValid(tokenWithoutSignature, signature);
     }
 
-    public static void checkExpiration(String token) {
+    public void checkExpiration(String token) {
         try {
             getClaims(token);
         } catch (Exception e) {
@@ -41,8 +47,8 @@ public class Jwt {
         }
     }
 
-    public static Claims getClaims(String token) {
+    public Claims getClaims(String token) {
         String bearer = token.split(" ")[1];
-        return PARSER.parseClaimsJws(bearer).getBody();
+        return parser.parseClaimsJws(bearer).getBody();
     }
 }

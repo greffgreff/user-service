@@ -1,6 +1,7 @@
 package io.rently.userservice.services;
 
 import io.rently.userservice.utils.Broadcaster;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,8 +12,13 @@ import java.util.Map;
 
 @Component
 public class MailerService {
-    public static final String BASE_URL = "http://localhost:8084/api/v1/emails/dispatch/";
+    public static String BASE_URL;
     private static final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${mailer.baseurl}")
+    public void setBaseUrl(String baseUrl) {
+        MailerService.BASE_URL = baseUrl;
+    }
 
     public static void dispatchGreeting(String recipientName, String recipientEmail) {
         Map<String, String> data = new HashMap<>();
@@ -20,7 +26,7 @@ public class MailerService {
         data.put("name", recipientName);
         data.put("email", recipientEmail);
         try {
-            restTemplate.postForObject(BASE_URL, data, String.class);
+            restTemplate.postForObject(BASE_URL + "api/v1/emails/dispatch/", data, String.class);
         } catch (Exception ex) {
             Broadcaster.warn("Could not send greetings to " + recipientEmail);
             Broadcaster.error(ex);
@@ -34,7 +40,7 @@ public class MailerService {
         data.put("name", recipientName);
         data.put("email", recipientEmail);
         try {
-            restTemplate.postForObject(BASE_URL, data, String.class);
+            restTemplate.postForObject(BASE_URL + "api/v1/emails/dispatch/", data, String.class);
         } catch (Exception ex) {
             Broadcaster.warn("Could not send goodbyes to " + recipientEmail);
             Broadcaster.error(ex);
@@ -52,7 +58,7 @@ public class MailerService {
         report.put("trace", Arrays.toString(exception.getStackTrace()));
         report.put("exceptionType", exception.getClass());
         try {
-            restTemplate.postForObject(BASE_URL, report, String.class);
+            restTemplate.postForObject(BASE_URL + "api/v1/emails/dispatch/", report, String.class);
         } catch (Exception ex) {
             Broadcaster.warn("Could not dispatch error report.");
             Broadcaster.error(ex);

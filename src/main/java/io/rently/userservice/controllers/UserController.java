@@ -36,7 +36,7 @@ public class UserController implements ErrorController {
 
     @PutMapping("/{id}")
     public ResponseContent handlePutRequest(@RequestHeader("Authorization") String header, @PathVariable String id, @RequestBody User user) {
-        UserService.verifyOwnership(header, user);
+        service.verifyOwnership(header, user);
         service.updateUser(id, user);
         return new ResponseContent.Builder().setMessage("Successfully updated user from database").build();
     }
