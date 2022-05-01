@@ -1,1 +1,1 @@
-web java $JAVA_OPTS -jar -Dspring.profiles.active=prod rently-user-service.jar
+web java $JAVA_OPTS -jar -Dspring.profiles.active=prod user-service-2.0.jar
