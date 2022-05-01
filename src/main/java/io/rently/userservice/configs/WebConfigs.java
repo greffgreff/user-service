@@ -1,6 +1,6 @@
 package io.rently.userservice.configs;
 
-import io.rently.userservice.middleware.Interceptor;
+import io.rently.userservice.middlewares.Interceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

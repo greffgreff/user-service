@@ -1,24 +1,15 @@
 package io.rently.userservice.dtos;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.rently.userservice.errors.Errors;
-import io.rently.userservice.util.Validation;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.sql.Timestamp;
-import java.util.UUID;
 
 @Entity(name = "users")
-@JsonDeserialize(builder = User.Builder.class)
 public class User {
     // both `providerId` (user id from provider)
     // and `provider` can act as composite primary keys
-    // and won't be changing for users.
-    // `id` key added for the sake of convenience with JPA
+    // and likely won't be changing.
+    // `id` key added if this is not the case.
     @Id
     @Column(updatable = false, nullable = false, unique = true)
     private String id;
@@ -36,16 +27,6 @@ public class User {
     private String updatedAt;
 
     protected User() { }
-
-    public User(Builder builder) {
-        this.id = builder.id;
-        this.providerId = builder.providerId;
-        this.provider = builder.provider;
-        this.name = builder.name;
-        this.email = builder.email;
-        this.createdAt = builder.createdAt;
-        this.updatedAt = builder.updatedAt;
-    }
 
     public String getId() {
         return id;
@@ -86,53 +67,5 @@ public class User {
                 ", createdAt='" + createdAt + '\'' +
                 ", updatedAt='" + updatedAt + '\'' +
                 '}';
-    }
-
-    public static class Builder {
-        @JsonProperty
-        public final String id;
-        @JsonProperty
-        public final String providerId;
-        @JsonProperty
-        public final String provider;
-        @JsonProperty
-        public String name;
-        @JsonProperty
-        public String email;
-        @JsonProperty
-        public String createdAt;
-        @JsonProperty
-        public String updatedAt;
-
-        public Builder(String id, String providerId, String provider) {
-            this.id = id;
-            this.providerId = providerId;
-            this.provider = provider;
-        }
-
-        public Builder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder setCreatedAt(String createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public Builder setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-            return this;
-        }
-
-        @JsonCreator
-        public User build() {
-            return new User(this);
-        }
     }
 }

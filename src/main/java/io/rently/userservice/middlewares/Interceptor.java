@@ -1,8 +1,9 @@
-package io.rently.userservice.middleware;
+package io.rently.userservice.middlewares;
 
 import io.rently.userservice.errors.Errors;
-import io.rently.userservice.util.Broadcaster;
-import io.rently.userservice.util.Jwt;
+import io.rently.userservice.utils.Jwt;
+import io.rently.userservice.utils.Broadcaster;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,8 +18,10 @@ import java.util.stream.Collectors;
 
 @Component
 public class Interceptor implements HandlerInterceptor {
-    private static final String secretKey = "HelloDarknessMyOldFriend"; // move to .env file
-    public final List<String> blackListedMethods;
+    private final List<String> blackListedMethods;
+
+    @Autowired
+    private Jwt jwt;
 
     public Interceptor(RequestMethod... excludedMethods) {
         this.blackListedMethods = Arrays.stream(excludedMethods).toList().stream()
@@ -30,7 +33,7 @@ public class Interceptor implements HandlerInterceptor {
         }
     }
 
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (RequestMethod.OPTIONS.name().equals(request.getMethod())) {
             handleOptionRequest(response);
             return true;
@@ -44,7 +47,7 @@ public class Interceptor implements HandlerInterceptor {
             throw Errors.INVALID_REQUEST;
         }
 
-        if (!Jwt.validateBearerToken(bearer)) {
+        if (!jwt.validateBearerToken(bearer)) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }
 

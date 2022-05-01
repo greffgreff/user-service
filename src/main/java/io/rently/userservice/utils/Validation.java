@@ -1,4 +1,4 @@
-package io.rently.userservice.util;
+package io.rently.userservice.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
