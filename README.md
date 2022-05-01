@@ -7,7 +7,7 @@
 
 This Spring Boot project is one among other RESTful APIs used in the larger Rently.io project whose frontend can be found [here](https://github.com/greffgreff/rently). More specifically, this endpoint is intended to serve requests when users login into the Rently system for safe keeping purposes. Users are stored insinde a MySQL database using JPA. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
 
-After each subsequent additions and changes to the codebase of the service, tests are ran and the, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/).
+After each subsequent additions and changes to the codebase of the service, tests are ran and, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/api/v2/298dfb2f-90be-4bc3-8966-646634e5be07).
 
 Unlike the previous iteration, this endpoint no longer handles sensitive data such as passwords and salt to an authentication endpoint since autherization is now based on OAuth exclusively. As a result, users are now identified by a composite key of the `id` supplied by a provider (e.g. Google ID) and the `provider` itself (e.g. Google) in the unlikely event the id from the provider matches that of another provider. On requests other than GET, data ownership is verified by comparing Json Web Tokens subject to the data's holder id. A middleware was added that verifies the JWT's validity upon every requests.
 
@@ -28,7 +28,7 @@ Unlike the previous iteration, this endpoint no longer handles sensitive data su
 
 |**Field**|**Description**|
 |---|---|
-| `id` uuid string | The user's username |
+| `id` uuid string | The user's id |
 | `providerId` string | The user's id given by the provider (e.g Google ID) |
 | `provider` string | The user's origin (e.g. Google) |
 | `name` string | The user's name from the provider |
@@ -50,7 +50,7 @@ Unlike the previous iteration, this endpoint no longer handles sensitive data su
 
 ## Request Mappings
 
-### `GET /api/v2/users/{id}`
+### `GET /api/v2/{provider}/{providerId}`
 
 Returns a json [response](#response-object) object containing one [user](#user-object) object. Permits fetching user data using a `provider` and a `provider account id`. 
 
@@ -88,7 +88,7 @@ Returns a json [response](#response-object) object containing one [user](#user-o
 <br />
 
 
-### `GET /api/v2/users/{id}`
+### `GET /api/v2/{id}`
 
 Returns a json [response](#response-object) object containing one [user](#user-object) object. Permits fetching user data by `id`. 
 
@@ -147,16 +147,17 @@ A [user](#user-object) object.
 #### Possible error codes:
 | **Status** | **Message** | **Description** | 
 |:---:|---|---|
-| `409` | *"User with provider and provider account id already"* | A user was found with a matching provider and provider account id provided in the request body, request terminated | 
+| `409` | *"User with provider and provider account id already exists"* | A user was found with a matching provider and provider account id provided in the request body, request terminated | 
 | `406` | *"A non-optional field has missing value. Value of field '`field`' was expected but got null"* | Non-optional field was missing | 
 | `406` | *"Validation failure occurred. Value of field '`field`' could not be recognized as type "`type`" (value: '`value`')"* | Non-optional field was of the wrong type | 
+| `406` | *"No content found in request body"* | No data was sent through the request's body in json format | 
 
 <br />
 
 
 ### `PUT /api/v2/{id}`
 
-Updates a user using the request body data in json format. Perform validation on fields and throws an error accordingly verifies ownership beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
+Updates a user using the request body data in json format. Performs validation on fields and throws an error accordingly alongside verifying ownership beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
 
 #### URL parameters: 
 | **Parameter** | **Description** | **Required**
@@ -182,13 +183,14 @@ A [user](#user-object) object.
 | `406` | *"A non-optional field has missing value. Value of field '`field`' was expected but got null"* | Non-optional field was missing | 
 | `406` | *"Validation failure occurred. Value of field '`field`' could not be recognized as type "`type`" (value: '`value`')"* | Non-optional field was of the wrong type | 
 | `401` | *"Request is either no longer valid or has been tampered with"* | Request bearer has either expired or the subject and the data holder do not match | 
-
+| `406` | *"No content found in request body"* | No data was sent through the request's body in json format | 
+|`400`| *"Invalid request made"* | The user id provided in the URI and the user object present in the body do not match |
 <br />
 
 
 ### `DELETE /api/v2/{id}`
 
-Deletes a user from the database. Performs owership verification beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
+Deletes a user from the database. Performs ownership verification beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
 
 #### URL parameters: 
 | **Parameter** | **Description** | **Required**

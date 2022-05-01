@@ -1,4 +1,4 @@
-name: User Endpoint CI CD
+name: User Service CI CD
 
 on:
   push:
