@@ -55,7 +55,6 @@ public class UserService {
         }
         validateData(user);
         tryFindUserById(id);
-        repository.deleteById(id);
         repository.save(user);
     }
 
