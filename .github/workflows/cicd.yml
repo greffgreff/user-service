@@ -30,9 +30,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: michcio1234/heroku-run@0.1.1
+      - name: Setting up JDK 17...
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
           heroku_app_name: ${{secrets.HEROKU_APP}}
-          command: clean heroku:deploy
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
