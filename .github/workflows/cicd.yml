@@ -3,8 +3,6 @@ name: User Service CI CD
 on:
   push:
     branches: [ V2.0-latest ]
-  pull_request:
-    branches: [ V2.0-latest ]
 
 jobs:
   Dockerise:
