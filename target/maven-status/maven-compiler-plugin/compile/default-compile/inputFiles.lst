@@ -1,0 +1,15 @@
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/utils/Jwt.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/controllers/UserController.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/dtos/ResponseContent.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/services/UserService.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/middlewares/Interceptor.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/configs/WebConfigs.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/errors/ErrorController.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/interfaces/UserRepository.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/utils/Broadcaster.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/services/MailerService.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/configs/BugsnagConfigs.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/UserAPI.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/utils/Validation.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/dtos/User.java
+/Users/chandlergreff/Desktop/user-service/src/main/java/io/rently/userservice/errors/Errors.java
