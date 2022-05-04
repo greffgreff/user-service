@@ -40,7 +40,7 @@ public class MailerService {
     }
 
     public static void dispatchGoodbye(String recipientName, String recipientEmail) {
-        Broadcaster.info("Sending greetings to user " + recipientName);
+        Broadcaster.info("Sending goodbyes to user " + recipientName);
         Map<String, String> data = new HashMap<>();
         data.put("type", "ACCOUNT_DELETION");
         data.put("name", recipientName);
