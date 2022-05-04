@@ -1,7 +1,10 @@
 package io.rently.userservice.services;
 
 import io.rently.userservice.utils.Broadcaster;
+import io.rently.userservice.utils.Jwt;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,8 +28,11 @@ public class MailerService {
         data.put("type", "GREETINGS");
         data.put("name", recipientName);
         data.put("email", recipientEmail);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(Jwt.generateBearerToken());
+        HttpEntity<Map<String, String>> body = new HttpEntity<>(data, headers);
         try {
-            restTemplate.postForObject(BASE_URL + "api/v1/emails/dispatch/", data, String.class);
+            restTemplate.postForObject(BASE_URL + "api/v1/emails/dispatch/", body, String.class);
         } catch (Exception ex) {
             Broadcaster.warn("Could not send greetings to " + recipientEmail);
             Broadcaster.error(ex);
@@ -39,8 +45,11 @@ public class MailerService {
         data.put("type", "ACCOUNT_DELETION");
         data.put("name", recipientName);
         data.put("email", recipientEmail);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(Jwt.generateBearerToken());
+        HttpEntity<Map<String, String>> body = new HttpEntity<>(data, headers);
         try {
-            restTemplate.postForObject(BASE_URL + "api/v1/emails/dispatch/", data, String.class);
+            restTemplate.postForObject(BASE_URL + "api/v1/emails/dispatch/", body, String.class);
         } catch (Exception ex) {
             Broadcaster.warn("Could not send goodbyes to " + recipientEmail);
             Broadcaster.error(ex);
@@ -57,8 +66,11 @@ public class MailerService {
         report.put("cause", exception.getCause());
         report.put("trace", Arrays.toString(exception.getStackTrace()));
         report.put("exceptionType", exception.getClass());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(Jwt.generateBearerToken());
+        HttpEntity<Map<String, Object>> body = new HttpEntity<>(report, headers);
         try {
-            restTemplate.postForObject(BASE_URL + "api/v1/emails/dispatch/", report, String.class);
+            restTemplate.postForObject(BASE_URL + "api/v1/emails/dispatch/", body, String.class);
         } catch (Exception ex) {
             Broadcaster.warn("Could not dispatch error report.");
             Broadcaster.error(ex);
