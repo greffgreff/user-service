@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v2/users")
-public class UserController implements ErrorController {
+public class UserController {
 
     @Autowired
     public UserService service;
