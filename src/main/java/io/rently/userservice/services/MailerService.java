@@ -1,5 +1,6 @@
 package io.rently.userservice.services;
 
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.utils.Broadcaster;
 import io.rently.userservice.utils.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,17 @@ import java.util.Map;
 public class MailerService {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    @Autowired
-    public Jwt jwt;
-    @Value("${mailer.baseurl}")
-    private String endPointUrl;
+    public final Jwt jwt ;
+    private final String endPointUrl;
+
+    public MailerService(
+            @Value("${mailer.secret}") String secret,
+            @Value("${mailer.algo}") SignatureAlgorithm algo,
+            @Value("${mailer.baseurl}") String endPointUrl
+    ) {
+        this.jwt = new Jwt(secret, algo);
+        this.endPointUrl = endPointUrl;
+    }
 
     public void dispatchGreeting(String recipientName, String recipientEmail) {
         Broadcaster.info("Sending greetings to user " + recipientName);
@@ -30,7 +38,7 @@ public class MailerService {
         data.put("name", recipientName);
         data.put("email", recipientEmail);
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(jwt.generateBearerToken());
+        headers.setBearerAuth(jwt.generateBearToken());
         HttpEntity<Map<String, String>> body = new HttpEntity<>(data, headers);
         try {
             restTemplate.postForObject(endPointUrl + "api/v1/emails/dispatch/", body, String.class);
@@ -47,7 +55,7 @@ public class MailerService {
         data.put("name", recipientName);
         data.put("email", recipientEmail);
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(jwt.generateBearerToken());
+        headers.setBearerAuth(jwt.generateBearToken());
         HttpEntity<Map<String, String>> body = new HttpEntity<>(data, headers);
         try {
             restTemplate.postForObject(endPointUrl + "api/v1/emails/dispatch/", body, String.class);
@@ -68,7 +76,7 @@ public class MailerService {
         report.put("trace", Arrays.toString(exception.getStackTrace()));
         report.put("exceptionType", exception.getClass());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(jwt.generateBearerToken());
+        headers.setBearerAuth(jwt.generateBearToken());
         HttpEntity<Map<String, Object>> body = new HttpEntity<>(report, headers);
         try {
             restTemplate.postForObject(endPointUrl + "api/v1/emails/dispatch/", body, String.class);
