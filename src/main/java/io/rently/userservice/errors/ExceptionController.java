@@ -1,6 +1,9 @@
 package io.rently.userservice.errors;
 
 import com.bugsnag.Bugsnag;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import io.rently.userservice.services.MailerService;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.utils.Broadcaster;
@@ -78,5 +81,14 @@ public class ExceptionController {
     public static ResponseContent handleValidationFailure(HttpServletResponse response, Errors.HttpFieldMissing ex) {
         response.setStatus(ex.getStatus().value());
         return new ResponseContent.Builder(ex.getStatus()).setMessage(ex.getReason()).build();
+    }
+
+    @ResponseBody
+    @ExceptionHandler({ ExpiredJwtException.class, MalformedJwtException.class, SignatureException.class })
+    public static ResponseContent handledInvalidJwts(HttpServletResponse response) {
+        ResponseStatusException resEx = Errors.UNAUTHORIZED_REQUEST;
+        response.setStatus(resEx.getStatus().value());
+        return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getReason()).build();
+
     }
 }

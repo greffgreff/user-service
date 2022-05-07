@@ -1,71 +1,64 @@
 package io.rently.userservice.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
 import io.rently.userservice.errors.Errors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
 public class Jwt {
 
-    private final SecretKeySpec secretKeySpec;
-    private final DefaultJwtSignatureValidator validator;
     private final JwtParser parser;
     private final SignatureAlgorithm algo;
+    private final String secret;
 
     public Jwt(@Value("${server.secret}") String secret, @Value("${server.algo}") SignatureAlgorithm algo) {
-        Broadcaster.debug(secret);
-        Broadcaster.debug(algo);
+        if (!Objects.equals(algo.getFamilyName(), "HMAC")) {
+            throw new IllegalArgumentException("Algorithm from outside of `HMAC` family: " + algo.getFamilyName());
+        }
+        if (secret == null || secret.equals("")) {
+            throw new IllegalArgumentException("Signing secret cannot be null or an empty string");
+        }
+        this.secret = secret;
         this.algo = algo;
-        this.secretKeySpec = new SecretKeySpec(secret.getBytes(), algo.getJcaName());
-        this.validator = new DefaultJwtSignatureValidator(algo, secretKeySpec);
-        this.parser = Jwts.parser().setSigningKey(secretKeySpec);
+        this.parser = Jwts.parser().setSigningKey(secret);
     }
 
     public boolean validateBearerToken(String token) {
         try {
-            checkExpiration(token);
             String bearer = token.split(" ")[1];
-            String[] chunks = bearer.split("\\.");
-            String tokenWithoutSignature = chunks[0] + "." + chunks[1];
-            String signature = chunks[2];
-            return validator.isValid(tokenWithoutSignature, signature);
-        } catch (Exception exception) {
+            parser.parse(bearer);
+        } catch (ExpiredJwtException exception) {
+            throw Errors.EXPIRED_TOKEN;
+        } catch (MalformedJwtException exception) {
             throw Errors.MALFORMED_TOKEN;
-        }
-    }
-
-    public void checkExpiration(String token) {
-        try {
-            getClaims(token);
-        } catch (Exception e) {
+        } catch (Exception exception) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }
+        return true;
     }
 
-    public Claims getClaims(String token) {
-        String bearer = token.split(" ")[1];
-        return parser.parseClaimsJws(bearer).getBody();
-    }
-
-    public String generateBearerToken() {
+    public String generateBearToken() {
         String id = UUID.randomUUID().toString();
         Date iat = new Date();
-        Date ext =  new Date(System.currentTimeMillis() + 60000L);
+        Date ext = new Date(System.currentTimeMillis() + 60000L);
 
         return Jwts.builder()
                 .setId(id)
                 .setIssuedAt(iat)
                 .setExpiration(ext)
-                .signWith(algo, secretKeySpec)
+                .signWith(algo, secret)
                 .compact();
+    }
+
+    public JwtParser getParser() {
+        return parser;
     }
 }

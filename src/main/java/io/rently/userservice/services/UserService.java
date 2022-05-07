@@ -72,7 +72,7 @@ public class UserService {
         }
     }
 
-    public User tryFindUserByProvider(String provider, String providerId) {
+    private User tryFindUserByProvider(String provider, String providerId) {
         Optional<User> user = repository.findByProviderInfo(provider, providerId);
         if (user.isPresent()) {
             return user.get();
@@ -81,7 +81,7 @@ public class UserService {
         }
     }
 
-    public User tryFindUserById(String id) {
+    private User tryFindUserById(String id) {
         Optional<User> user = repository.findById(id);
         if (user.isPresent()) {
             return user.get();
@@ -92,15 +92,7 @@ public class UserService {
 
     public void verifyOwnership(String header, String userId) {
         User user = tryFindUserById(userId);
-        String id = jwt.getClaims(header).getSubject();
-
-        if (!Objects.equals(id, user.getId())) {
-            throw Errors.UNAUTHORIZED_REQUEST;
-        }
-    }
-
-    public void verifyOwnership(String header, User user) {
-        String id = jwt.getClaims(header).getSubject();
+        String id = jwt.getParser().parseClaimsJws(header).getBody().getSubject();
 
         if (!Objects.equals(id, user.getId())) {
             throw Errors.UNAUTHORIZED_REQUEST;

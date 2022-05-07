@@ -6,6 +6,9 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Validation {
+
+    private Validation() { }
+
     public static boolean canParseToReg(String value, String regexPattern) {
         return Pattern.compile(regexPattern)
                 .matcher(value)
