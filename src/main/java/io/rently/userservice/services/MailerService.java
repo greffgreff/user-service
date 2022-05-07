@@ -24,6 +24,7 @@ public class MailerService {
     }
 
     public static void dispatchGreeting(String recipientName, String recipientEmail) {
+        Broadcaster.info("Sending greetings to user " + recipientName);
         Map<String, String> data = new HashMap<>();
         data.put("type", "GREETINGS");
         data.put("name", recipientName);

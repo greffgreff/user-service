@@ -62,7 +62,12 @@ public class UserService {
         Broadcaster.info("Removing user from database: " + id);
         User user = tryFindUserById(id);
         repository.deleteById(id);
-        MailerService.dispatchGoodbye(user.getName(), user.getEmail());
+        try {
+            MailerService.dispatchGoodbye(user.getName(), user.getEmail());
+        } catch (Exception exception) {
+            Broadcaster.warn("Goodbyes not dispatched to " + user.getEmail());
+            Broadcaster.error(exception);
+        }
     }
 
     public User tryFindUserByProvider(String provider, String providerId) {
