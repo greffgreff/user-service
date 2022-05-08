@@ -73,7 +73,7 @@ public class UserService {
     }
 
     private User tryFindUserByProvider(String provider, String providerId) {
-        Optional<User> user = repository.findByProviderInfo(provider, providerId);
+        Optional<User> user = repository.findByProviderAndProviderId(provider, providerId);
         if (user.isPresent()) {
             return user.get();
         } else {
