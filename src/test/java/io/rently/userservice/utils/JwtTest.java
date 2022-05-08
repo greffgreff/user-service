@@ -4,11 +4,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.errors.Errors;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
 class JwtTest {
 
     public static final String SECRET = "secret";
