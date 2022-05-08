@@ -18,30 +18,30 @@ import java.util.Map;
 @Component
 public class MailerService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final Jwt jwt ;
+    private final RestTemplate restTemplate;
+    private final Jwt jwt;
     private final String endPointUrl;
 
-    public MailerService(
-            @Value("${mailer.secret}") String secret,
-            @Value("${mailer.algo}") SignatureAlgorithm algo,
-            @Value("${mailer.baseurl}") String endPointUrl
-    ) {
-        this.jwt = new Jwt(secret, algo);
-        this.endPointUrl = endPointUrl;
+    public MailerService(Jwt jwt, String baseUrl, RestTemplate restTemplate) {
+        this.jwt = jwt;
+        this.endPointUrl = baseUrl + "api/v1/emails/dispatch/";
+        this.restTemplate = restTemplate;
     }
 
     public void dispatchGreeting(String recipientName, String recipientEmail) {
         Broadcaster.info("Sending greetings to user " + recipientName);
+
         Map<String, String> data = new HashMap<>();
         data.put("type", "GREETINGS");
         data.put("name", recipientName);
         data.put("email", recipientEmail);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwt.generateBearToken());
         HttpEntity<Map<String, String>> body = new HttpEntity<>(data, headers);
+
         try {
-            restTemplate.postForObject(endPointUrl + "api/v1/emails/dispatch/", body, String.class);
+            restTemplate.postForObject(endPointUrl, body, String.class);
         } catch (Exception ex) {
             Broadcaster.warn("Could not send greetings to " + recipientEmail);
             Broadcaster.error(ex);
@@ -50,15 +50,18 @@ public class MailerService {
 
     public void dispatchGoodbye(String recipientName, String recipientEmail) {
         Broadcaster.info("Sending goodbyes to user " + recipientName);
+
         Map<String, String> data = new HashMap<>();
         data.put("type", "ACCOUNT_DELETION");
         data.put("name", recipientName);
         data.put("email", recipientEmail);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwt.generateBearToken());
         HttpEntity<Map<String, String>> body = new HttpEntity<>(data, headers);
+
         try {
-            restTemplate.postForObject(endPointUrl + "api/v1/emails/dispatch/", body, String.class);
+            restTemplate.postForObject(endPointUrl, body, String.class);
         } catch (Exception ex) {
             Broadcaster.warn("Could not send goodbyes to " + recipientEmail);
             Broadcaster.error(ex);
@@ -67,6 +70,7 @@ public class MailerService {
 
     public void dispatchErrorToDevs(Exception exception) {
         Broadcaster.info("Dispatching error report...");
+
         Map<String, Object> report = new HashMap<>();
         report.put("type", "DEV_ERROR");
         report.put("datetime", new Date());
@@ -75,11 +79,13 @@ public class MailerService {
         report.put("cause", exception.getCause());
         report.put("trace", Arrays.toString(exception.getStackTrace()));
         report.put("exceptionType", exception.getClass());
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwt.generateBearToken());
         HttpEntity<Map<String, Object>> body = new HttpEntity<>(report, headers);
+
         try {
-            restTemplate.postForObject(endPointUrl + "api/v1/emails/dispatch/", body, String.class);
+            restTemplate.postForObject(endPointUrl, body, String.class);
         } catch (Exception ex) {
             Broadcaster.warn("Could not dispatch error report.");
             Broadcaster.error(ex);
