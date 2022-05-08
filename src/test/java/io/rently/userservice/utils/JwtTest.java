@@ -16,25 +16,21 @@ class JwtTest {
 
     @Test
     void invalidAlgo_agrException() {
-        String jwtSecret = "secret";
         SignatureAlgorithm jwtAlgo = SignatureAlgorithm.ES256;
 
-        assertThrows(IllegalArgumentException.class, () -> new Jwt(jwtSecret, jwtAlgo));
+        assertThrows(IllegalArgumentException.class, () -> new Jwt(SECRET, jwtAlgo));
     }
 
     @Test
     void invalidSecret_agrException() {
         String jwtSecret = "";
-        SignatureAlgorithm jwtAlgo = SignatureAlgorithm.ES256;
 
-        assertThrows(IllegalArgumentException.class, () -> new Jwt(jwtSecret, jwtAlgo));
+        assertThrows(IllegalArgumentException.class, () -> new Jwt(jwtSecret, ALGORITHM));
     }
 
     @Test
     void generateBearerToken() {
-        String jwtSecret = "secret";
-        SignatureAlgorithm jwtAlgo = SignatureAlgorithm.HS384;
-        Jwt jwt = new Jwt(jwtSecret, jwtAlgo);
+        Jwt jwt = new Jwt(SECRET, ALGORITHM);
 
         String token = jwt.generateBearToken();
 
@@ -105,5 +101,12 @@ class JwtTest {
         String bearer = "Bearer " + token;
 
         assert jwt.validateBearerToken(bearer);
+    }
+
+    @Test
+    void getParser() {
+        Jwt jwt = new Jwt(SECRET, ALGORITHM);
+
+        assert jwt.getParser() != null;
     }
 }
