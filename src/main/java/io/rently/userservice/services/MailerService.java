@@ -19,7 +19,7 @@ import java.util.Map;
 public class MailerService {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    public final Jwt jwt ;
+    private final Jwt jwt ;
     private final String endPointUrl;
 
     public MailerService(
