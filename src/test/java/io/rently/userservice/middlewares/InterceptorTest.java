@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -79,7 +80,7 @@ class InterceptorTest {
 
     @Test
     void preHandle_whenRequestMethodIsOption_returnTrue() {
-        request.setMethod(HttpMethod.OPTIONS.name());
+        request.setMethod(RequestMethod.OPTIONS.name());
 
         assert interceptor.preHandle(request, response, new Object());
         assert Objects.equals(response.getHeader("Cache-Control"), "no-cache");
@@ -87,5 +88,14 @@ class InterceptorTest {
         assert Objects.equals(response.getHeader("Access-Control-Allow-Methods"), "GET,POST,OPTIONS,PUT,DELETE");
         assert Objects.equals(response.getHeader("Access-Control-Allow-Headers"), "*");
         assert response.getStatus() == HttpServletResponse.SC_OK;
+    }
+
+    @Test
+    void preHandle_whenRequestMethodIsExcluded_returnTrue() {
+        Interceptor interceptor = new Interceptor(new Jwt(SECRET, ALGORITHM), RequestMethod.GET);
+
+        request.setMethod(RequestMethod.GET.name());
+
+        assert interceptor.preHandle(request, response, new Object());
     }
 }
