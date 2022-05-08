@@ -2,7 +2,6 @@ package io.rently.userservice.middlewares;
 
 import io.rently.userservice.utils.Jwt;
 import io.rently.userservice.utils.Broadcaster;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,11 +17,11 @@ import java.util.stream.Stream;
 @Component
 public class Interceptor implements HandlerInterceptor {
 
-    @Autowired
-    private Jwt jwt;
+    private final Jwt jwt;
     public final List<String> blackListedMethods;
 
-    public Interceptor(RequestMethod... excludedMethods) {
+    public Interceptor(Jwt jwt, RequestMethod... excludedMethods) {
+        this.jwt = jwt;
         this.blackListedMethods = Stream.of(excludedMethods)
                 .map(m -> Objects.toString(m, null))
                 .collect(Collectors.toList());
