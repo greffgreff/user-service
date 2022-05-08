@@ -14,10 +14,6 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class User {
-    // both `providerId` (user id from provider)
-    // and `provider` can act as composite primary keys
-    // and likely won't be changing.
-    // `id` key added if this is not the case.
     @Id
     @Column(updatable = false, nullable = false, unique = true)
     private String id;
