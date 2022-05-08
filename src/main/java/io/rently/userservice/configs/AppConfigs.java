@@ -17,9 +17,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class AppConfigs implements WebMvcConfigurer {
 
-    @Value("${mailer.secret}")
+    @Value("${server.secret}")
     public String secret;
-    @Value("${mailer.algo}")
+    @Value("${server.algo}")
     public SignatureAlgorithm algo;
 
     @Override
