@@ -3,23 +3,20 @@ package io.rently.userservice.middlewares;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.errors.Errors;
-import io.rently.userservice.utils.Broadcaster;
+import io.rently.userservice.utils.Jwt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @SpringBootTest
@@ -27,15 +24,15 @@ import java.util.Objects;
 @RunWith(SpringRunner.class)
 class InterceptorTest {
 
-    @Autowired
     public Interceptor interceptor;
     public MockHttpServletResponse response;
     public MockMultipartHttpServletRequest request;
-    public static final String SECRET = "HelloDarknessMyOldFriend";
-    public static final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS256;
+    public static final String SECRET = "secret";
+    public static final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS384;
 
     @BeforeEach
     void setup() {
+        interceptor = new Interceptor(new Jwt(SECRET, ALGORITHM));
         request = new MockMultipartHttpServletRequest();
         response = new MockHttpServletResponse();
     }
