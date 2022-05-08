@@ -3,6 +3,7 @@ package io.rently.userservice.configs;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.middlewares.Interceptor;
 import io.rently.userservice.services.MailerService;
+import io.rently.userservice.utils.Broadcaster;
 import io.rently.userservice.utils.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,8 @@ public class AppConfigs implements WebMvcConfigurer {
 
     @Bean
     public Jwt jwt() {
+        Broadcaster.info("Loaded service with secret `" + secret + "`");
+        Broadcaster.info("Loaded service with algo `" + algo + "`");
         return new Jwt(secret, algo);
     }
 
@@ -43,6 +46,9 @@ public class AppConfigs implements WebMvcConfigurer {
             @Value("${mailer.algo}") SignatureAlgorithm algo,
             @Value("${mailer.baseurl}") String baseUrl
     ) {
+        Broadcaster.info("Loaded MailerService with base URL `" + baseUrl + "`");
+        Broadcaster.info("Loaded MailerService with secret `" + secret + "`");
+        Broadcaster.info("Loaded MailerService with algo `" + algo + "`");
         return new MailerService(new Jwt(secret, algo), baseUrl, new RestTemplate());
     }
 }
