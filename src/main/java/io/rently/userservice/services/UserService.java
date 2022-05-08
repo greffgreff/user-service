@@ -36,7 +36,7 @@ public class UserService {
 
     public void addUser(User user) {
         Broadcaster.info("Adding user to database: " + user.getId());
-        Optional<User> existingUser = repository.findByProviderInfo(user.getProvider(), user.getProviderId());
+        Optional<User> existingUser = repository.findByProviderAndProviderId(user.getProvider(), user.getProviderId());
         if (existingUser.isPresent()) {
             throw Errors.USER_ALREADY_EXISTS;
         }
