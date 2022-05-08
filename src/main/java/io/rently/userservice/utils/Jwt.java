@@ -19,7 +19,7 @@ public class Jwt {
     private final SignatureAlgorithm algo;
     private final String secret;
 
-    public Jwt(@Value("${server.secret}") String secret, @Value("${server.algo}") SignatureAlgorithm algo) {
+    public Jwt(String secret, SignatureAlgorithm algo) {
         if (!Objects.equals(algo.getFamilyName(), "HMAC")) {
             throw new IllegalArgumentException("Algorithm from outside of `HMAC` family: " + algo.getFamilyName());
         }
