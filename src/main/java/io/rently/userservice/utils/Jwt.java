@@ -21,7 +21,7 @@ public class Jwt {
 
     public Jwt(String secret, SignatureAlgorithm algo) {
         if (!Objects.equals(algo.getFamilyName(), "HMAC")) {
-            throw new IllegalArgumentException("Algorithm from outside of `HMAC` family: " + algo.getFamilyName());
+            throw new IllegalArgumentException("Algorithm outside of `HMAC` family: " + algo.getFamilyName());
         }
         if (secret == null || secret.equals("")) {
             throw new IllegalArgumentException("Signing secret cannot be null or an empty string");

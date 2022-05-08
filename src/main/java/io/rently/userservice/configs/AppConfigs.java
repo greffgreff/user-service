@@ -33,10 +33,7 @@ public class AppConfigs implements WebMvcConfigurer {
     }
 
     @Bean
-    public Jwt jwt(
-            @Value("${server.secret}") String secret,
-            @Value("${server.algo}") SignatureAlgorithm algo
-    ) {
+    public Jwt jwt() {
         return new Jwt(secret, algo);
     }
 
