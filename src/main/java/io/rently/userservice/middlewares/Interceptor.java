@@ -45,7 +45,6 @@ public class Interceptor implements HandlerInterceptor {
             return true;
         }
         String bearer = request.getHeader("Authorization");
-        jwt.validateBearerToken(bearer);
-        return true;
+        return jwt.validateBearerToken(bearer);
     }
 }
