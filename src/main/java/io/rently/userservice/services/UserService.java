@@ -1,5 +1,6 @@
 package io.rently.userservice.services;
 
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.interfaces.UserRepository;
@@ -18,9 +19,10 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
-
     @Autowired
     private Jwt jwt;
+    @Autowired
+    private MailerService mailer;
 
     public User getUserByProvider(String provider, String providerId) {
         Broadcaster.info("Fetching user from database by provider: " + provider + " " + providerId);
@@ -34,14 +36,14 @@ public class UserService {
 
     public void addUser(User user) {
         Broadcaster.info("Adding user to database: " + user.getId());
-        Optional<User> existingUser = repository.findByProviderInfo(user.getProvider(), user.getProviderId());
+        Optional<User> existingUser = repository.findByProviderAndProviderId(user.getProvider(), user.getProviderId());
         if (existingUser.isPresent()) {
             throw Errors.USER_ALREADY_EXISTS;
         }
         validateData(user);
         repository.save(user);
         try {
-            MailerService.dispatchGreeting(user.getName(), user.getEmail());
+            mailer.dispatchGreeting(user.getName(), user.getEmail());
         } catch (Exception exception) {
             Broadcaster.warn("Greetings not dispatched to " + user.getEmail());
             Broadcaster.error(exception);
@@ -63,15 +65,15 @@ public class UserService {
         User user = tryFindUserById(id);
         repository.deleteById(id);
         try {
-            MailerService.dispatchGoodbye(user.getName(), user.getEmail());
+            mailer.dispatchGoodbye(user.getName(), user.getEmail());
         } catch (Exception exception) {
             Broadcaster.warn("Goodbyes not dispatched to " + user.getEmail());
             Broadcaster.error(exception);
         }
     }
 
-    public User tryFindUserByProvider(String provider, String providerId) {
-        Optional<User> user = repository.findByProviderInfo(provider, providerId);
+    private User tryFindUserByProvider(String provider, String providerId) {
+        Optional<User> user = repository.findByProviderAndProviderId(provider, providerId);
         if (user.isPresent()) {
             return user.get();
         } else {
@@ -79,7 +81,7 @@ public class UserService {
         }
     }
 
-    public User tryFindUserById(String id) {
+    private User tryFindUserById(String id) {
         Optional<User> user = repository.findById(id);
         if (user.isPresent()) {
             return user.get();
@@ -90,15 +92,7 @@ public class UserService {
 
     public void verifyOwnership(String header, String userId) {
         User user = tryFindUserById(userId);
-        String id = jwt.getClaims(header).getSubject();
-
-        if (!Objects.equals(id, user.getId())) {
-            throw Errors.UNAUTHORIZED_REQUEST;
-        }
-    }
-
-    public void verifyOwnership(String header, User user) {
-        String id = jwt.getClaims(header).getSubject();
+        String id = jwt.getParser().parseClaimsJws(header).getBody().getSubject();
 
         if (!Objects.equals(id, user.getId())) {
             throw Errors.UNAUTHORIZED_REQUEST;

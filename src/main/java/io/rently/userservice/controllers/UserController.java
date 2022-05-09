@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v2/users")
-public class UserController implements ErrorController {
+public class UserController {
 
     @Autowired
     public UserService service;
@@ -36,7 +36,7 @@ public class UserController implements ErrorController {
 
     @PutMapping("/{id}")
     public ResponseContent handlePutRequest(@RequestHeader("Authorization") String header, @PathVariable String id, @RequestBody User user) {
-        service.verifyOwnership(header, user);
+        service.verifyOwnership(header, user.getId());
         service.updateUser(id, user);
         return new ResponseContent.Builder().setMessage("Successfully updated user from database").build();
     }
