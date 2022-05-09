@@ -25,7 +25,7 @@ public class UserService {
     private MailerService mailer;
 
     public User getUserByProvider(String provider, String providerId) {
-        Broadcaster.info("Fetching user from database by provider: " + provider + " " + providerId);
+        Broadcaster.info("Fetching user from database by provider: " + provider + "/" + providerId);
         return tryFindUserByProvider(provider, providerId);
     }
 
