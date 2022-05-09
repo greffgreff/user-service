@@ -31,8 +31,13 @@ public class ExceptionController {
     public ResponseContent unhandledException(HttpServletResponse response, Exception exception) {
         Broadcaster.error(exception.getMessage());
         ResponseStatusException resEx = Errors.INTERNAL_SERVER_ERROR;
-        mailer.dispatchErrorToDevs(exception);
         bugsnag.notify(exception);
+        try {
+            mailer.dispatchErrorToDevs(exception);
+        } catch (Exception ex) {
+            Broadcaster.warn("Could not dispatch error report.");
+            Broadcaster.error(ex);
+        }
         response.setStatus(resEx.getStatus().value());
         return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getReason()).build();
     }
