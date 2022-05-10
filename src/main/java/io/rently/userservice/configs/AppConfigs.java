@@ -5,7 +5,6 @@ import io.rently.userservice.middlewares.Interceptor;
 import io.rently.userservice.services.MailerService;
 import io.rently.userservice.utils.Broadcaster;
 import io.rently.userservice.utils.Jwt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,13 +29,13 @@ public class AppConfigs implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new Interceptor(new Jwt(secret, algo), RequestMethod.GET));
+        registry.addInterceptor(new Interceptor(new Jwt(secret, algo),  RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE));
     }
 
     @Bean
     public Jwt jwt() {
-        Broadcaster.info("Loaded service with secret `" + secret + "`");
-        Broadcaster.info("Loaded service with algo `" + algo + "`");
+        Broadcaster.info("Loaded service middleware with secret `" + secret + "`");
+        Broadcaster.info("Loaded service middleware with algo `" + algo + "`");
         return new Jwt(secret, algo);
     }
 
