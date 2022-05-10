@@ -21,8 +21,6 @@ import java.util.Date;
 import java.util.Objects;
 
 @SpringBootTest
-@AutoConfigureMockMvc
-@RunWith(SpringRunner.class)
 class InterceptorTest {
 
     public Interceptor interceptor;
