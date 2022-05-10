@@ -8,15 +8,19 @@ import io.rently.userservice.services.MailerService;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.utils.Broadcaster;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.MissingResourceException;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -39,6 +43,7 @@ public class ExceptionController {
             Broadcaster.error(ex);
         }
         response.setStatus(resEx.getStatus().value());
+        exception.printStackTrace();
         return new ResponseContent.Builder(resEx.getStatus()).setMessage(resEx.getReason()).build();
     }
 
@@ -64,5 +69,13 @@ public class ExceptionController {
         ResponseStatusException respEx = Errors.NO_DATA;
         response.setStatus(respEx.getStatus().value());
         return new ResponseContent.Builder(respEx.getStatus()).setMessage(respEx.getReason()).build();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(MissingRequestValueException.class)
+    public static ResponseContent missingResource(HttpServletResponse response, MissingRequestValueException exception) {
+        HttpStatus status = HttpStatus.NOT_ACCEPTABLE;
+        response.setStatus(status.value());
+        return new ResponseContent.Builder(status).setMessage("Missing resource: " + exception.getMessage()).build();
     }
 }
