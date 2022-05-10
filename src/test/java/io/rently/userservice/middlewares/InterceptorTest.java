@@ -45,7 +45,7 @@ class InterceptorTest {
 
     @Test
     void preHandle_malFormedJwt_malformedRequestThrown() {
-        request.addHeader("Authorization", "Bearer abc");
+        request.addHeader("Authorization", "abc");
 
         Assertions.assertThrows(Errors.MALFORMED_TOKEN.getClass(), () -> interceptor.preHandle(request, response, new Object()));
     }
