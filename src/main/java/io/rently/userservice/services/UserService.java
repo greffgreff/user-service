@@ -10,6 +10,7 @@ import io.rently.userservice.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,7 +38,8 @@ public class UserService {
     public void addUser(User user) {
         Broadcaster.info("Adding user to database: " + user.getId());
         Optional<User> existingUser = repository.findByProviderAndProviderId(user.getProvider(), user.getProviderId());
-        if (existingUser.isPresent()) {
+        Optional<User> existingUserById = repository.findById(user.getId());
+        if (existingUser.isPresent() || existingUserById.isPresent()) {
             throw Errors.USER_ALREADY_EXISTS;
         }
         validateData(user);
@@ -92,8 +94,12 @@ public class UserService {
 
     public void verifyOwnership(String header, String userId) {
         User user = tryFindUserById(userId);
-        String id = jwt.getParser().parseClaimsJws(header).getBody().getSubject();
-
+        String id = null;
+        try {
+            id = jwt.getParser().parseClaimsJws(header).getBody().getSubject();
+        } catch (Exception ingore) {
+            throw Errors.UNAUTHORIZED_REQUEST;
+        }
         if (!Objects.equals(id, user.getId())) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }
@@ -110,6 +116,18 @@ public class UserService {
             throw new Errors.HttpFieldMissing("provider");
         } else if (user.getProviderId() == null) {
             throw new Errors.HttpFieldMissing("providerId");
+        } else if (user.getEmail() == null) {
+            throw new Errors.HttpFieldMissing("email");
+        } else if (user.getName() == null) {
+            user.setName(user.getEmail());
+        } else if(user.getCreatedAt() == null) {
+            user.setCreatedAt(new Timestamp(System.currentTimeMillis()).toString());
+        } else if (!Validation.canParseToTs(user.getCreatedAt())) {
+            throw new Errors.HttpValidationFailure("createdAt", Timestamp.class, user.getCreatedAt());
+        } else if (user.getUpdatedAt() == null) {
+            user.setUpdatedAt(new Timestamp(System.currentTimeMillis()).toString());
+        } else if (!Validation.canParseToTs(user.getUpdatedAt())) {
+            throw new Errors.HttpValidationFailure("updatedAt", Timestamp.class, user.getUpdatedAt());
         }
     }
 }
