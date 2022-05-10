@@ -47,7 +47,7 @@ public class UserService {
         try {
             mailer.dispatchGreeting(user.getName(), user.getEmail());
         } catch (Exception exception) {
-            Broadcaster.warn("Greetings not dispatched to " + user.getEmail());
+            Broadcaster.warn("Could not dispatch greetings to " + user.getEmail());
             Broadcaster.error(exception);
         }
     }
@@ -69,7 +69,7 @@ public class UserService {
         try {
             mailer.dispatchGoodbye(user.getName(), user.getEmail());
         } catch (Exception exception) {
-            Broadcaster.warn("Goodbyes not dispatched to " + user.getEmail());
+            Broadcaster.warn("Could not dispatch goodbyes to " + user.getEmail());
             Broadcaster.error(exception);
         }
     }

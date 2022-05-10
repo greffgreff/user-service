@@ -12,7 +12,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 public class User {
     @Id
     @Column(updatable = false, nullable = false, unique = true)
