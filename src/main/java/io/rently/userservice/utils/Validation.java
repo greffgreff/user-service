@@ -9,7 +9,7 @@ public class Validation {
 
     public static boolean canParseToTs(String value) {
         try {
-            Broadcaster.debug(new Date(Long.parseLong(value)));
+            new Date(Long.parseLong(value));
             return true;
         }
         catch (Exception ignore) {
