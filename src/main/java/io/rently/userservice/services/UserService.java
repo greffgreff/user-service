@@ -21,8 +21,6 @@ public class UserService {
     @Autowired
     private UserRepository repository;
     @Autowired
-    private Jwt jwt;
-    @Autowired
     private MailerService mailer;
 
     public User getUserByProvider(String provider, String providerId) {
@@ -89,19 +87,6 @@ public class UserService {
             return user.get();
         } else {
             throw Errors.USER_NOT_FOUND;
-        }
-    }
-
-    public void verifyOwnership(String token, String userId) {
-        User user = tryFindUserById(userId);
-        String id = null;
-        try {
-            id = jwt.getParser().parseClaimsJws(token).getBody().getSubject();
-        } catch (Exception ingore) {
-            throw Errors.UNAUTHORIZED_REQUEST;
-        }
-        if (!Objects.equals(id, user.getId())) {
-            throw Errors.UNAUTHORIZED_REQUEST;
         }
     }
 
