@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
@@ -44,7 +45,7 @@ class MailerServiceTest {
         String username = "My Username";
         String emailAddress = "abc@gmail.com";
 
-        Assertions.assertDoesNotThrow(() -> mailerService.dispatchGreeting(username, emailAddress));
+        assertDoesNotThrow(() -> mailerService.dispatchGreeting(username, emailAddress));
 
         verify(restTemplate, times(1)).postForObject(
             Mockito.eq(URL + "api/v1/emails/dispatch/"),
@@ -72,7 +73,7 @@ class MailerServiceTest {
         String username = "My Username";
         String emailAddress = "abc@gmail.com";
 
-        Assertions.assertDoesNotThrow(() -> mailerService.dispatchGoodbye(username, emailAddress));
+        assertDoesNotThrow(() -> mailerService.dispatchGoodbye(username, emailAddress));
 
         verify(restTemplate, times(1)).postForObject(
                 Mockito.eq(URL + "api/v1/emails/dispatch/"),
@@ -91,7 +92,7 @@ class MailerServiceTest {
     void dispatchErrorToDevs_nonEmptyException_void() {
         Exception exception = new Exception("My exception", new Throwable("My cause"));
 
-        Assertions.assertDoesNotThrow(() -> mailerService.dispatchErrorToDevs(exception));
+        assertDoesNotThrow(() -> mailerService.dispatchErrorToDevs(exception));
 
         verify(restTemplate, times(1)).postForObject(
                 Mockito.eq(URL + "api/v1/emails/dispatch/"),
