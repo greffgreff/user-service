@@ -29,7 +29,8 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public ResponseContent handlePostRequest(@RequestBody User user) {
+    public ResponseContent handlePostRequest(@RequestHeader("Authorization") String header, @RequestBody User user) {
+        service.verifyOwnership(header, user.getId());
         service.addUser(user);
         return new ResponseContent.Builder(HttpStatus.CREATED).setMessage("Successfully added user to database").build();
     }
