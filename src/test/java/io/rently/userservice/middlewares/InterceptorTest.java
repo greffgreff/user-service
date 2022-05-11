@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @WebMvcTest(Interceptor.class)
 @ContextConfiguration(classes = BugsnagTestConfigs.class)
 class InterceptorTest {
@@ -44,14 +46,14 @@ class InterceptorTest {
 
     @Test
     void preHandle_noJwt_unauthorizedRequestThrown() {
-        Assertions.assertThrows(Errors.UNAUTHORIZED_REQUEST.getClass(), () -> interceptor.preHandle(request, response, new Object()));
+        assertThrows(Errors.UNAUTHORIZED_REQUEST.getClass(), () -> interceptor.preHandle(request, response, new Object()));
     }
 
     @Test
     void preHandle_malFormedJwt_malformedRequestThrown() {
         request.addHeader("Authorization", "abc");
 
-        Assertions.assertThrows(Errors.MALFORMED_TOKEN.getClass(), () -> interceptor.preHandle(request, response, new Object()));
+        assertThrows(Errors.MALFORMED_TOKEN.getClass(), () -> interceptor.preHandle(request, response, new Object()));
     }
 
     @Test
@@ -65,7 +67,7 @@ class InterceptorTest {
 
         request.addHeader("Authorization", "Bearer " + token);
 
-        Assertions.assertThrows(Errors.EXPIRED_TOKEN.getClass(), () -> interceptor.preHandle(request, response, new Object()));
+        assertThrows(Errors.EXPIRED_TOKEN.getClass(), () -> interceptor.preHandle(request, response, new Object()));
     }
 
     @Test
