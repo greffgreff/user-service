@@ -37,12 +37,12 @@ public class UserService {
 
     public void addUser(User user) {
         Broadcaster.info("Adding user to database: " + user.getId());
+        validateData(user);
         Optional<User> existingUser = repository.findByProviderAndProviderId(user.getProvider(), user.getProviderId());
         Optional<User> existingUserById = repository.findById(user.getId());
         if (existingUser.isPresent() || existingUserById.isPresent()) {
             throw Errors.USER_ALREADY_EXISTS;
         }
-        validateData(user);
         repository.save(user);
         try {
             mailer.dispatchGreeting(user.getName(), user.getEmail());
@@ -74,7 +74,7 @@ public class UserService {
         }
     }
 
-    private User tryFindUserByProvider(String provider, String providerId) {
+    public User tryFindUserByProvider(String provider, String providerId) {
         Optional<User> user = repository.findByProviderAndProviderId(provider, providerId);
         if (user.isPresent()) {
             return user.get();
@@ -83,7 +83,7 @@ public class UserService {
         }
     }
 
-    private User tryFindUserById(String id) {
+    public User tryFindUserById(String id) {
         Optional<User> user = repository.findById(id);
         if (user.isPresent()) {
             return user.get();
@@ -92,11 +92,11 @@ public class UserService {
         }
     }
 
-    public void verifyOwnership(String header, String userId) {
+    public void verifyOwnership(String token, String userId) {
         User user = tryFindUserById(userId);
         String id = null;
         try {
-            id = jwt.getParser().parseClaimsJws(header).getBody().getSubject();
+            id = jwt.getParser().parseClaimsJws(token).getBody().getSubject();
         } catch (Exception ingore) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }
