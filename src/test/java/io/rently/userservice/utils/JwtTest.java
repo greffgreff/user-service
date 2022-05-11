@@ -2,16 +2,21 @@ package io.rently.userservice.utils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.rently.userservice.configs.BugsnagTestConfigs;
 import io.rently.userservice.errors.Errors;
+import io.rently.userservice.middlewares.Interceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@WebMvcTest(Jwt.class)
+@ContextConfiguration(classes = BugsnagTestConfigs.class)
 class JwtTest {
 
     public Jwt jwt;

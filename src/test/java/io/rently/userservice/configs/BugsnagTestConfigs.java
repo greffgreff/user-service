@@ -1,17 +1,17 @@
 package io.rently.userservice.configs;
 
-import io.rently.userservice.interfaces.UserRepository;
+import com.bugsnag.Bugsnag;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
 @TestConfiguration
-public class UserServiceTestConfigs {
+public class BugsnagTestConfigs {
 
     @Bean
     @Primary
-    public UserRepository userRepository() {
-        return Mockito.mock(UserRepository.class);
+    public Bugsnag bugsnag() {
+        return Mockito.mock(Bugsnag.class);
     }
 }
