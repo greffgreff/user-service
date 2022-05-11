@@ -123,7 +123,6 @@ class UserServiceTest {
     void addUser_validUserData_trySendGreetings() {
         User validUserData = getValidGenericUser();
 
-        // FIXME - Verify mailer service sendGreetings invocation
         assertDoesNotThrow(() -> service.addUser(validUserData));
     }
 
