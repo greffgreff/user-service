@@ -127,14 +127,6 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_mismatchedUserIdAndDataHolderId_throwUnauthorized() {
-        String invalidDataHolderId = "invalid";
-        User user = getValidGenericUser();
-
-        assertThrows(Errors.INVALID_REQUEST.getClass(), () -> service.updateUser(invalidDataHolderId, user));
-    }
-
-    @Test
     void updateUser_invalidUserId_throwNotFound() {
         String invalidDataHolderId = "invalid";
         User user = getValidGenericUser();
