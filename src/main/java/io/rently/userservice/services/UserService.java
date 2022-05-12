@@ -52,9 +52,6 @@ public class UserService {
 
     public void updateUser(String id, User user) {
         Broadcaster.info("Updating user from database: " + id);
-        if (!Objects.equals(id, user.getId())) {
-            throw Errors.INVALID_REQUEST;
-        }
         validateData(user);
         tryFindUserById(id);
         repository.save(user);
