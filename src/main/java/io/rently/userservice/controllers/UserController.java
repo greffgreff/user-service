@@ -4,6 +4,7 @@ import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.services.UserService;
+import io.rently.userservice.utils.Broadcaster;
 import io.rently.userservice.utils.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,14 +55,15 @@ public class UserController {
         return new ResponseContent.Builder().setMessage("Successfully removed user from database").build();
     }
 
-    protected void verifyOwnership(String token, String userId) {
-        User user = service.getUserById(userId);
+    protected void verifyOwnership(String bearer, String userId) {
+        String token = bearer.split(" ")[1];
         String id;
         try {
             id = jwt.getParser().parseClaimsJws(token).getBody().getSubject();
         } catch (Exception ignore) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }
+        User user = service.getUserById(userId);
         if (!Objects.equals(id, user.getId())) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }
