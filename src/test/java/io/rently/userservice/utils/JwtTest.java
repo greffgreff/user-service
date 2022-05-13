@@ -4,13 +4,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.configs.BugsnagTestConfigs;
 import io.rently.userservice.errors.Errors;
-import io.rently.userservice.middlewares.Interceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,6 +21,7 @@ class JwtTest {
     public Jwt jwt;
     public static final String SECRET = "secret";
     public static final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS384;
+    public static final SecretKeySpec SECRET_KEY_SPEC = new SecretKeySpec(SECRET.getBytes(), ALGORITHM.getJcaName());
 
     @BeforeEach
     void setup() {
@@ -77,7 +77,7 @@ class JwtTest {
         String token = Jwts.builder()
                 .setIssuedAt(validDate)
                 .setExpiration(validDate)
-                .signWith(invalidAlgo, SECRET)
+                .signWith(invalidAlgo, SECRET_KEY_SPEC)
                 .compact();
         String bearer = "Bearer " + token;
 
@@ -90,7 +90,7 @@ class JwtTest {
         String token = Jwts.builder()
                 .setIssuedAt(pastDate)
                 .setExpiration(pastDate)
-                .signWith(ALGORITHM, SECRET)
+                .signWith(ALGORITHM, SECRET_KEY_SPEC)
                 .compact();
         String bearer = "Bearer " + token;
 
@@ -103,7 +103,7 @@ class JwtTest {
         String token = Jwts.builder()
                 .setIssuedAt(validDate)
                 .setExpiration(validDate)
-                .signWith(ALGORITHM, SECRET)
+                .signWith(ALGORITHM, SECRET_KEY_SPEC)
                 .compact();
         String bearer = "Bearer " + token;
 

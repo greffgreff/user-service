@@ -17,7 +17,7 @@ public class Jwt {
 
     private final JwtParser parser;
     private final SignatureAlgorithm algo;
-    private final String secret;
+    private final SecretKeySpec secretKeySpec;
 
     public Jwt(String secret, SignatureAlgorithm algo) {
         if (!Objects.equals(algo.getFamilyName(), "HMAC")) {
@@ -26,9 +26,9 @@ public class Jwt {
         if (secret == null || secret.equals("")) {
             throw new IllegalArgumentException("Signing secret cannot be null or an empty string");
         }
-        this.secret = secret;
+        this.secretKeySpec = new SecretKeySpec(secret.getBytes(), algo.getJcaName());
         this.algo = algo;
-        this.parser = Jwts.parser().setSigningKey(secret);
+        this.parser = Jwts.parser().setSigningKey(secretKeySpec);
     }
 
     public boolean validateBearerToken(String token) {
@@ -40,6 +40,7 @@ public class Jwt {
         } catch (MalformedJwtException exception) {
             throw Errors.MALFORMED_TOKEN;
         } catch (Exception exception) {
+            Broadcaster.debug(exception.getMessage());
             throw Errors.UNAUTHORIZED_REQUEST;
         }
         return true;
@@ -54,7 +55,7 @@ public class Jwt {
                 .setId(id)
                 .setIssuedAt(iat)
                 .setExpiration(ext)
-                .signWith(algo, secret)
+                .signWith(algo, secretKeySpec)
                 .compact();
     }
 
