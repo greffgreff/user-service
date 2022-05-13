@@ -40,7 +40,6 @@ public class Jwt {
         } catch (MalformedJwtException exception) {
             throw Errors.MALFORMED_TOKEN;
         } catch (Exception exception) {
-            Broadcaster.debug(exception.getMessage());
             throw Errors.UNAUTHORIZED_REQUEST;
         }
         return true;
