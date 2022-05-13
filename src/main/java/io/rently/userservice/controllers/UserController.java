@@ -63,8 +63,7 @@ public class UserController {
         } catch (Exception ignore) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }
-        User user = service.getUserById(userId);
-        if (!Objects.equals(id, user.getId())) {
+        if (!Objects.equals(id, userId)) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }
     }
