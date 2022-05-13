@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.Objects;
@@ -36,6 +37,7 @@ class InterceptorTest {
     public MockMultipartHttpServletRequest request;
     public static final String SECRET = "secret";
     public static final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS384;
+    public static final SecretKeySpec SECRET_KEY_SPEC = new SecretKeySpec(SECRET.getBytes(), ALGORITHM.getJcaName());
 
     @BeforeEach
     void setup() {
@@ -62,7 +64,7 @@ class InterceptorTest {
         String token = Jwts.builder()
                 .setIssuedAt(expiredDate)
                 .setExpiration(expiredDate)
-                .signWith(ALGORITHM, SECRET)
+                .signWith(ALGORITHM, SECRET_KEY_SPEC)
                 .compact();
 
         request.addHeader("Authorization", "Bearer " + token);
@@ -76,7 +78,7 @@ class InterceptorTest {
         String token = Jwts.builder()
                 .setIssuedAt(expiredDate)
                 .setExpiration(expiredDate)
-                .signWith(ALGORITHM, SECRET)
+                .signWith(ALGORITHM, SECRET_KEY_SPEC)
                 .compact();
 
         request.addHeader("Authorization", "Bearer " + token);
