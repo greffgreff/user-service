@@ -1,8 +1,8 @@
 package io.rently.userservice.configs;
 
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.rently.userservice.middlewares.Interceptor;
 import io.rently.userservice.components.MailerService;
+import io.rently.userservice.middlewares.Interceptor;
 import io.rently.userservice.utils.Broadcaster;
 import io.rently.userservice.utils.Jwt;
 import org.springframework.beans.factory.annotation.Value;

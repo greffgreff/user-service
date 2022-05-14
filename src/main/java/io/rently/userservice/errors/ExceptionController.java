@@ -1,8 +1,8 @@
 package io.rently.userservice.errors;
 
 import com.bugsnag.Bugsnag;
-import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.components.MailerService;
+import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.utils.Broadcaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
