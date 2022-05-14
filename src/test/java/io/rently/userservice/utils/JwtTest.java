@@ -2,19 +2,31 @@ package io.rently.userservice.utils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.rently.userservice.configs.BugsnagTestConfigs;
 import io.rently.userservice.errors.Errors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@WebMvcTest(Jwt.class)
+@ContextConfiguration(classes = BugsnagTestConfigs.class)
 class JwtTest {
 
+    public Jwt jwt;
     public static final String SECRET = "secret";
     public static final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS384;
+    public static final SecretKeySpec SECRET_KEY_SPEC = new SecretKeySpec(SECRET.getBytes(), ALGORITHM.getJcaName());
+
+    @BeforeEach
+    void setup() {
+        this.jwt = new Jwt(SECRET, ALGORITHM);
+    }
 
     @Test
     void invalidAlgo_agrException() {
@@ -32,8 +44,6 @@ class JwtTest {
 
     @Test
     void generateBearerToken() {
-        Jwt jwt = new Jwt(SECRET, ALGORITHM);
-
         String token = jwt.generateBearToken();
 
         assert token.matches("(^[A-Za-z0-9-_]*\\.[A-Za-z0-9-_]*\\.[A-Za-z0-9-_]*$)");
@@ -41,7 +51,6 @@ class JwtTest {
 
     @Test
     void validateBearerToken_malformedToken_malformedException() {
-        Jwt jwt = new Jwt(SECRET, ALGORITHM);
         String token = "malformed token";
 
         assertThrows(Errors.MALFORMED_TOKEN.getClass(), () -> jwt.validateBearerToken(token));
@@ -49,7 +58,6 @@ class JwtTest {
 
     @Test
     void validateBearerToken_invalidSecret_unauthorizedException() {
-        Jwt jwt = new Jwt(SECRET, ALGORITHM);
         Date validDate = new Date(System.currentTimeMillis() - 60000L);
         String invalidSecret = "invalid secret";
         String token = Jwts.builder()
@@ -64,13 +72,12 @@ class JwtTest {
 
     @Test
     void validateBearerToken_invalidAlgo_unauthorizedException() {
-        Jwt jwt = new Jwt(SECRET, ALGORITHM);
         Date validDate = new Date(System.currentTimeMillis() - 60000L);
         SignatureAlgorithm invalidAlgo = SignatureAlgorithm.HS384;
         String token = Jwts.builder()
                 .setIssuedAt(validDate)
                 .setExpiration(validDate)
-                .signWith(invalidAlgo, SECRET)
+                .signWith(invalidAlgo, SECRET_KEY_SPEC)
                 .compact();
         String bearer = "Bearer " + token;
 
@@ -79,12 +86,11 @@ class JwtTest {
 
     @Test
     void validateBearerToken_expiredToken_tokenExpiredException() {
-        Jwt jwt = new Jwt(SECRET, ALGORITHM);
         Date pastDate = new Date(System.currentTimeMillis() - 60000L);
         String token = Jwts.builder()
                 .setIssuedAt(pastDate)
                 .setExpiration(pastDate)
-                .signWith(ALGORITHM, SECRET)
+                .signWith(ALGORITHM, SECRET_KEY_SPEC)
                 .compact();
         String bearer = "Bearer " + token;
 
@@ -93,12 +99,11 @@ class JwtTest {
 
     @Test
     void validateBearerToken_validToken() {
-        Jwt jwt = new Jwt(SECRET, ALGORITHM);
         Date validDate = new Date(System.currentTimeMillis() + 60000L);
         String token = Jwts.builder()
                 .setIssuedAt(validDate)
                 .setExpiration(validDate)
-                .signWith(ALGORITHM, SECRET)
+                .signWith(ALGORITHM, SECRET_KEY_SPEC)
                 .compact();
         String bearer = "Bearer " + token;
 
@@ -107,8 +112,6 @@ class JwtTest {
 
     @Test
     void getParser() {
-        Jwt jwt = new Jwt(SECRET, ALGORITHM);
-
         assert jwt.getParser() != null;
     }
 }

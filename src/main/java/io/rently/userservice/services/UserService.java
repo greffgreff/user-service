@@ -10,6 +10,7 @@ import io.rently.userservice.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,12 +21,10 @@ public class UserService {
     @Autowired
     private UserRepository repository;
     @Autowired
-    private Jwt jwt;
-    @Autowired
     private MailerService mailer;
 
     public User getUserByProvider(String provider, String providerId) {
-        Broadcaster.info("Fetching user from database by provider: " + provider + " " + providerId);
+        Broadcaster.info("Fetching user from database by provider: " + provider + "/" + providerId);
         return tryFindUserByProvider(provider, providerId);
     }
 
@@ -36,25 +35,23 @@ public class UserService {
 
     public void addUser(User user) {
         Broadcaster.info("Adding user to database: " + user.getId());
+        validateData(user);
         Optional<User> existingUser = repository.findByProviderAndProviderId(user.getProvider(), user.getProviderId());
-        if (existingUser.isPresent()) {
+        Optional<User> existingUserById = repository.findById(user.getId());
+        if (existingUser.isPresent() || existingUserById.isPresent()) {
             throw Errors.USER_ALREADY_EXISTS;
         }
-        validateData(user);
         repository.save(user);
         try {
             mailer.dispatchGreeting(user.getName(), user.getEmail());
         } catch (Exception exception) {
-            Broadcaster.warn("Greetings not dispatched to " + user.getEmail());
+            Broadcaster.warn("Could not dispatch greetings to " + user.getEmail());
             Broadcaster.error(exception);
         }
     }
 
     public void updateUser(String id, User user) {
         Broadcaster.info("Updating user from database: " + id);
-        if (!Objects.equals(id, user.getId())) {
-            throw Errors.INVALID_REQUEST;
-        }
         validateData(user);
         tryFindUserById(id);
         repository.save(user);
@@ -67,7 +64,7 @@ public class UserService {
         try {
             mailer.dispatchGoodbye(user.getName(), user.getEmail());
         } catch (Exception exception) {
-            Broadcaster.warn("Goodbyes not dispatched to " + user.getEmail());
+            Broadcaster.warn("Could not dispatch goodbyes to " + user.getEmail());
             Broadcaster.error(exception);
         }
     }
@@ -90,15 +87,6 @@ public class UserService {
         }
     }
 
-    public void verifyOwnership(String header, String userId) {
-        User user = tryFindUserById(userId);
-        String id = jwt.getParser().parseClaimsJws(header).getBody().getSubject();
-
-        if (!Objects.equals(id, user.getId())) {
-            throw Errors.UNAUTHORIZED_REQUEST;
-        }
-    }
-
     public static void validateData(User user) {
         if (user == null) {
             throw Errors.NO_DATA;
@@ -110,6 +98,18 @@ public class UserService {
             throw new Errors.HttpFieldMissing("provider");
         } else if (user.getProviderId() == null) {
             throw new Errors.HttpFieldMissing("providerId");
+        } else if (user.getEmail() == null) {
+            throw new Errors.HttpFieldMissing("email");
+        } else if (user.getName() == null) {
+            user.setName(user.getEmail());
+        } else if(user.getCreatedAt() == null) {
+            user.setCreatedAt(new Timestamp(System.currentTimeMillis()).toString());
+        } else if (!Validation.canParseToTs(user.getCreatedAt())) {
+            throw new Errors.HttpValidationFailure("createdAt", Timestamp.class, user.getCreatedAt());
+        } else if (user.getUpdatedAt() == null) {
+            user.setUpdatedAt(new Timestamp(System.currentTimeMillis()).toString());
+        } else if (!Validation.canParseToTs(user.getUpdatedAt())) {
+            throw new Errors.HttpValidationFailure("updatedAt", Timestamp.class, user.getUpdatedAt());
         }
     }
 }
