@@ -1,7 +1,6 @@
-package io.rently.userservice.services;
+package io.rently.userservice.components;
 
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.rently.userservice.components.MailerService;
 import io.rently.userservice.configs.BugsnagTestConfigs;
 import io.rently.userservice.utils.Jwt;
 import org.junit.jupiter.api.BeforeEach;
