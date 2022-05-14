@@ -1,15 +1,12 @@
-package io.rently.userservice.services;
+package io.rently.userservice.components;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.configs.BugsnagTestConfigs;
-import io.rently.userservice.middlewares.Interceptor;
 import io.rently.userservice.utils.Jwt;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 

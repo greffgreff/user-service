@@ -1,7 +1,7 @@
 package io.rently.userservice.configs;
 
 import com.bugsnag.Bugsnag;
-import io.rently.userservice.services.MailerService;
+import io.rently.userservice.components.MailerService;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

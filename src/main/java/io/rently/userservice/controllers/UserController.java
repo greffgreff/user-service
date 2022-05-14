@@ -4,7 +4,6 @@ import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.services.UserService;
-import io.rently.userservice.utils.Broadcaster;
 import io.rently.userservice.utils.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package io.rently.userservice.middlewares;
 
-import io.rently.userservice.utils.Jwt;
 import io.rently.userservice.utils.Broadcaster;
+import io.rently.userservice.utils.Jwt;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;

@@ -3,24 +3,17 @@ package io.rently.userservice.middlewares;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.configs.BugsnagTestConfigs;
-import io.rently.userservice.configs.UserServiceTestConfigs;
 import io.rently.userservice.errors.Errors;
-import io.rently.userservice.services.UserService;
 import io.rently.userservice.utils.Jwt;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.Objects;
@@ -36,6 +29,7 @@ class InterceptorTest {
     public MockMultipartHttpServletRequest request;
     public static final String SECRET = "secret";
     public static final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS384;
+    public static final SecretKeySpec SECRET_KEY_SPEC = new SecretKeySpec(SECRET.getBytes(), ALGORITHM.getJcaName());
 
     @BeforeEach
     void setup() {
@@ -62,7 +56,7 @@ class InterceptorTest {
         String token = Jwts.builder()
                 .setIssuedAt(expiredDate)
                 .setExpiration(expiredDate)
-                .signWith(ALGORITHM, SECRET)
+                .signWith(ALGORITHM, SECRET_KEY_SPEC)
                 .compact();
 
         request.addHeader("Authorization", "Bearer " + token);
@@ -76,7 +70,7 @@ class InterceptorTest {
         String token = Jwts.builder()
                 .setIssuedAt(expiredDate)
                 .setExpiration(expiredDate)
-                .signWith(ALGORITHM, SECRET)
+                .signWith(ALGORITHM, SECRET_KEY_SPEC)
                 .compact();
 
         request.addHeader("Authorization", "Bearer " + token);

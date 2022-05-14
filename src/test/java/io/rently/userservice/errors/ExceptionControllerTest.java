@@ -1,13 +1,11 @@
 package io.rently.userservice.errors;
 
 import com.bugsnag.Bugsnag;
+import io.rently.userservice.components.MailerService;
 import io.rently.userservice.configs.ExceptionControllerTestConfigs;
 import io.rently.userservice.dtos.ResponseContent;
-import io.rently.userservice.services.MailerService;
-import io.rently.userservice.utils.Broadcaster;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;

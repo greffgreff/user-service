@@ -1,17 +1,12 @@
 package io.rently.userservice.utils;
 
 import io.rently.userservice.configs.BugsnagTestConfigs;
-import io.rently.userservice.middlewares.Interceptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(Validation.class)
 @ContextConfiguration(classes = BugsnagTestConfigs.class)

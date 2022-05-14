@@ -1,10 +1,7 @@
 package io.rently.userservice.errors;
 
 import com.bugsnag.Bugsnag;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
-import io.rently.userservice.services.MailerService;
+import io.rently.userservice.components.MailerService;
 import io.rently.userservice.dtos.ResponseContent;
 import io.rently.userservice.utils.Broadcaster;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +12,10 @@ import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.MissingResourceException;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -34,13 +29,12 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     public ResponseContent unhandledException(HttpServletResponse response, Exception exception) {
         Broadcaster.error(exception.getMessage());
-        exception.printStackTrace();
         bugsnag.notify(exception);
         try {
             mailer.dispatchErrorToDevs(exception);
         } catch (Exception ex) {
             Broadcaster.warn("Could not dispatch error report.");
-            Broadcaster.error(ex);
+            Broadcaster.error(ex.getMessage());
         }
         ResponseStatusException resEx = Errors.INTERNAL_SERVER_ERROR;
         response.setStatus(resEx.getStatus().value());

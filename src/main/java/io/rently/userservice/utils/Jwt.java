@@ -1,11 +1,8 @@
 package io.rently.userservice.utils;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
 import io.rently.userservice.errors.Errors;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
@@ -40,7 +37,6 @@ public class Jwt {
         } catch (MalformedJwtException exception) {
             throw Errors.MALFORMED_TOKEN;
         } catch (Exception exception) {
-            Broadcaster.debug(exception.getMessage());
             throw Errors.UNAUTHORIZED_REQUEST;
         }
         return true;

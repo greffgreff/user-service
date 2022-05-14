@@ -1,4 +1,4 @@
-package io.rently.userservice.services;
+package io.rently.userservice.components;
 
 import io.rently.userservice.utils.Broadcaster;
 import io.rently.userservice.utils.Jwt;
