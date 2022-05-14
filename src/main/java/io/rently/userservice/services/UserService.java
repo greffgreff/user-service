@@ -1,5 +1,6 @@
 package io.rently.userservice.services;
 
+import io.rently.userservice.components.MailerService;
 import io.rently.userservice.dtos.User;
 import io.rently.userservice.errors.Errors;
 import io.rently.userservice.interfaces.UserRepository;
