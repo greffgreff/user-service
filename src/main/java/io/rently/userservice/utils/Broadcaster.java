@@ -19,8 +19,8 @@ public class Broadcaster {
         System.out.println(defaultFormat("[WARN]") + obj);
     }
 
-    public static void error(Object obj) {
-        System.out.println(defaultFormat("[ERROR]") + obj);
+    public static void error(Exception ex) {
+        System.out.println(defaultFormat("[ERROR]") + ex.getMessage());
     }
 
     public static void httpError(ResponseStatusException ex) {
