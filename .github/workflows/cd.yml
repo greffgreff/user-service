@@ -1,9 +1,7 @@
-name: User Service CI CD
+name: User Service CD
 
 on:
   push:
-    branches: [ V2.0-latest ]
-  pull_request:
     branches: [ V2.0-latest ]
 
 jobs:
