@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(UserService.class)
-@ContextConfiguration(classes = { UserServiceTestConfigs.class, BugsnagTestConfigs.class})
+@ContextConfiguration(classes = { UserServiceTestConfigs.class, BugsnagTestConfigs.class })
 class UserServiceTest {
 
     @Autowired

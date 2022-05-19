@@ -56,12 +56,7 @@ public class UserController {
 
     protected void verifyOwnership(String bearer, String userId) {
         String token = bearer.split(" ")[1];
-        String id;
-        try {
-            id = jwt.getParser().parseClaimsJws(token).getBody().getSubject();
-        } catch (Exception ignore) {
-            throw Errors.UNAUTHORIZED_REQUEST;
-        }
+        String id = jwt.getClaims(token).getSubject();
         if (!Objects.equals(id, userId)) {
             throw Errors.UNAUTHORIZED_REQUEST;
         }

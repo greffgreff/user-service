@@ -1,5 +1,6 @@
 package io.rently.userservice.utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.rently.userservice.configs.BugsnagTestConfigs;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -111,7 +113,17 @@ class JwtTest {
     }
 
     @Test
-    void getParser() {
-        assert jwt.getParser() != null;
+    void getClaims_returnsClaims() {
+        Date validDate = new Date(System.currentTimeMillis() + 60000L);
+        String token = Jwts.builder()
+                .setIssuedAt(validDate)
+                .setExpiration(validDate)
+                .signWith(ALGORITHM, SECRET_KEY_SPEC)
+                .compact();
+
+        Claims claims = jwt.getClaims(token);
+
+        assert Objects.equals(new Date(claims.getExpiration().getTime()).toString(), validDate.toString());
+        assert Objects.equals(new Date(claims.getIssuedAt().getTime()).toString(), validDate.toString());
     }
 }
