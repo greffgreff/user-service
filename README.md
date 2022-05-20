@@ -1,7 +1,9 @@
-[![shield]][repo]
+[![User Service CI]][repo]
+[![User Service CD]][repo]
 
-[shield]: https://github.com/greffgreff/user-service/workflows/User%20Endpoint%20CI%20CD/badge.svg
-[repo]: https://github.com/greffgreff/user-service/
+[User Service CI]: https://github.com/rently-io/user-service/actions/workflows/ci.yml/badge.svg
+[User Service CD]: https://github.com/rently-io/user-service/actions/workflows/cd.yml/badge.svg
+[repo]: https://github.com/rently-io/user-service/
 
 # User Service V2.0
 
