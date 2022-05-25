@@ -1,218 +1,230 @@
-[![User Service CI]][repo]
-[![User Service CD]][repo]
+<img src="https://github.com/rently-io/user-service/actions/workflows/ci.yml/badge.svg" />
+<img src="https://github.com/rently-io/user-service/actions/workflows/cd.yml/badge.svg" />
 
-[User Service CI]: https://github.com/rently-io/user-service/actions/workflows/ci.yml/badge.svg
-[User Service CD]: https://github.com/rently-io/user-service/actions/workflows/cd.yml/badge.svg
-[repo]: https://github.com/rently-io/user-service/
+# User Service (v2)
 
-# User Service V2.0
+## Overview
 
-This Spring Boot project is one among other RESTful APIs used in the larger Rently.io project whose frontend can be found [here](https://github.com/greffgreff/rently). More specifically, this endpoint is intended to serve requests when users login into the Rently system for safe keeping purposes. Users are stored insinde a MySQL database using JPA. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
+This Spring Boot project is one among other RESTful APIs used in the larger Rently project. More specifically, this endpoint is intended to serve requests when users login into the Rently system for safe keeping purposes. Users are stored insinde a MySQL database using JPA. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
 
-After each subsequent additions and changes to the codebase of the service, tests are ran and, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/api/v2/298dfb2f-90be-4bc3-8966-646634e5be07).
+After each subsequent additions and changes to the codebase of the service, tests are ran and, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/) and dockerized [here](https://hub.docker.com/repository/docker/dockeroo80/rently-user-service).
 
 Unlike the previous iteration, this endpoint no longer handles sensitive data such as passwords and salt to an authentication endpoint since autherization is now based on OAuth exclusively. As a result, users are now identified by a composite key of the `id` supplied by a provider (e.g. Google ID) and the `provider` itself (e.g. Google) in the unlikely event the id from the provider matches that of another provider. On requests other than GET, data ownership is verified by comparing Json Web Tokens subject to the data's holder id. A middleware was added that verifies the JWT's validity upon every requests.
 
-## C2 model show here
+### C2 model
+![C2 model](https://i.imgur.com/CqQbDQA.png)
 
 ## Objects
 
 ### Response Object
 
-|**Field**|**Description**|
-|---|---|
-| `timestamp`, timestamp | A timestamp of when the request was served. Format: *yyyy-MM-dd HH:mm:ss* |
-| `status` int | The http response status code |
-| `content`, any | The response data, *optional* |
-| `message`, string | The response message, *optional* |
+| **Field**              | **Description**                                                           |
+| ---------------------- | ------------------------------------------------------------------------- |
+| `timestamp`, timestamp | A timestamp of when the request was served. Format: _yyyy-MM-dd HH:mm:ss_ |
+| `status` int           | The http response status code                                             |
+| `content`, any         | The response data, _optional_                                             |
+| `message`, string      | The response message, _optional_                                          |
 
 ### User Object
 
-|**Field**|**Description**|
-|---|---|
-| `id` uuid string | The user's id |
-| `providerId` string | The user's id given by the provider (e.g Google ID) |
-| `provider` string | The user's origin (e.g. Google) |
-| `name` string | The user's name from the provider |
-| `email` string | The user's email from the provider |
-| `createdAt`, timestamp | Timestamp of when the user was created  |
+| **Field**              | **Description**                                         |
+| ---------------------- | ------------------------------------------------------- |
+| `id` uuid string       | The user's username                                     |
+| `providerId` string    | The user's id given by the provider (e.g Google ID)     |
+| `provider` string      | The user's origin (e.g. Google)                         |
+| `name` string          | The user's name from the provider                       |
+| `email` string         | The user's email from the provider                      |
+| `createdAt`, timestamp | Timestamp of when the user was created                  |
 | `updatedAt`, timestamp | Timestamp of when the last changes to the data was made |
 
 ### JWT Object
 
-|**Field**|**Description**|
-|---|---|
-| `sub` uuid string | The user's id |
-| `iat` timestamp | Issue time of the token |
-| `exp` timestamp | Expiration time of the token |
-| `jti` uuid string | The token's id |
+| **Field**         | **Description**              |
+| ----------------- | ---------------------------- |
+| `sub` uuid string | The user's id                |
+| `iat` timestamp   | Issue time of the token      |
+| `exp` timestamp   | Expiration time of the token |
+| `jti` uuid string | The token's id               |
 
 <br />
-
 
 ## Request Mappings
 
-### `GET /api/v2/{provider}/{providerId}`
+### `GET /api/v2/users/{id}`
 
-Returns a json [response](#response-object) object containing one [user](#user-object) object. Permits fetching user data using a `provider` and a `provider account id`. 
+Returns a json [response](#response-object) object containing one [user](#user-object) object. Permits fetching user data using a `provider` and a `provider account id`.
 
-#### URL parameters: 
-| **Parameter** | **Description** | **Required**
-|---:|---|:---:|
-| `provider` string | Valid provider name | true |
-| `providerId` string | Valid provider account id | true |
+#### URL parameters:
 
-#### Request body parameters: 
-> *none*
+|       **Parameter** | **Description**           | **Required** |
+| ------------------: | ------------------------- | :----------: |
+|   `provider` string | Valid provider name       |     true     |
+| `providerId` string | Valid provider account id |     true     |
+
+#### Request body parameters:
+
+> _none_
 
 #### Return example:
+
 ```json
 {
-    "timestamp": "2022-03-17 16:58:12",
-    "status": 200,
-    "content": {
-        "id": "3bdb141f-deb6-4260-a8ac-999e6ab9c89d",
-        "name": "fmullett4",
-        "provider": "facebook",
-        "providerId": "123123abcabc",
-        "email": "fmullett4@51.la",
-        "createdAt": "1617868768000",
-        "updatedAt": "1635152066000"
-    }
+  "timestamp": "2022-03-17 16:58:12",
+  "status": 200,
+  "content": {
+    "id": "3bdb141f-deb6-4260-a8ac-999e6ab9c89d",
+    "name": "fmullett4",
+    "provider": "facebook",
+    "providerId": "123123abcabc",
+    "email": "fmullett4@51.la",
+    "createdAt": "1617868768000",
+    "updatedAt": "1635152066000"
+  }
 }
 ```
 
 #### Possible error codes:
-| **Status** | **Message** | **Description** | 
-|:---:|---|---|
-| `404` | *"Could not find user"* | No user found on the database with specified request parameter | 
+
+| **Status** | **Message**             | **Description**                                                |
+| :--------: | ----------------------- | -------------------------------------------------------------- |
+|   `404`    | _"Could not find user"_ | No user found on the database with specified request parameter |
 
 <br />
 
+### `GET /api/v2/users/{id}`
 
-### `GET /api/v2/{id}`
+Returns a json [response](#response-object) object containing one [user](#user-object) object. Permits fetching user data by `id`.
 
-Returns a json [response](#response-object) object containing one [user](#user-object) object. Permits fetching user data by `id`. 
+#### URL parameters:
 
-#### URL parameters: 
-| **Parameter** | **Description** | **Required**
-|---:|---|:---:|
-| `id` uuid string | A valid user id | true |
+|    **Parameter** | **Description** | **Required** |
+| ---------------: | --------------- | :----------: |
+| `id` uuid string | A valid user id |     true     |
 
-#### Request body parameters: 
-> *none*
+#### Request body parameters:
+
+> _none_
 
 #### Return example:
+
 ```json
 {
-    "timestamp": "2022-03-17 16:58:12",
-    "status": 200,
-    "content": {
-        "id": "3bdb141f-deb6-4260-a8ac-999e6ab9c89d",
-        "name": "fmullett4",
-        "provider": "facebook",
-        "providerId": "123123abcabc",
-        "email": "fmullett4@51.la",
-        "createdAt": "1617868768000",
-        "updatedAt": "1635152066000"
-    }
+  "timestamp": "2022-03-17 16:58:12",
+  "status": 200,
+  "content": {
+    "id": "3bdb141f-deb6-4260-a8ac-999e6ab9c89d",
+    "name": "fmullett4",
+    "provider": "facebook",
+    "providerId": "123123abcabc",
+    "email": "fmullett4@51.la",
+    "createdAt": "1617868768000",
+    "updatedAt": "1635152066000"
+  }
 }
 ```
 
 #### Possible error codes:
-| **Status** | **Message** | **Description** | 
-|:---:|---|---|
-| `404` | *"Could not find user"* | No user found on the database with specified request parameter | 
+
+| **Status** | **Message**             | **Description**                                                |
+| :--------: | ----------------------- | -------------------------------------------------------------- |
+|   `404`    | _"Could not find user"_ | No user found on the database with specified request parameter |
 
 <br />
-
 
 ### `POST /api/v2/`
 
 Inserts an unregistered user in the database. Performs validation on fields and throws an error accordingly.
 
-#### URL parameters: 
-> *none*
+#### URL parameters:
 
-#### Request body parameters: 
-A [user](#user-object) object. 
+> _none_
+
+#### Request body parameters:
+
+A [user](#user-object) object.
 
 #### Return example:
+
 ```json
 {
-    "timestamp": "2022-03-17 16:58:12",
-    "status": 201,
-    "message": "Successfully added user to database"
+  "timestamp": "2022-03-17 16:58:12",
+  "status": 201,
+  "message": "Successfully added user to database"
 }
 ```
 
 #### Possible error codes:
-| **Status** | **Message** | **Description** | 
-|:---:|---|---|
-| `409` | *"User with provider and provider account id already exists"* | A user was found with a matching provider and provider account id provided in the request body, request terminated | 
-| `406` | *"A non-optional field has missing value. Value of field '`field`' was expected but got null"* | Non-optional field was missing | 
-| `406` | *"Validation failure occurred. Value of field '`field`' could not be recognized as type "`type`" (value: '`value`')"* | Non-optional field was of the wrong type | 
-| `406` | *"No content found in request body"* | No data was sent through the request's body in json format | 
+
+| **Status** | **Message**                                                                                                           | **Description**                                                                                                    |
+| :--------: | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+|   `409`    | _"User with provider and provider account id already"_                                                                | A user was found with a matching provider and provider account id provided in the request body, request terminated |
+|   `406`    | _"A non-optional field has missing value. Value of field '`field`' was expected but got null"_                        | Non-optional field was missing                                                                                     |
+|   `406`    | _"Validation failure occurred. Value of field '`field`' could not be recognized as type "`type`" (value: '`value`')"_ | Non-optional field was of the wrong type                                                                           |
 
 <br />
-
 
 ### `PUT /api/v2/{id}`
 
-Updates a user using the request body data in json format. Performs validation on fields and throws an error accordingly alongside verifying ownership beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
+Updates a user using the request body data in json format. Perform validation on fields and throws an error accordingly verifies ownership beforehand using the `subject` of the request's JWT and the URL path variable `id`.
 
-#### URL parameters: 
-| **Parameter** | **Description** | **Required**
-|---:|---|:---:|
-| `id` uuid string | A valid user id | true |
+#### URL parameters:
 
-#### Request body parameters: 
-A [user](#user-object) object. 
+|    **Parameter** | **Description** | **Required** |
+| ---------------: | --------------- | :----------: |
+| `id` uuid string | A valid user id |     true     |
+
+#### Request body parameters:
+
+A [user](#user-object) object.
 
 #### Return example:
+
 ```json
 {
-    "timestamp": "2022-03-17 16:58:12",
-    "status": 200,
-    "message": "Successfully updated user from database"
+  "timestamp": "2022-03-17 16:58:12",
+  "status": 200,
+  "message": "Successfully updated user from database"
 }
 ```
 
 #### Possible error codes:
-| **Status** | **Message** | **Description** | 
-|:---:|---|---|
-| `404` | *"Could not find user"* | No user found on the database with specified request parameter | 
-| `406` | *"A non-optional field has missing value. Value of field '`field`' was expected but got null"* | Non-optional field was missing | 
-| `406` | *"Validation failure occurred. Value of field '`field`' could not be recognized as type "`type`" (value: '`value`')"* | Non-optional field was of the wrong type | 
-| `401` | *"Request is either no longer valid or has been tampered with"* | Request bearer has either expired or the subject and the data holder do not match | 
-| `406` | *"No content found in request body"* | No data was sent through the request's body in json format | 
-|`400`| *"Invalid request made"* | The user id provided in the URI and the user object present in the body do not match |
-<br />
 
+| **Status** | **Message**                                                                                                           | **Description**                                                                   |
+| :--------: | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+|   `404`    | _"Could not find user"_                                                                                               | No user found on the database with specified request parameter                    |
+|   `406`    | _"A non-optional field has missing value. Value of field '`field`' was expected but got null"_                        | Non-optional field was missing                                                    |
+|   `406`    | _"Validation failure occurred. Value of field '`field`' could not be recognized as type "`type`" (value: '`value`')"_ | Non-optional field was of the wrong type                                          |
+|   `401`    | _"Request is either no longer valid or has been tampered with"_                                                       | Request bearer has either expired or the subject and the data holder do not match |
+
+<br />
 
 ### `DELETE /api/v2/{id}`
 
-Deletes a user from the database. Performs ownership verification beforehand using the `subject` of the request's JWT and the URL path variable `id`. 
+Deletes a user from the database. Performs owership verification beforehand using the `subject` of the request's JWT and the URL path variable `id`.
 
-#### URL parameters: 
-| **Parameter** | **Description** | **Required**
-|---:|---|:---:|
-| `id` uuid string | A valid user id | true |
+#### URL parameters:
 
-#### Request body parameters: 
-> *none*
+|    **Parameter** | **Description** | **Required** |
+| ---------------: | --------------- | :----------: |
+| `id` uuid string | A valid user id |     true     |
+
+#### Request body parameters:
+
+> _none_
 
 #### Return example:
+
 ```json
 {
-    "timestamp": "2022-03-17 16:58:12",
-    "status": 200,
-    "message": "Successfully deleted user from database"
+  "timestamp": "2022-03-17 16:58:12",
+  "status": 200,
+  "message": "Successfully deleted user from database"
 }
 ```
 
 #### Possible error codes:
-| **Status** | **Message** | **Description** | 
-|:---:|---|---|
-| `404` | *"Could not find user"* | No user found on the database with specified request parameter | 
-| `401` | *"Request is either no longer valid or has been tampered with"* | Request bearer has either expired or the subject and the data holder do not match | 
+
+| **Status** | **Message**                                                     | **Description**                                                                   |
+| :--------: | --------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+|   `404`    | _"Could not find user"_                                         | No user found on the database with specified request parameter                    |
+|   `401`    | _"Request is either no longer valid or has been tampered with"_ | Request bearer has either expired or the subject and the data holder do not match |
