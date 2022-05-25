@@ -1,5 +1,7 @@
-<img src="https://github.com/rently-io/user-service/actions/workflows/ci.yml/badge.svg" />
-<img src="https://github.com/rently-io/user-service/actions/workflows/cd.yml/badge.svg" />
+<p>
+  <img src="https://github.com/rently-io/user-service/actions/workflows/ci.yml/badge.svg" />
+  <img src="https://github.com/rently-io/user-service/actions/workflows/cd.yml/badge.svg" />
+</p>
 
 # User Service (v2)
 
