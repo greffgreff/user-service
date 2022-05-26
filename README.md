@@ -5,7 +5,7 @@
 
 # User Service (v2)
 
-This Spring Boot project is one among other RESTful APIs used in the larger Rently project. More specifically, this endpoint is intended to serve requests when users login into the Rently system for safe keeping purposes. Users are stored insinde a MySQL database using JPA. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
+This Spring Boot project is one among other RESTful APIs used in the larger Rently project. More specifically, this service is intended to serve requests when users login into the Rently system for safe keeping purposes. Users are stored insinde a MySQL database using JPA. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
 
 After each subsequent additions and changes to the codebase of the service, tests are ran and, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/) and dockerized [here](https://hub.docker.com/repository/docker/dockeroo80/rently-user-service).
 
