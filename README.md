@@ -3,7 +3,7 @@
   <img src="https://github.com/rently-io/user-service/actions/workflows/cd.yml/badge.svg" />
 </p>
 
-# User Service (v2)
+# User Service V2.0
 
 This Spring Boot project is one among other RESTful APIs used in the larger Rently project. More specifically, this service is intended to serve requests when users login into the Rently system for safe keeping purposes. Users are stored insinde a MySQL database using JPA. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
 
@@ -16,7 +16,7 @@ Unlike the previous iteration, this endpoint no longer handles sensitive data su
 A middleware was added that verifies the json web tokens' validity upon every requests. Data ownership is verified by comparing JWT subject to the data's holder id. JWTs must have the [following shape](#jwt-object]) and must be encrypted using the right server secret and its corresponding hashing algorithm.
 
 ### C2 model
-![C2 model](https://i.imgur.com/CqQbDQA.png)
+![C2 model](https://i.imgur.com/KEhA9Dx.jpg)
 
 ## Objects
 
