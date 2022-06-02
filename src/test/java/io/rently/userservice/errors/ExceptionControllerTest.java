@@ -24,9 +24,9 @@ import static org.mockito.Mockito.verify;
 @ContextConfiguration(classes = ExceptionControllerTestConfigs.class)
 class ExceptionControllerTest {
 
+    public MockHttpServletResponse response;
     @Autowired
     public ExceptionController controller;
-    public MockHttpServletResponse response;
     @Autowired
     public MailerService mailer;
     @Autowired
@@ -38,9 +38,8 @@ class ExceptionControllerTest {
     }
 
     @Test
-    void unhandledException_mailerInvoked_bugsnagInvoked() {
+    void unhandledException_mailerInvoked_bugsnagInvoked_void() {
         Exception exception = new Exception("This is an unhandled exception");
-        ResponseStatusException expectedException = Errors.INTERNAL_SERVER_ERROR;
 
         ResponseContent content = controller.unhandledException(response, exception);
 
@@ -58,6 +57,7 @@ class ExceptionControllerTest {
                 })
         );
 
+        ResponseStatusException expectedException = Errors.INTERNAL_SERVER_ERROR;
         assert response.getStatus() == expectedException.getStatus().value();
         assert content.getStatus() == expectedException.getStatus().value();
         assert Objects.requireNonNull(expectedException.getMessage()).contains(content.getMessage());

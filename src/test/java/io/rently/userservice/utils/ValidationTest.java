@@ -54,7 +54,6 @@ class ValidationTest {
         assert !Validation.canParseFloat(flt);
     }
 
-
     @Test
     void canParseFloat_validFloat_true() {
         String flt = "123.123";
