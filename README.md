@@ -16,7 +16,7 @@ Unlike the previous iteration, this endpoint no longer handles sensitive data su
 A middleware was added that verifies the json web tokens' validity upon every requests. Data ownership is verified by comparing JWT subject to the data's holder id. JWTs must have the [following shape](#jwt-object]) and must be encrypted using the right server secret and its corresponding hashing algorithm.
 
 ### C2 model
-![C2 model](https://i.imgur.com/KEhA9Dx.jpg)
+![C2 model](https://i.imgur.com/34Nvkd4.jpg)
 
 ## Objects
 
