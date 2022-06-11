@@ -22,7 +22,7 @@ public class MailerService {
         this.restTemplate = restTemplate;
     }
 
-    public void dispatchGreeting(String recipientName, String recipientEmail) {
+    public synchronized void dispatchGreeting(String recipientName, String recipientEmail) {
         Broadcaster.info("Sending greetings to user " + recipientName);
         Objects.requireNonNull(recipientEmail, "Email cannot be null");
 
@@ -38,7 +38,7 @@ public class MailerService {
         restTemplate.postForObject(endPointUrl, body, String.class);
     }
 
-    public void dispatchGoodbye(String recipientName, String recipientEmail) {
+    public synchronized void dispatchGoodbye(String recipientName, String recipientEmail) {
         Broadcaster.info("Sending goodbyes to user " + recipientName);
         Objects.requireNonNull(recipientEmail, "Email cannot be null");
 
@@ -54,7 +54,7 @@ public class MailerService {
         restTemplate.postForObject(endPointUrl, body, String.class);
     }
 
-    public void dispatchErrorToDevs(Exception exception) {
+    public synchronized void dispatchErrorToDevs(Exception exception) {
         Broadcaster.info("Dispatching error report...");
         Objects.requireNonNull(exception, "Empty exception provided");
 

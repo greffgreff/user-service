@@ -34,7 +34,7 @@ public class Interceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (RequestMethod.OPTIONS.name().equals(request.getMethod())) {
             response.setHeader("Cache-Control","no-cache");
-            response.setHeader("Access-control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Origin", "*");
             response.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
             response.setHeader("Access-Control-Allow-Headers", "*");
             response.setStatus(HttpStatus.OK.value());
