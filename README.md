@@ -7,13 +7,18 @@
 
 This Spring Boot project is one among other RESTful APIs used in the larger Rently project. More specifically, this service is intended to serve requests when users login into the Rently system for safe keeping purposes. Users are stored insinde a MySQL database using JPA. Possible requests include `GET`, `POST`, `PUT`, `DELETE`.
 
+Unlike the previous iteration, this endpoint no longer handles sensitive data such as passwords and salt to an authentication endpoint since autherization is now based on OAuth exclusively. As a result, users are now identified by a composite key of the `id` supplied by a provider (e.g. Google ID) and the `provider` itself (e.g. Google) in the unlikely event the id from the provider matches that of another provider. 
+
+A middleware was added that verifies the json web tokens' validity upon every requests. Data ownership is verified by comparing JWT subject to the data's holder id. JWTs must have the [following shape](#jwt-object]) and must be encrypted using the right server secret and its corresponding hashing algorithm.
+
 After each subsequent additions and changes to the codebase of the service, tests are ran and, if passed, the service is automatically deployed on to a Heroku instance [here](https://user-service-rently.herokuapp.com/) and dockerized [here](https://hub.docker.com/repository/docker/dockeroo80/rently-user-service).
 
 > ⚠️ Please note that the service is currently deployed on a free Heroku instance and needs a few seconds to warm up on first request!
 
-Unlike the previous iteration, this endpoint no longer handles sensitive data such as passwords and salt to an authentication endpoint since autherization is now based on OAuth exclusively. As a result, users are now identified by a composite key of the `id` supplied by a provider (e.g. Google ID) and the `provider` itself (e.g. Google) in the unlikely event the id from the provider matches that of another provider. 
-
-A middleware was added that verifies the json web tokens' validity upon every requests. Data ownership is verified by comparing JWT subject to the data's holder id. JWTs must have the [following shape](#jwt-object]) and must be encrypted using the right server secret and its corresponding hashing algorithm.
+Please use the following command to run the docker image:
+```bash
+docker run -p 8080:8080 -e CREDENTIALS=bb63b9ccbf9ab6:e9b7699e dockeroo80/rently-user-service
+```
 
 ### C2 model
 ![C2 model](https://i.imgur.com/34Nvkd4.jpg)
